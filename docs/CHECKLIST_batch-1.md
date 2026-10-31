@@ -1,0 +1,57 @@
+# Checklist: what to check by hand for `claude/batch-1` (on top of `claude/sweep-1`)
+
+Everything here passes the automated tests (`test:tabs`, `test:node`, lint, imports, ids). These are the things a test
+cannot see or that need your PC (Windows, real files, the real Home list). Each says what to do, what a failure looks like,
+and how to undo. Branch: `claude/batch-1`. Setup: `git fetch`, `git checkout claude/batch-1`, `npm install`, start as usual.
+If `ui/uiState.js` or many files change while Vite is running, stop and restart Vite.
+
+**B1. Tab switching and launching from Home (`80a9961`, `761756f`).** Click through all six tabs twice. Home: open a Draw
+registry item from a category (for example one under a status): Draw opens with that object. Failure: the right tab opens
+but not the object, or the app stays on Home. Undo: `git revert 761756f 80a9961`.
+
+**B2. Cycloid radius (`2cbf270`, test only).** Draw > Cycloid: move the Radius slider; the drawing grows and shrinks. The
+automated test says it works; you noted it did not, so confirm on your PC and tell me if it still fails there.
+
+**B3. Delete layer (`ed8d3b3`).** Figures: new figure, insert three objects (two lines and a parabola), weld one corner of
+the first to the second and one corner of the second to the third (your Phase 8 gesture). Caption menu v > Delete layer:
+a question appears; Cancel keeps everything; OK removes the layer from the number strip and the drawing, its dots go, and
+the weld marks that still join two other layers stay. Numbers of the other layers do not change. Delete the last layer:
+the figure is empty and nothing breaks. Failure: a number left in the strip, a weld mark left over, an error in the console.
+Undo: `git revert ed8d3b3`.
+
+**B4. Timings (`6ab47c6`).** Utilities > Commands: tick Record timings, use the app (switch tabs, open items), come back:
+Show timings lists the slowest first (tab switches, manifest loads, file requests, service calls). Clear timings empties it.
+Also try `http://127.0.0.1:5173/?instrument` to record from start-up. With the box unticked nothing is recorded. Your
+numbers are the useful ones: send me the slowest ten from a real launch. Undo: `git revert 6ab47c6`.
+
+**B5. Save, Save As, reopen (`0b946fc`, `3668684`). Needs the Node service running (`npm run dev:all`).**
+1. Figures: new figure, insert two or three objects, weld two corners. Caption menu v > Save As...: the first box asks the
+   category (new name is fine), the second the name. Use a name with a space, such as `First try`.
+2. In your project folder: `figures/<category>/First try.json` exists, the category is in `figures/directoryRegistry.json`,
+   `figures/<category>/manifest.json` has the entry with status `new`, `help/figures/<category>` exists, and no `.tmp` file.
+3. Menu > Save again: no questions, the file is replaced. Make a change and press Save: the change is in the file.
+4. Menu > Save As... with the same category and name: it says the name exists and asks to replace. Cancel changes nothing.
+5. Try a bad name such as `a:b`: you get a message and nothing is written (Windows would refuse the name anyway).
+6. Close the figure subtab (the x): with a change since saving it asks; right after saving it does not. Choosing a different
+   layer to look at is not a change. Close it.
+7. Figures > Categories: the category lists your figure. Click it: it opens in a new subtab with the layers, colours,
+   hidden layers, stacking and welds as saved. Drag a handle: a weld still carries the other end. Click it again in the list
+   while it is open: it just shows the open one.
+8. Try a harder one: a figure with a hidden layer, a deleted layer, a changed layer colour, a moved or rotated layer; save,
+   close, reopen; all as left.
+Failure: an alert box with a message, a console error, a layer drawn differently after reopening. Undo:
+`git revert 3668684 0b946fc` (the saved files stay; delete them by hand).
+
+**B6. Figures in Home (`761756f`).** Utilities > Commands > Rebuild & Validate (this adds figures that have a status to
+Home). Edit Manifest on your figure (Figures has no Edit Manifest item yet; use Utilities or edit
+`figures/<category>/manifest.json`: `status` to `working`). Rebuild again. Home shows the figure under that status: click
+it: the Figures tab opens it. Known: Home does not re-read its list when you come back to the tab (the manifest bug you
+described); restart the page or Rebuild to see new entries. Undo: `git revert 761756f`.
+
+**B7. Title edit does not create a second file.** After B6, change the figure's title in its manifest, open the figure, make
+a change, Save. The same `.json` file is replaced and no new file appears. Failure: a new file under the new title.
+
+**B8. The picture comparison (`npm run pixels:compare`) will show one intended difference:** the Utilities Commands panel
+(the timings controls). Everything else should be identical to a run from `sweep-1`.
+
+**B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.
