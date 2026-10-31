@@ -660,4 +660,8 @@ group is picked back up.
   the folders Edit Manifest and Archive may touch (`safePaths.mjs`). Clicking a figure in Home sets a launch request
   (`uiState.launch.figurePath`) and Figures opens it. A newly saved figure shows in Home after the next manifest rebuild, like
   other new items. A figure's name is its file name; the manifest title (Edit Manifest) only changes the list.
-- Not built: the move-to-another-category command (not needed yet), Copy / Archive / Reset.
+- Copy, Archive and Reset (Figures caption menu): **Copy** opens an unsaved "<name> copy" in a new subtab. **Archive** moves the
+  saved file to `figures/<category>/archive/` and drops its manifest entry (the service call the other tabs use); the figure
+  stays open, unsaved. **Reset** reads the saved file again and discards changes since (needs a saved figure with changes).
+  Archive and Reset ask first.
+- Not built: the move-to-another-category command (not needed yet), Show Script for figures.

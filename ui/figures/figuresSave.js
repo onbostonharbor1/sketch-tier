@@ -22,10 +22,17 @@
    which figuresNav.js listens for; importing figuresNav here would make
    a loop of imports.
 
+   Also here, because they work on the saved file or on a copy of the
+   figure: Copy, Reset and Archive (Figures caption menu).
+
    Exports:
      saveFigureAs(tabId)
      saveFigureTab(tabId)           Save: same place if saved before
      openSavedFigure(category, fileName)
+     isSavedFigure(tabState)        true when the file exists (saved or opened)
+     copyFigureTab(tabId)
+     resetFigureTab(tabId)          back to the last saved version
+     archiveFigureTab(tabId)        move the saved file to archive/
    ============================================================ */
 
 import { uiState }                   from "/ui/uiState.js";
@@ -33,6 +40,7 @@ import { nodeDispatch }              from "/ui/nodeLayer.js";
 import { getFiguresRegistry }        from "./figuresState.js";
 import { snapshotOfFigure, nextFigureTabId } from "./figureModel.js";
 import { rebuildInstances }          from "./figureLayers.js";
+import { archiveItem }               from "/ui/archiveItem.js";
 
 
 /* ------------------------------------------------------------
@@ -186,5 +194,118 @@ export async function openSavedFigure(category, fileName) {
   return tabId;
 
 } // end openSavedFigure
+
+
+/* ------------------------------------------------------------
+   isSavedFigure(tabState)
+   True when this figure has been saved or opened from a file, so
+   a file for it exists (until Archive moves it away).
+   ------------------------------------------------------------ */
+export function isSavedFigure(tabState) {
+  return !!tabState?.figure?.category && tabState.savedSnapshot !== undefined;
+} // end isSavedFigure
+
+
+/* ------------------------------------------------------------
+   copyFigureTab(tabId)
+   Opens a copy of the figure in a new subtab. The copy is unsaved
+   and named "<name> copy" (then "copy 2" ...); it keeps the category
+   so Save As offers it. The original is untouched.
+   ------------------------------------------------------------ */
+export function copyFigureTab(tabId) {
+
+  const tabs = uiState.figures.tabs;
+  const from = tabs[tabId]?.figure;
+  if (!from) return null;
+
+  const used = new Set();
+  for (const id in tabs) if (tabs[id].figure) used.add(tabs[id].figure.name);
+  let name = from.name + " copy";
+  for (let n = 2; used.has(name); n++) name = from.name + " copy " + n;
+
+  const newId = nextFigureTabId(tabs);
+  tabs[newId] = {
+    type:             "figure",
+    figure:           structuredClone(from),
+    mode:             "lines",
+    selectedPoint:    null,
+    centroidSelected: false
+  };
+  tabs[newId].figure.name = name;       // category kept; savedSnapshot stays unset, so it counts as unsaved
+
+  rebuildInstances(newId);
+  document.dispatchEvent(new CustomEvent("figure-show", { detail: { tabId: newId } }));
+  return newId;
+
+} // end copyFigureTab
+
+
+/* ------------------------------------------------------------
+   resetFigureTab(tabId)
+   Throws away the changes since the last save: reads the saved file
+   again and rebuilds the figure from it. Asks first.
+   ------------------------------------------------------------ */
+export async function resetFigureTab(tabId) {
+
+  const tabState = uiState.figures.tabs[tabId];
+  if (!isSavedFigure(tabState)) return false;
+  const figure = tabState.figure;
+
+  if (!window.confirm("Discard the changes to \"" + figure.name + "\" since it was saved?")) return false;
+
+  let saved;
+  try {
+    const res = await fetch("/figures/" + encodeURIComponent(figure.category) + "/" + encodeURIComponent(figure.name + ".json"), { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    saved = await res.json();
+  } catch (err) {
+    window.alert("Could not read the saved figure.\n\n" + err.message);
+    return false;
+  }
+
+  saved.name     = figure.name;
+  saved.category = figure.category;
+  tabState.figure           = saved;
+  tabState.mode             = "lines";
+  tabState.selectedPoint    = null;
+  tabState.centroidSelected = false;
+  rebuildInstances(tabId);
+  tabState.savedSnapshot = snapshotOfFigure(saved);
+
+  document.dispatchEvent(new CustomEvent("figure-show", { detail: { tabId } }));
+  return true;
+
+} // end resetFigureTab
+
+
+/* ------------------------------------------------------------
+   archiveFigureTab(tabId)
+   Moves the saved file to figures/<category>/archive/ and drops its
+   manifest entry (the same service call the other tabs use). The
+   figure stays open, now unsaved. Asks first.
+   ------------------------------------------------------------ */
+export async function archiveFigureTab(tabId) {
+
+  const tabState = uiState.figures.tabs[tabId];
+  if (!isSavedFigure(tabState)) return false;
+  const figure = tabState.figure;
+
+  if (!window.confirm("Move the saved file of \"" + figure.name + "\" to the archive folder? The figure stays open, unsaved.")) return false;
+
+  try {
+    await archiveItem({
+      payload:   { manifestPath: "/figures/" + figure.category + "/manifest.json", filename: figure.name + ".json" },
+      showAlert: true
+    });
+  } catch (err) {
+    window.alert("Not archived.\n\n" + err.message);
+    return false;
+  }
+
+  delete tabState.savedSnapshot;                   // no file now: closing asks, Save asks for a place
+  uiState.figures.needsUpdate = true;
+  return true;
+
+} // end archiveFigureTab
 
 // end figuresSave.js

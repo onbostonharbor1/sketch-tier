@@ -54,4 +54,15 @@ a change, Save. The same `.json` file is replaced and no new file appears. Failu
 **B8. The picture comparison (`npm run pixels:compare`) will show one intended difference:** the Utilities Commands panel
 (the timings controls). Everything else should be identical to a run from `sweep-1`.
 
+**B10. Copy, Archive, Reset (next commit after `faf235e`). Needs the Node service for Archive.**
+1. Open a saved figure (B5). Caption menu v > Copy: a new subtab "<name> copy" opens with the same layers; it is unsaved
+   (closing it asks). Changing the copy does not change the original.
+2. In the original, make a change: menu > Reset is now enabled. Reset asks, then the change is gone and the figure is as
+   saved (welds and layers too). Reset is grayed on a figure with no changes or never saved.
+3. Menu > Archive (enabled only on a saved figure): asks; then `figures/<category>/archive/<name>.json` exists, the original
+   file is gone, the manifest entry is gone, an "Archived" notice shows. The figure stays open and counts as unsaved
+   (closing asks; Save As puts it back).
+Failure: Archive leaves the file in place or the entry in the manifest; Reset leaves a drawn layer from the unsaved state.
+Undo: `git revert` that commit (archived files stay in `archive/`; move them back by hand).
+
 **B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.

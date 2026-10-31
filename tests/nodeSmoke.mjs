@@ -254,6 +254,10 @@ r = await call("manifestMaintenance", {});
   const f = home.filter((e) => String(e.path).startsWith("/figures/"));
   check("Home list includes figures that have a status", f.length === 2 && f.some((e) => e.path === "/figures/Boxes/First try.json" && e.status === "favorite"),
     "status " + r.status + " " + JSON.stringify(f)); }
+r = await call("saveFigure", { category: "Boxes", name: "To archive", figure: sample });
+r = await call("archiveItem", { manifestPath: "/figures/Boxes/manifest.json", filename: "To archive.json" });
+check("archiveItem works on a saved figure", r.status === 200 && exists("figures", "Boxes", "archive", "To archive.json") && !exists("figures", "Boxes", "To archive.json")
+  && !readScratchJson("figures", "Boxes", "manifest.json").some((e) => e.path === "To archive.json"), "status " + r.status + " " + JSON.stringify(r.json));
 const figBefore = JSON.stringify(fs.readdirSync(path.join(scratch, "figures")));
 for (const [label, payload] of [
   ["category ..",         { category: "..", name: "x", figure: sample }],

@@ -1398,7 +1398,7 @@ let sentSave = null;
 let storedFigure = null;
 await page.route("**/dispatch", async (route) => {
   sentSave = JSON.parse(route.request().postData());
-  storedFigure = sentSave.payload.figure;
+  if (sentSave.requestName === "saveFigure") storedFigure = sentSave.payload.figure;
   await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
                         body: JSON.stringify({ request: "saveFigure", status: "ok" }) });
 });
@@ -1480,6 +1480,69 @@ const again = await page.evaluate(async () => {
   return Object.keys(uiState.figures.tabs).length === before;
 });
 if (!again) problems.push("[reopen] opening an open figure made a second tab");
+
+// Copy: a new, unsaved subtab named "Demo copy"; the original is untouched.
+const copied = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  const { hasUnsavedChanges } = await import("/ui/figures/figureModel.js");
+  const orig = uiState.figures.activeSubtab;
+  const id = m.copyFigureTab(orig);
+  await new Promise((r) => setTimeout(r, 400));
+  const t = uiState.figures.tabs[id];
+  const o = uiState.figures.tabs[orig];
+  return { distinct: id !== orig, active: uiState.figures.activeSubtab === id, name: t.figure.name, layers: t.figure.layers.length,
+           instances: t.instances.length, unsaved: hasUnsavedChanges(t), isSaved: m.isSavedFigure(t),
+           separateParams: t.figure.layers[0].params !== o.figure.layers[0].params, origName: o.figure.name, id, orig };
+});
+if (!copied.distinct || !copied.active || copied.name !== "Demo copy" || copied.layers !== 2 || copied.instances !== 2 || !copied.unsaved
+    || copied.isSaved || !copied.separateParams || copied.origName !== "Demo") {
+  problems.push("[copy] " + JSON.stringify(copied));
+}
+dialogs.length = 0; answers = ["yes"];
+await page.evaluate(async ([id, orig]) => {
+  (await import("/ui/figures/figuresNav.js")).closeTab(id);       // the copy is unsaved: asks
+  (await import("/ui/figures/figuresNav.js")).switchToFigureTab(orig);
+}, [copied.id, copied.orig]);
+await page.waitForTimeout(300);
+if (dialogs.length !== 1 || !/not saved/.test(dialogs[0])) problems.push("[copy] closing the copy: " + dialogs.join(" | "));
+
+// Reset: a change since the save is thrown away.
+await insertExact("drawLine", { pt1: { x: 50, y: 50 }, pt2: { x: 60, y: 90 } });
+dialogs.length = 0; answers = ["yes"];
+const resetRes = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  const { hasUnsavedChanges } = await import("/ui/figures/figureModel.js");
+  const id = uiState.figures.activeSubtab;
+  const before = { layers: uiState.figures.tabs[id].figure.layers.length, unsaved: hasUnsavedChanges(uiState.figures.tabs[id]) };
+  const ok = await m.resetFigureTab(id);
+  await new Promise((r) => setTimeout(r, 400));
+  const t = uiState.figures.tabs[id];
+  return { before, ok, layers: t.figure.layers.length, instances: t.instances.length, unsaved: hasUnsavedChanges(t),
+           welds: JSON.stringify(t.figure.welds), name: t.figure.name };
+});
+if (resetRes.before.layers !== 3 || !resetRes.before.unsaved || !resetRes.ok || resetRes.layers !== 2 || resetRes.instances !== 2
+    || resetRes.unsaved || resetRes.name !== "Demo" || resetRes.welds !== JSON.stringify([{ members: [{ layer: 0, n: 1 }, { layer: 1, n: 2 }] }])) {
+  problems.push("[reset] " + JSON.stringify(resetRes) + " dialogs=" + dialogs.join(" | "));
+}
+
+// Archive: sends the service call with the manifest and file name; the figure stays open, unsaved.
+sentSave = null;
+dialogs.length = 0; answers = ["yes", "yes"];            // the question, then the "Archived" notice
+const archived = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  const id = uiState.figures.activeSubtab;
+  const ok = await m.archiveFigureTab(id);
+  return { ok, saved: m.isSavedFigure(uiState.figures.tabs[id]), open: !!uiState.figures.tabs[id] };
+});
+if (!archived.ok || archived.saved || !archived.open || !sentSave || sentSave.requestName !== "archiveItem"
+    || sentSave.payload.manifestPath !== "/figures/Boxes/manifest.json" || sentSave.payload.filename !== "Demo.json") {
+  problems.push("[archive] " + JSON.stringify(archived) + " sent=" + JSON.stringify(sentSave) + " dialogs=" + dialogs.join(" | "));
+}
+// Put it back to the saved state for the steps that follow.
+await page.evaluate(async () => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  t.savedSnapshot = (await import("/ui/figures/figureModel.js")).snapshotOfFigure(t.figure);
+});
 
 // A change makes it unsaved; closing then asks, and Cancel keeps it.
 await insertExact("drawLine", { pt1: { x: 50, y: 50 }, pt2: { x: 60, y: 90 } });
@@ -1659,4 +1722,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, Figures launch from Home, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, instrumentation, no errors");

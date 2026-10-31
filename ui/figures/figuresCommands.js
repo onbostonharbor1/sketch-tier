@@ -18,8 +18,9 @@
      Break apart          Phase 7c, not in points mode
      Delete layer         the active layer and its discs; asks first
      Save, Save As...     Phase 10 (figuresSave.js)
-     Show Script, Copy, Archive, Reset    grayed: not built yet, shown
-                                          so the menu has its final shape
+     Copy, Archive, Reset    work on the saved file or a copy (figuresSave.js);
+                             Archive and Reset need a saved figure
+     Show Script          grayed: not built yet, shown so the menu has its final shape
 
    The caption bar itself also carries the Line and Parabola buttons
    and the active layer's name and Show checkbox. Those are added by
@@ -43,7 +44,8 @@ import { openHelpHomeOverlay }      from "/ui/help.js";
 import { uiState }                  from "/ui/uiState.js";
 import { redrawFigure, canBreakApart, breakApartLayer, deleteLayer } from "./figureLayers.js";
 import { deletePoint }              from "./figurePoints.js";
-import { saveFigureTab, saveFigureAs } from "./figuresSave.js";
+import { saveFigureTab, saveFigureAs, isSavedFigure, copyFigureTab, resetFigureTab, archiveFigureTab } from "./figuresSave.js";
+import { hasUnsavedChanges }       from "./figureModel.js";
 
 
 /* ============================================================
@@ -227,6 +229,26 @@ export async function getFiguresCaptionMenuItems(title) {
     onClick: () => saveFigureAs(uiState.figures.activeSubtab)
   };
 
+  const hasFigure = !!(ts0 && ts0.figure);
+  const copyItem = {
+    label:    "Copy",
+    disabled: !hasFigure,
+    tooltip:  "Opens a copy of this figure in a new subtab. The copy is unsaved.",
+    onClick:  () => copyFigureTab(uiState.figures.activeSubtab)
+  };
+  const archiveItem = {
+    label:    "Archive",
+    disabled: !isSavedFigure(ts0),
+    tooltip:  "Moves the saved file to the archive folder and removes it from the list. The figure stays open, unsaved.",
+    onClick:  () => archiveFigureTab(uiState.figures.activeSubtab)
+  };
+  const resetItem = {
+    label:    "Reset",
+    disabled: !(isSavedFigure(ts0) && hasUnsavedChanges(ts0)),
+    tooltip:  "Goes back to the last saved version, discarding changes since.",
+    onClick:  () => resetFigureTab(uiState.figures.activeSubtab)
+  };
+
   return [
     await makeHelpItem("figures", null),
     await makeNotesItem(null, title),
@@ -236,10 +258,10 @@ export async function getFiguresCaptionMenuItems(title) {
     deleteLayerItem,
     saveItem,
     saveAsItem,
-    later("Show Script"),
-    later("Copy"),
-    later("Archive"),
-    later("Reset")
+    copyItem,
+    archiveItem,
+    resetItem,
+    later("Show Script")
   ];
 
 } // end getFiguresCaptionMenuItems
