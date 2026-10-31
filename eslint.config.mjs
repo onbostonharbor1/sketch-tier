@@ -13,8 +13,7 @@ import globals from "globals";
 
 export default [
   {
-    // draw/zz*.js are parked archive files; zzFindBezierPoint.js is not valid JS
-    ignores: ["node_modules/**", "dist/**", "archive/**", "**/archive/**", "draw/zz*.js"]
+    ignores: ["node_modules/**", "dist/**", "archive/**", "**/archive/**"]
   },
   {
     files: ["**/*.js", "**/*.mjs"],
