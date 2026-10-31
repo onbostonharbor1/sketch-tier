@@ -1,12 +1,6 @@
 // main.js — Vite entry point
 
 
-import '@melloware/coloris/dist/coloris.css';
-import Coloris from '@melloware/coloris';
-
-// This line is the "magic" that fixes the ReferenceError:
-window.Coloris = Coloris;
-
 // === Core classes ===
 import "./classes/classes.js";
 import "./classes/curveStitchClass.js";
@@ -84,26 +78,6 @@ import "/ui/utilities/utilitiesMenuCmds.js";
 // UI infrastructure
 import "/ui/uiUtilities.js";
 import "/ui/setUI.js";
-
-
-/* ------------------------------------------------------------
-   Coloris Initialization
-   ------------------------------------------------------------ */
-   document.addEventListener('DOMContentLoaded', () => {
-    if (window.Coloris) {
-      // We target the class directly so it doesn't try to auto-init
-      window.Coloris.init();
-      window.Coloris({
-        el: '.ctrl-color-input',
-        format: 'hsl',
-        alpha: true,
-        theme: 'dark',
-        themeMode: 'dark',
-        wrap: true
-      });
-    }
-  });
-
 
 
 console.log("Sketchpad loaded under Vite.");

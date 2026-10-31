@@ -681,3 +681,5 @@ group is picked back up.
 - Utilities > Tools > Thumbnails: **Thumbnails on or off**, **Thumbnail size**, **Regenerate thumbnails** (All or one set:
   Patterns, Gallery scripts, Gallery images, Draw, Figures; runs scripts on the canvas, skips animated ones, lists failures)
   and, in Tools > ManifestFiles, **Check Missing Images** (lists items without a picture; writes nothing).
+
+- Color control (2026-10-31): Coloris removed; `colorPicker` controls use the browser's `<input type="color">` (`ui/controls/widgets/colorWidget.js`, with `toHexColor`). No transparency in the chooser. This also removed the Runbook Job 1 group D `!important` lines (the Coloris rules in `css/parameterControls.css`).

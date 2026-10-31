@@ -1828,6 +1828,31 @@ const inkAt = async (v) => page.evaluate((v) => {
 const inkSmall = await inkAt("150");
 const inkBig   = await inkAt("350");
 if (!(inkBig > inkSmall * 1.5)) problems.push(`[cycloid radius] radius 150 drew ${inkSmall} pixels, 350 drew ${inkBig}`);
+/* Color control: the browser's own color input (Coloris is gone). */
+stage = "color control";
+const colorBefore = await page.evaluate(() => {
+  const i = document.querySelector("#action input[type=color]");
+  return { found: !!i, value: i && i.value, coloris: typeof window.Coloris, clrFields: document.querySelectorAll(".clr-field").length };
+});
+if (!colorBefore.found || colorBefore.value !== "#0000ff" || colorBefore.coloris !== "undefined" || colorBefore.clrFields) {
+  problems.push("[color control] before: " + JSON.stringify(colorBefore));
+}
+await page.locator("#action input[type=color]").fill("#ff0000");
+await page.waitForTimeout(500);
+const colorAfter = await page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  const c = document.getElementById("sharedCanvas");
+  const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+  let red = 0, blue = 0;
+  for (let i = 0; i < d.length; i += 4) { if (d[i + 3] && d[i] > 200 && d[i + 2] < 80) red++; if (d[i + 3] && d[i + 2] > 200 && d[i] < 80) blue++; }
+  return { param: uiState.draw.tabs["tab-cycloid"].drawRegistry.params.color, red, blue };
+});
+if (colorAfter.param !== "#ff0000" || colorAfter.red < 500 || colorAfter.blue > 0) problems.push("[color control] after choosing red: " + JSON.stringify(colorAfter));
+const hexChecks = await page.evaluate(async () => {
+  const { toHexColor } = await import("/ui/controls/widgets/colorWidget.js");
+  return [toHexColor("blue"), toHexColor("#0044CC"), toHexColor("hsl(120, 100%, 25%)"), toHexColor("rgba(255, 128, 0, 0.5)"), toHexColor("not a color")];
+});
+if (JSON.stringify(hexChecks) !== JSON.stringify(["#0000ff", "#0044cc", "#008000", "#ff8000", "#000000"])) problems.push("[color control] toHexColor: " + JSON.stringify(hexChecks));
 await page.click("#patterns-tab");              // leaving the tab disarms: the interaction layer is hidden
 await page.waitForTimeout(900);
 const layerShown = await page.evaluate(() => { const l = document.getElementById("interaction-layer"); return l && l.style.display !== "none"; });
@@ -1862,4 +1887,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, instrumentation, no errors");

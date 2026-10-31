@@ -6,7 +6,7 @@
    and never fails the build.
 
    Known and intentional (see the globals notes in draw/drawState.js
-   and ui/uiState.js): uiState, ctx, bootstrap, jQuery, $, Coloris.
+   and ui/uiState.js): uiState, ctx, bootstrap, jQuery, $.
    Anything else in the report is worth a look.
    ------------------------------------------------------------ */
 import globals from "globals";
@@ -28,7 +28,6 @@ export default [
         bootstrap: "readonly",
         jQuery:    "readonly",
         $:         "readonly",
-        Coloris:   "readonly"
       }
     },
     rules: {

@@ -162,6 +162,6 @@ window.uiState = uiState;
 // Window globals owned by UI modules (declared here so they are findable):
 //   window.uiState        this object (used as a bare name everywhere)
 //   window.overlayManager the help/forms overlay manager (ui/overlay.js)
-//   window.Coloris, window.jQuery  third-party, set by their libraries
+//   window.jQuery         third-party, set by its library
 
 // end uiState.js

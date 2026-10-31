@@ -96,4 +96,12 @@ unfinished (it passes numbers where other scripts pass points). Undo: `git rever
 Failure: pictures that are blank or cropped oddly (tell me which item), a script listed as failed that you expected to work,
 names showing where pictures should be. Undo: `git revert` the thumbnail commits (picture files stay; delete them by hand).
 
+**B14. Color control without Coloris (commit after `2bbb663`).** Coloris is removed (the package, its style sheet, `main.js` setup, its
+CSS rules and the lint global). Every `colorPicker` control (Draw objects, Utilities > Lab) is now the browser's own color input:
+click the swatch and the system color chooser opens. Check on Windows: Draw > Cycloid: the Color swatch shows blue; pick red:
+the drawing turns red as you choose; reload and look at a few other Draw objects. Utilities > Lab > Color > "Change Color
+HSL/RGB": the two swatches work. Limits: no transparency in the chooser (the scripts with their own alpha sliders keep them),
+and a color you pick is saved as `#rrggbb` (names such as "blue" still draw, and show as their hex in the swatch). After
+`npm install` the Coloris package is gone from `node_modules`. Undo: `git revert` that commit, then `npm install`.
+
 **B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.
