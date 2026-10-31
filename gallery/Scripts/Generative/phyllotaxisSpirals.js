@@ -4,6 +4,8 @@
    ============================================================
    By setting the angle based on a fixed 'Points Per Ring',
    we can control the exact number of radial arms or spirals.
+
+   Transparency: an Alpha slider (0.1 to 1.0, default 0.5) sets the opacity of the dots.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

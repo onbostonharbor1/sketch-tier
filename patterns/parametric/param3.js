@@ -1,3 +1,13 @@
+/* patterns/parametric/param3.js
+
+   Parametric curve, example 3, from the family param3 to param7: x = 150 (cos(a t) - cos(b
+   t)^j) and y = 150 (sin(c t) - sin(d t)^k), with a = 80, b = 1, c = 80, d = 1, j = 3 and k =
+   3. These examples differ only in those six numbers.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

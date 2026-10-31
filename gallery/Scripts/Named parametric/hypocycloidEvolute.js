@@ -1,5 +1,7 @@
 /* ============================================================
    Hypocycloid — Evolute & Dual-Area Stitch Mode
+
+   Transparency: params.strokeAlpha is set as ctx.globalAlpha when the curve is stroked.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

@@ -1,3 +1,11 @@
+/* patterns/curve_stitch/twoParabolas.js
+
+   Two separate parabolas, each with its own drawParab call (10 steps). The first is blue and
+   uses three points, (5, 5), (5, 200) and (200, 200). The second, in green, uses four points,
+   one of them given twice, (150, 50), (150, 250), (150, 250) and (350, 250). Compare
+   twoMoreParabolas, which draws a pair in one call.
+*/
+
 import { Line, Point }     from "../../classes/classes.js";
 import { CurveStitch }     from "../../classes/curveStitchClass.js";
 import { drawParab } from "../../draw/drawRegular.js";

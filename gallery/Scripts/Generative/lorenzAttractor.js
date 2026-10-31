@@ -1,6 +1,9 @@
 /* controls/scripts/lorenzAttractorCentered.js
    ============================================================
    LORENZ ATTRACTOR (AUTO-CENTERING)
+
+   Transparency: params.alpha (0.5) is set as ctx.globalAlpha while the attractor is drawn and
+   reset to 1 afterwards.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

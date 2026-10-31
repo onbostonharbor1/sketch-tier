@@ -6,6 +6,9 @@
 
    A single equation capable of modeling everything from
    simple circles to complex flower and starfish geometries.
+
+   Transparency: an Opacity slider (0.1 to 1.0, default 0.9) is set as ctx.globalAlpha when the
+   curve is drawn.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

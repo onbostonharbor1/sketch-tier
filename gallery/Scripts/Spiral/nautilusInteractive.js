@@ -19,6 +19,8 @@
      - window.ctx exists (shared canvas 2D context)
      - buildParameterControls exists
      - target panel id = "tab-scripts"
+
+   Transparency: an alpha control (default 0.12) sets the line opacity.
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

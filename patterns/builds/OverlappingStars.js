@@ -1,3 +1,13 @@
+/* patterns/builds/OverlappingStars.js
+
+   Figure 84: Overlapping Stars. A fixed layout: 20 numbered points are computed from a few
+   spacing values (xDist 80, yDist 100, xLength 100, yLength 100) and placed on a grid of five
+   columns. Ten blue straight lines join pairs of them, the point numbers are printed with
+   printCircNum, and a series of parabolas (18 steps, line width 0.8) is stitched between chosen
+   groups of four points with drawParab. Every point is named in the code, which is the style
+   that composed figures are meant to replace.
+*/
+
 import { drawState } from "/draw/drawState.js";
 import { drawLine, printCircNum, _m }  from "/draw/drawUtilities.js";
 import { StringThing, Point } from "/classes/classes.js";

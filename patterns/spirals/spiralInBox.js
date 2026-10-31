@@ -1,3 +1,11 @@
+/* patterns/spirals/spiralInBox.js
+
+   Spiral in a box. drawSpiral on a 400 by 400 square with corners (100, 100), (500, 100), (500,
+   500) and (100, 500), blue, 30 steps. Each corner moves 20 units toward the next corner on the
+   first step, and the move shrinks to zero over the 30 steps, so each step draws a smaller,
+   turned square and the squares spiral inward. Compare spiralInBoxRotated.
+*/
+
 import { drawSpiral } from "/draw/drawSpirals.js";
 import { Point }      from "/classes/classes";
 

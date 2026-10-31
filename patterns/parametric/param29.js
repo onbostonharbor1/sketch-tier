@@ -1,3 +1,14 @@
+/* patterns/parametric/param29.js
+
+   Hyperbola curve stitch. Builds the two branches of a hyperbola, x = plus or minus a cosh t
+   and y = b sinh t (a 220, b 140, t from -1.7 to +1.7), centred at (500, 350), as 41 points per
+   branch. Each point on the left branch is joined by a green line to a point on the right
+   branch, counted backwards and shifted by `offset` (25), which produces the curved waist. The
+   tunable values are at the top of runPattern: a (wider flare), b (tighter waist), T (longer
+   arms), n (number of lines) and offset (0 is symmetric, 20 to 40 gives strong curvature). It
+   does not use the Parametric class.
+*/
+
 import { Point } from "/classes/classes.js";
 import { drawLine } from "/draw/drawUtilities.js";
 

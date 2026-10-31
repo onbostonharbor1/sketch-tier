@@ -1,3 +1,11 @@
+/* patterns/curve_stitch/twoPolygons.js
+
+   Test 26: two polygons and a star. Two green regular polygons (drawRegularPolygonTouch, radius
+   100, 40 steps, shortened by 15), the second turned 90 degrees, placed about (100, 110) so the
+   corners meet. A larger blue inverse star (radius 180, 40 steps, shortened by 15) is centred
+   at (325, 240), and its node numbers are printed with createPrintNodes.
+*/
+
 import { Point, StringThing } from "/classes/classes.js";
 import { drawRegularPolygonTouch, drawInverseStar } from "/draw/drawRegular.js";
 import { createPrintNodes } from "/draw/drawUtilities.js";

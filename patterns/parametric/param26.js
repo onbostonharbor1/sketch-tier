@@ -1,3 +1,12 @@
+/* patterns/parametric/param26.js
+
+   Parametric curve, example 26: x = cos t + 2 sin 2t and y = 2 cos t + sin t. A small
+   Lissajous-style curve with no fast wobble.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

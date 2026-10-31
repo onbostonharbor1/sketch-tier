@@ -1,3 +1,9 @@
+/* patterns/curve_stitch/innerStar.js
+
+   Inner star: a 6-node inner star (drawInnerStar) of radius 100 at (125, 125), blue, made with
+   a CurveStitch object. The smallest example of this drawing.
+*/
+
 import { Line, Point }     from "../../classes/classes.js";
 import { CurveStitch }     from "../../classes/curveStitchClass.js";
 import { drawInnerStar } from "../../draw/drawRegular.js";

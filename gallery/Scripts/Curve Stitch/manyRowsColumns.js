@@ -20,6 +20,9 @@
    Bottom row sequence: bot[0], band[N-2].left, bot[1], band[N-2].right, bot[2], ...
    Middle rows (N>2):   band[r-1].left, band[r].left, band[r-1].right ...
                         (uses two adjacent bands)
+
+   Transparency: a params.alpha value (1.0, fully opaque) is set as ctx.globalAlpha before
+   drawing. It is a parameter in the script, not a slider.
    ============================================================ */
 import { Point, StringThing } from "/classes/classes.js";
 import { drawManyParabs } from "/draw/drawUtilities.js";

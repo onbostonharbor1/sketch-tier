@@ -1,3 +1,10 @@
+/* patterns/stuff/sineWave.js
+
+   Figure 28a: a sine (cosine) wave. A blue line, 2 pixels wide, drawn from x = 30 to x = 700
+   with y = 300 + 30 cos(0.03 x), so the wave has amplitude 30 and about 3.3 cycles across the
+   width. It uses no string-art objects, only the canvas line commands directly.
+*/
+
 export function runPattern() {
 //	printTitle("Figure 28a");
     const amplitude = 30; // Height of the wave

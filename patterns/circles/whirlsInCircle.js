@@ -1,3 +1,12 @@
+/* patterns/circles/whirlsInCircle.js
+
+   Figure 209a: Whirls in a circle. A 200-node circle (radius 200, centred at (200, 227)) with
+   its nodes marked, closed with a blue outline. Then a second pass draws blue chords from every
+   node to the node `skip` places further round, going round twice. The skip starts at 16 and
+   grows by 2 after every 10 chords, so the chords turn into a spiral whirl instead of a regular
+   star.
+*/
+
 import { Ellipse, START_END, FULL, TAPER, START_TAPER, END_TAPER }
                        from "/classes/ellipseClass.js";
 import { Point }       from "/classes/classes.js";

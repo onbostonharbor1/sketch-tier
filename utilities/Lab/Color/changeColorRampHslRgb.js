@@ -23,6 +23,9 @@
    - #sharedCanvas exists
    - window.ctx exists (global getter)
    - #action and #text exist
+
+   Transparency: a single Alpha slider (default 1) is applied to both ends of the color ramp,
+   and the ramp is shown in RGB and HSL.
 =========================================================== */
 
 export const scriptInfo = {

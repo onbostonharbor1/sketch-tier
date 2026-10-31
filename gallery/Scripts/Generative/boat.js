@@ -14,6 +14,8 @@
    -----
    - This script assumes global ctx exists (Sketchpad getter).
    - No local ctx variable is declared (per project rule).
+
+   Transparency: an Alpha control (default 1.0, fully opaque) is set as the drawing alpha.
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

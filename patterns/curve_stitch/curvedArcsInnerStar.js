@@ -1,3 +1,15 @@
+/* patterns/curve_stitch/curvedArcsInnerStar.js
+
+   Curved arcs on an inner star. Six nodes around (300, 300), rotated 30 degrees, 20 steps,
+   blue, line width 0.4. Three kinds of string line are built for each corner: spokes from the
+   centre to a node, a curved arc (arcPoints with a bend of 0.7) from that node to the next, and
+   a spoke back to the centre. The arcs are drawn as the outline. Each corner's spoke, arc and
+   return spoke form one loop of points, and the loops are stitched to themselves in two passes:
+   first in blue, then a second pass in green with the loop turned so that the end arm is at the
+   front. The line-drawing is done with drawLine and the points come from createPrintNodes,
+   ptsOnLine and arcPoints.
+*/
+
 import { Line, Point, StringThing } from "/classes/classes.js";
 import { drawState }                from "/draw/drawState.js";
 import { arcPoints }                from "/draw/drawEllipse.js";

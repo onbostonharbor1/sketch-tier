@@ -1,3 +1,13 @@
+/* patterns/circles/gradientCircularParabola.js
+
+   Figure 85: Rounded, using a color gradient. First a radial gradient (white in the middle
+   through lighter and lighter tints of red, from calculateTintAndShade) is painted on a
+   rectangle of about 465 by 465, stretched vertically by 1.455. Over it go 6-node circular
+   parabolas (30 steps, centred at (350, 350), yScale 1.5, drawn on both sides) in a dark shade
+   of red, then an inverse star, and finally a 4-pixel black frame around the whole figure.
+   Commented-out lines show an earlier gradient attempt.
+*/
+
 import { calculateTintAndShade, colourNameToHex } from "/draw/color.js";
 import { Point, StringThing }    from "/classes/classes.js";
 import { drawCircularParabola, drawInverseStar } from "/draw/drawRegular.js";

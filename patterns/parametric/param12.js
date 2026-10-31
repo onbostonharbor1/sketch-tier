@@ -1,3 +1,12 @@
+/* patterns/parametric/param12.js
+
+   Parametric curve, example 12: x = 1.5 cos t + 0.5 sin 199t and y = 1.4 sin t + 1/3 cos 193t.
+   A circle with two different fast wobbles (frequencies 199 and 193) on its x and y.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

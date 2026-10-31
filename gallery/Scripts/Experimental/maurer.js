@@ -8,6 +8,10 @@
    Added:
    - alpha: Controls line transparency for color accumulation.
    - showDots: Renders points as dots to mark nail positions.
+
+   Transparency: a Transparency slider (0.01 to 1.0, default 0.3) controls the line alpha so
+   that overlapping lines build up color. It is applied as ctx.globalAlpha, and the script also
+   uses an hsl color with a slash alpha.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

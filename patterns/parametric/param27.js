@@ -1,3 +1,14 @@
+/* patterns/parametric/param27.js
+
+   Parametric curve, example 27: x = 10 sin(2.78t) times round(sqrt(cos(cos(8.2t)))) and y = 9
+   cos(2.78t) squared times sin(sin(8.2t)). An unusual curve built from nested trigonometric
+   functions. The rounded square root is either 0 or 1 (or not a number where the cosine is
+   negative), which switches the x part on and off along the curve.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

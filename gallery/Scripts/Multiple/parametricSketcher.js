@@ -1,3 +1,13 @@
+/* gallery/Scripts/Multiple/parametricSketcher.js
+
+   Parametric Sketchpad, a curve selector (Gallery script with sliders). One script, five curve
+   families chosen with the Curve Type control: ellipse stitch, rose curve, hypotrochoid,
+   epitrochoid and a Fourier wave. Each family has its own controls (rotation, resolution, node
+   count and so on) and an equation display. It was converted from a stand-alone demo to follow
+   the Draw registry's pattern (init, update, draw) and builds its controls with
+   buildParameterControls. It needs ctx and the #action area to exist.
+*/
+
 import { buildParameterControls } from "/ui/parameterControls.js";
 
 /* ============================================================

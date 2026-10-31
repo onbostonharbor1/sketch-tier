@@ -1,3 +1,12 @@
+/* patterns/curve_stitch/fourInverseStar.js
+
+   Four inverse stars, one picture per option. Four copies of drawInverseStar (CurveStitch
+   objects, radius 100), each changing one thing: the first is plain (blue, at (125, 125)); the
+   second is rotated 45 degrees (green); the third is rotated 45 degrees with 8 nodes (orange);
+   the fourth is stretched with xScale 1.5 and yScale 1.2 (red). A quick way to see what rotate,
+   numNodes and the scale factors do.
+*/
+
 import { Line, Point }     from "../../classes/classes.js";
 import { CurveStitch }     from "../../classes/curveStitchClass.js";
 import { drawInverseStar } from "../../draw/drawRegular.js";

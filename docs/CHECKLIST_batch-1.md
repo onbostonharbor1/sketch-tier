@@ -65,4 +65,14 @@ a change, Save. The same `.json` file is replaced and no new file appears. Failu
 Failure: Archive leaves the file in place or the entry in the manifest; Reset leaves a drawn layer from the unsaved state.
 Undo: `git revert` that commit (archived files stay in `archive/`; move them back by hand).
 
+**B12. Header notes on every script (commit after `be7a108`).** All 195 scripts in `patterns/`, `gallery/` and `utilities/` now
+start with a comment that says what they draw (86 got a new one; the others kept theirs). 36 of them also say how they use
+transparency (a line starting "Transparency:"). Only comments were added; the one other change is that
+`patterns/circles/cycloid.js` lost its first line `// cycloid.js`, which only repeated the file name. Check: in Patterns,
+Gallery and Utilities open a few items and use the caption menu v > Notes: the text shows. Skim any you know well, for
+example `patterns/builds/firstBuild.js`, `patterns/parametric/param29.js` and `gallery/Scripts/Generative/butterfly.js`, and
+tell me what is wrong; I wrote the notes from reading the code and could not check them against the pictures. Two notes flag
+things I noticed: `regularCorners.js` and `regularTouching.js` call each other's function, and `joiningPoints.js` looks
+unfinished (it passes numbers where other scripts pass points). Undo: `git revert` that commit.
+
 **B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.

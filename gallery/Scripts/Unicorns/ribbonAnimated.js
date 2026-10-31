@@ -22,6 +22,10 @@
    - ctx exists globally (provided by Sketchpad getter)
    - buildParameterControls exists at /ui/parameterControls.js
    - #action exists
+
+   Transparency: the stroke alpha is animated: alphaBase 0.22 plus a wave of amplitude alphaWave
+   0.20, with a separate edge stroke alpha of 0.12. Uses rgba() colors and ctx.globalAlpha. The
+   animation means a still picture of this script is blank.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

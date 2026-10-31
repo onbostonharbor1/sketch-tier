@@ -41,6 +41,9 @@
    - This script is NOT animated.
    - The drawing is redone from scratch on every parameter change.
    - Background is forced to white each redraw.
+
+   Transparency: each line is drawn with a computed rgba(r, g, b, a) color. With the Fade Edges
+   checkbox on (the default), alpha is reduced near the ends of the band.
    ============================================================ */
 
 

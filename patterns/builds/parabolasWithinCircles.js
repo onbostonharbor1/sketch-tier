@@ -1,3 +1,10 @@
+/* patterns/builds/parabolasWithinCircles.js
+
+   Figure 60: Parabolas within a circle. A blue inner star with 4 nodes (radius 250, 15 steps,
+   line width 0.5) centred at (300, 300), then green circular parabolas drawn over it with
+   drawCircularParabola.
+*/
+
 import { StringThing, Point } from "/classes/classes.js";
 import { drawCircle } from "/draw/drawUtilities.js";
 import { drawInnerStar, drawCircularParabola } from "/draw/drawRegular.js";

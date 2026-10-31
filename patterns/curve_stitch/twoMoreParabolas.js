@@ -1,3 +1,11 @@
+/* patterns/curve_stitch/twoMoreParabolas.js
+
+   Two parabolas in one call. A single drawManyParabs call (20 steps, blue) draws two parabolas
+   from lists of points: one through (50, 50), (50, 450) and (150, 232.5), and a second through
+   four points, (475, 110), (235, 40), (225, 230) and (300, 530). Compare twoParabolas, which
+   makes the same kind of pair with two separate drawParab calls.
+*/
+
 import { Line, Point }     from "../../classes/classes.js";
 import { CurveStitch }     from "../../classes/curveStitchClass.js";
 import { drawManyParabs }  from "../../draw/drawRegular.js";

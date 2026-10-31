@@ -1,6 +1,9 @@
 /* controls/scripts/superformulaAtlas.js
    ============================================================
    SUPERFORMULA ATLAS (INTEGRATED SELECT LOGIC)
+
+   Transparency: params.alpha (0.8) is declared but nothing in the script reads it, so it
+   currently has no effect.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

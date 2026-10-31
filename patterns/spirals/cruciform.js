@@ -1,3 +1,13 @@
+/* patterns/spirals/cruciform.js
+
+   Spiral in a cross. drawSpiral on a 12-corner cross-shaped outline (a plus sign made of
+   100-unit squares, from (200, 100) round to (200, 200)), blue, 30 steps, with each corner
+   moving 20 units toward the next corner on the first step (the distance shrinks to zero over
+   the 30 steps). drawSpiral draws the outline and then the shrinking polygon at each step,
+   which gives the spiral. The commented-out `interval: [25,18,21,24]` shows that the interval
+   can also be given per corner.
+*/
+
 import { drawSpiral } from "/draw/drawSpirals.js";
 import { Point }      from "/classes/classes";
 

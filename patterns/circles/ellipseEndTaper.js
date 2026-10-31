@@ -1,3 +1,9 @@
+/* patterns/circles/ellipseEndTaper.js
+
+   Ellipse with chords that taper at the end: an ellipse with semi-axes a 500 and b 250, 100
+   nodes, centred at (300, 150), chord length 30, END_TAPER, blue, drawn with drawInEllipse.
+*/
+
 import { Ellipse, START_END, FULL, TAPER, START_TAPER, END_TAPER }
                          from "../../classes/ellipseClass.js";
 import { drawInEllipse } from "../../draw/drawEllipse.js";

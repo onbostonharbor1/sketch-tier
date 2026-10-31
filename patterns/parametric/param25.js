@@ -1,3 +1,12 @@
+/* patterns/parametric/param25.js
+
+   Parametric curve, example 25: x = cos t + 1/3 (cos 123t + sin 250t) and y = sin t + 1/3 (sin
+   123t + cos 245t). The same curve as param10, with the same functions and settings.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

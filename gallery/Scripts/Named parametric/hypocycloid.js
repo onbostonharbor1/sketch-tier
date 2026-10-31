@@ -59,6 +59,8 @@
    - buildParameterControls exists at /ui/parameterControls.js
    - #action exists for control rendering
 
+   Transparency: a Stroke Alpha control (strokeAlpha) is set as ctx.globalAlpha when the curve
+   is stroked.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

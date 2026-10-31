@@ -1,3 +1,11 @@
+/* patterns/stuff/sineWavePoints.js
+
+   Test 28: a cosine wave made of dots. For x from 0 to 999 degrees a blue dot of radius 1 is
+   drawn at (x in radians times 40, 200 + 30 cos x), so the curve is about 17 radians (nearly
+   three cycles) long. At every 90 degrees (the peaks, zeros and troughs) the point is labelled
+   with printCircNum.
+*/
+
 import { Point }     from "/classes/classes.js";
 import { toRadians, drawCircle, printCircNum } from "/draw/drawUtilities.js";
 

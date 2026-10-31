@@ -1,3 +1,13 @@
+/* patterns/parametric/param21.js
+
+   Parametric curve, example 21: x = cos t + (1/1.4) cos 110t and y = sin t + (1/1.4) cos 112t.
+   A unit circle with a large (0.71) wobble of frequency 110 on x and 112 on y. param22 and
+   param23 change the y wobble.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

@@ -21,6 +21,9 @@
        scale formula → change 0.6 + 0.4*Math.sin(...) for
                   different pulsing amplitudes.
        Mapping multiplier (i*7) → drastically changes the folds.
+
+   Transparency: the stroke color is a text control called Stroke RGBA, default rgba(0, 0, 0,
+   0.2). You type the color string, including the alpha, yourself.
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

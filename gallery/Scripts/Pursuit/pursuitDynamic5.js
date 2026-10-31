@@ -19,6 +19,9 @@
    -----------------------
    - window.ctx exists
    - buildParameterControls() exists
+
+   Transparency: the lines are drawn in rgba(0, 0, 0, alpha) with an alpha control that sets the
+   stroke opacity (the trail strength).
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

@@ -1,3 +1,12 @@
+/* patterns/unicorn/drawInSquare.js
+
+   Drawing in a square. A blue square (4 nodes, radius 300, rotated 45 degrees, centred at (250,
+   250)). Each side is divided into 36 steps. The points along all four sides are joined into
+   one long list, and each point is joined to the point 18 places beyond one side's worth of
+   points further on, six sides' worth of times, which makes a woven pattern of lines across the
+   square. (The line color string " blue" has a leading space.)
+*/
+
 import { Point, StringThing, Line } from "/classes/classes.js";
 import { createNodes } from "/draw/createNodes.js";
 import { ptsOnLine, drawLine }

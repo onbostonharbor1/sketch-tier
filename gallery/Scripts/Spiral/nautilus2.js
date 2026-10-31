@@ -24,6 +24,9 @@
    NOTE
    ----
    This matches the “Pursuit Curves” scriptInfo pattern you pasted.
+
+   Transparency: a Rib Alpha control (0 to 1, default 0.22) sets the alpha of the ribs; the
+   helper toRGBA(color, alpha) turns a color into an rgba() string.
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

@@ -1,3 +1,11 @@
+/* patterns/curve_stitch/twistedBentArms.js
+
+   Twisted bent arm: one parabola (drawParab, 40 steps, green) through four fixed points, (500,
+   120), (150, 50), (175, 290) and (300, 540), with a line transform that bends each string line
+   at its middle by 20 degrees (lineTransform type bendAtMid). It shows what the transform does
+   to an ordinary parabola.
+*/
+
 import { Line, Point }     from "../../classes/classes.js";
 import { CurveStitch }     from "../../classes/curveStitchClass.js";
 import { drawParab }       from  "../../draw/drawRegular.js";

@@ -1,3 +1,13 @@
+/* patterns/parametric/param9.js
+
+   Parametric curve, example 9: x = cos(5.9t) + 0.25 cos(5.75t) + cos(65t) and y = sin(5.9t) +
+   0.25 sin(5.75t) + sin(65t). Three rotating arms, two of them close in speed (5.9 and 5.75),
+   which makes a slowly turning rosette, plus a fast one (65).
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

@@ -14,6 +14,8 @@
    ASSUMPTIONS (FAIL-FAST)
    -----------------------
    - window.ctx exists
+
+   Transparency: the lines use the fixed color rgba(0, 0, 0, 0.4); there is no alpha control.
    ============================================================ */
 
 

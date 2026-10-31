@@ -5,6 +5,9 @@
    An Iterated Function System (IFS) that creates a
    naturalistic fern. The Mutation slider alters the affine
    transformations to simulate different plant species.
+
+   Transparency: an Opacity slider (0.1 to 1.0, default 0.5) is set as ctx.globalAlpha. Many
+   small dots drawn at low opacity build up the density of the fern.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

@@ -13,6 +13,10 @@
    - Run under Gallery calling runPattern()
    - Use parameterControls.js
    - Match drawRegistry-style lifecycle and naming
+
+   Transparency: each intermediate polygon is filled with a low alpha. The Alpha Base and Alpha
+   Step controls set the first polygon's alpha and how much it changes from one polygon to the
+   next.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

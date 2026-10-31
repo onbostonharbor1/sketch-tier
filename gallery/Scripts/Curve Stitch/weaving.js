@@ -7,6 +7,10 @@
    Converted from standalone HTML demo:
    - Two rotated ellipses cross-weave + intra-ellipse stitch
    - Removed: DOM UI, DPR resize handling, Save PNG button
+
+   Transparency: the bundle opacity control (bundleOpacity) is set as ctx.globalAlpha when the
+   bundles are drawn, and the offset stitching sets its own alpha per stitch pass; globalAlpha
+   goes back to 1 afterwards.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

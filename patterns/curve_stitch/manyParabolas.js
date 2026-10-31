@@ -1,3 +1,13 @@
+/* patterns/curve_stitch/manyParabolas.js
+
+   Figure 23: Drawing many parabolas. A cornflower-blue regular polygon (radius 300, rotated 45
+   degrees, stretched 1.3 by 1.5, 30 steps) and a burlywood inverse star inside it, both centred
+   at (300, 350). Then eight corner points are placed round the outside of a 24 to 576 by 32 to
+   668 frame. Two sets of four parabolas are drawn with drawManyParabs, each through the centre:
+   light green between every other pair of corner points, and pale violet red between the pairs
+   in between.
+*/
+
 import { StringThing, Point } from "/classes/classes.js";
 import { drawInverseStar, drawRegularPolygon } from "/draw/drawRegular.js";
 import { drawManyParabs } from "/draw/drawUtilities.js";

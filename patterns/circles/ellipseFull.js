@@ -1,3 +1,12 @@
+/* patterns/circles/ellipseFull.js
+
+   Ellipse chords, full perimeter. An ellipse with semi-axes a 500 and b 250, 100 nodes, centred
+   at (300, 150), chord length 30, blue, withinCirc FULL (chords run all the way around with no
+   tapering), drawn with drawInEllipse. One of a set of ellipse scripts that differ only in
+   withinCirc: ellipseFull, ellipseStartEnd, ellipseTaper, ellipseStartTaper and
+   ellipseEndTaper.
+*/
+
 import { Ellipse, START_END, FULL, TAPER, START_TAPER, END_TAPER }
                          from "../../classes/ellipseClass.js";
 import { drawInEllipse } from "../../draw/drawEllipse.js";

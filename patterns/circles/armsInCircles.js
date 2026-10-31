@@ -1,3 +1,12 @@
+/* patterns/circles/armsInCircles.js
+
+   Figure 209: Arms in circles. Several layers of a 150-node circle (radius 200, centred at
+   (200, 227)), each drawn with drawInCircle with a different chord length (40, 21, 50 ...) and
+   color (blue, black, light green, red). Two arms of 21 points are built along a line from the
+   centre to half the radius for the first two layers. The stitching between the arms (drawLines
+   with stitcher) is commented out at the end.
+*/
+
 import { createNodes }         from "/draw/createNodes.js";
 import { Ellipse, START_END, FULL, TAPER, START_TAPER, END_TAPER }
                                from "/classes/ellipseClass.js";

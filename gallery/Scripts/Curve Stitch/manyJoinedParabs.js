@@ -6,6 +6,9 @@
    dragged configurations scale and rotate naturally around
    their own center of mass. Points are seeded once at init
    from fixed circle indices — never reset afterward.
+
+   Transparency: a params.alpha value (1.0, fully opaque) is set as ctx.globalAlpha before
+   drawing. It is a parameter in the script, not a slider.
    ============================================================ */
 import { Point, StringThing } from "/classes/classes.js";
 import { drawState } from "/draw/drawState.js";

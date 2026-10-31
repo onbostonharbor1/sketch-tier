@@ -16,6 +16,9 @@
      - window.ctx exists
      - buildParameterControls exists
      - Gallery scripts panel id = "tab-scripts"
+
+   Transparency: the Stitch alpha control (default 0.9) is set as ctx.globalAlpha when the
+   stitches are drawn.
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

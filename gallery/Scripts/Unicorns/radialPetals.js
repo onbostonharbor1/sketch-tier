@@ -22,6 +22,8 @@
    -----------------------
    - ctx exists globally (provided by Sketchpad getter)
    - #action exists
+
+   Transparency: a fixed fill of rgba(0, 0, 0, 0.12) is used for the petals (line 541).
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

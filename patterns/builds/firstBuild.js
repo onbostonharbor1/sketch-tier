@@ -1,3 +1,13 @@
+/* patterns/builds/firstBuild.js
+
+   First Build (Patterns > First Build). Two regular four-sided polygons centred at (320, 350),
+   radius 300, drawn with drawRegularPolygonTouch: one green, and one rotated 90 degrees with 15
+   taken off the ends. Inside them is a small goldenrod inner star (radius 130). For each side
+   of the outer polygon, its 40 steps are stitched to the matching arm of the inner star
+   (ptsOnLine, stitcher, drawLines), so four fans of string join the outside to the star. The
+   commented-out lines at the end draw registration marks for lining up printouts that are taped
+   together. Every point is named in the code; a composed figure would use welds instead.
+*/
 
 import { Point, StringThing, Line } from "/classes/classes.js";
 import { createNodes } from "/draw/createNodes.js";

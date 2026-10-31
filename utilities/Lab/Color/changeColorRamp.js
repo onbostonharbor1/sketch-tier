@@ -22,6 +22,9 @@
    - #sharedCanvas exists
    - window.ctx exists
    - #action and #text exist
+
+   Transparency: the color parser accepts rgb(...) and rgba(...) input; the result is built from
+   the colors it reads.
 =========================================================== */
 
 export function runPattern() {

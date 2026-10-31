@@ -18,6 +18,9 @@
    - Draws BOTH:
        * pursuit curves (trails)
        * current polygon overlay
+
+   Transparency: each animation frame is partly covered with rgba(255, 255, 255, alpha), where
+   alpha is the fade strength, so earlier frames fade into white and leave a trail.
 ============================================================ */
 
 import { printTitle } from "/draw/drawUtilities.js";

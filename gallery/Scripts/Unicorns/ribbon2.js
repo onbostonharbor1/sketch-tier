@@ -20,6 +20,8 @@
    -----------------------
    - ctx exists globally (provided by Sketchpad getter)
    - #action exists
+
+   Transparency: an Alpha control (default 0.3) sets the stroke opacity.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

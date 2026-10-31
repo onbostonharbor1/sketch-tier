@@ -4,6 +4,9 @@
      - jitter
      - curvatureBias
      - targetMode (next, random, opposite)
+
+   Transparency: the trail uses rgba(0, 0, 255, trailAlpha), with a Trail Alpha slider (0.01 to
+   1, default 0.6).
 ============================================================ */
 
 import { printTitle } from "/draw/drawUtilities.js";

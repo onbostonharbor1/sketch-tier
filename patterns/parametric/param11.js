@@ -1,3 +1,11 @@
+/* patterns/parametric/param11.js
+
+   Parametric curve, example 11. A circle of radius 1.4 with one fast wobble of frequency 201
+   added: x = 1.4 cos t + 1/3 sin 201t and y = 1.4 sin t + 1/3 cos 201t, over 0 to 2 pi. The
+   number of points is chosen automatically from maxFreq 201 with 30 samples per cycle. Drawn
+   with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

@@ -1,3 +1,15 @@
+/* patterns/figures/complicatedParabolas.js
+
+   Figure 82: Complicated parabolas using midpoints. A square of eight numbered points (radius
+   250, rotated 45 degrees) at (300, 300), and an inner, narrower one (radius 125, x scale 0.7)
+   whose point numbers are printed. Nine parabolas are built from those points and from
+   midpoints of pairs of them (the _m helper), and drawn in sandy brown with drawParab. A
+   radiating set of lines (Radiate and drawRadiate) is added from the centre to one of the
+   midpoints. The code lists the parabolas one by one with comments giving each one's number.
+   This script can throw an error when it is run after about a hundred other scripts in one
+   session, because some drawing state is not reset between runs.
+*/
+
     import { Point, StringThing, Line } from "/classes/classes.js";
     import { Radiate }                  from "/classes/radiate.js";
     import { createPrintNodes, ptsOnLine, stitcher, drawLine,

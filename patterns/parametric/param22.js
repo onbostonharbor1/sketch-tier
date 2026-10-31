@@ -1,3 +1,13 @@
+/* patterns/parametric/param22.js
+
+   Parametric curve, example 22: x = cos t + (1/1.4) cos 110t and y = sin t + (1/1.4) sin(112t)
+   to the 4th power. Same as param21 with the y wobble replaced by sin(112t) raised to the 4th
+   power.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 

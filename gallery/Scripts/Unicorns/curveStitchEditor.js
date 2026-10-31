@@ -36,6 +36,9 @@
    -----------------------
    - ctx exists globally (provided by Sketchpad getter)
    - #action exists
+
+   Transparency: a fixed fill of rgba(0, 0, 0, 0.25) is used for the editor's highlights (line
+   378); the stitch lines are not translucent.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

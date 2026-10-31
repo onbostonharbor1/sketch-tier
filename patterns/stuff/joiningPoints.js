@@ -1,3 +1,12 @@
+/* patterns/stuff/joiningPoints.js
+
+   Joining points, an experiment that looks unfinished. Four corner points (50, 100), (50, 600),
+   (650, 200) and (550, 500) are put in drawState.pts and numbered, and a red outline is meant
+   to join them (4 pixels wide). Four parabolas (25 steps, blue) are then requested with
+   drawManyParabs. The calls pass point numbers (0, 1, 2, 3) where the other scripts pass Point
+   objects, so check that it draws before relying on it.
+*/
+
 import { Point, StringThing }     from "/classes/classes.js";
 import { drawState }              from "/draw/drawState.js";
 import { drawLine, drawManyParabs, printCircNum }

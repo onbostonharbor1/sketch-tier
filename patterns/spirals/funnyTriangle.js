@@ -1,3 +1,11 @@
+/* patterns/spirals/funnyTriangle.js
+
+   Spiral in an odd four-cornered shape. drawSpiral on the outline (300, 100), (500, 450), (300,
+   250), (100, 450), which is an arrowhead with a notch in its base, blue, 30 steps. Each corner
+   moves 20 units toward the next corner on the first step, and the move shrinks to zero over
+   the 30 steps. The outline and the shrinking shape at each step are drawn.
+*/
+
 import { drawSpiral } from "/draw/drawSpirals.js";
 import { Point }      from "/classes/classes";
 

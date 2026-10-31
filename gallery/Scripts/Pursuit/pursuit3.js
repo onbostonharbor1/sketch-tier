@@ -7,6 +7,8 @@
    Converted from standalone HTML demo:
    - N points pursue the next point, leaving a trail.
 
+   Transparency: the trail uses rgba(0, 0, 255, trailAlpha), with a Trail Alpha slider (0.01 to
+   1, default 0.6).
    ============================================================ */
 /**
  * John Sharp’s pursuit curves with a triangle.

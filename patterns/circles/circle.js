@@ -1,3 +1,9 @@
+/* patterns/circles/circle.js
+
+   A circle of 100 nodes, radius 300, centred at (300, 150), drawn with drawInCircle as blue
+   chords of length 30 around the full circle (FULL).
+*/
+
 import { Ellipse, START_END, FULL, TAPER, START_TAPER, END_TAPER }
     from "../../classes/ellipseClass.js";
 import { drawInCircle } from "../../draw/drawEllipse.js";

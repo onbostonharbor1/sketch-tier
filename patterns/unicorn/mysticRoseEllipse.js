@@ -1,3 +1,9 @@
+/* patterns/unicorn/mysticRoseEllipse.js
+
+   Mystic rose on an ellipse: 20 nodes on an ellipse with semi-axes a 350 and b 250 centred at
+   (300, 300), blue, with every node joined to every other node. Drawn with drawMysticRose.
+*/
+
   import { Point, StringThing }     from '/classes/classes.js';
   import { drawMysticRose }         from '/draw/drawUnicorns.js';
 

@@ -24,6 +24,10 @@
    - ctx exists globally (provided by Sketchpad getter)
    - buildParameterControls exists at /ui/parameterControls.js
    - #action exists
+
+   Transparency: each stitch line gets its own alpha from a sine across the band, alpha = 0.5 (1
+   + sin(f pi)), where f runs from 0 to 1 along the band, so lines fade in and out at fixed
+   points. The alpha is built into each line's color; there is no alpha control.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

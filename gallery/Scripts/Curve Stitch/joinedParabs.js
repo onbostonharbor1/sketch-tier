@@ -15,6 +15,9 @@
    Type A  [ext[j],  band[j],   ext[j+1]]  — apex touches band row   (M-1 per slot)
    Type B  [band[j], ext[j+1],  band[j+1]] — apex touches ext row    (M-2 per slot)
    Outer   [ext[0],  band[0],   nextExt[0]] and right equivalent      (1 per side per full slot)
+
+   Transparency: a params.alpha value (1.0, fully opaque) is set as ctx.globalAlpha before
+   drawing. It is a parameter in the script, not a slider.
    ============================================================ */
 import { Point, StringThing } from "/classes/classes.js";
 import { drawManyParabs } from "/draw/drawUtilities.js";

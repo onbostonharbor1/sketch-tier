@@ -1,3 +1,12 @@
+/* patterns/figures/circleInSquare.js
+
+   Circle in square. A circle of 232 nodes (radius 150, rotated 90 degrees) centred at (275,
+   300) sits inside a square of 4 nodes (radius 300, rotated 45 degrees). Each side of the
+   square is divided into 57 steps and stitched to one quarter of the circle's nodes (ptsOnLine,
+   stitcher, drawLines), and the side itself is drawn in green. Finally every second circle node
+   is joined to a point at (200, 350) with a light green line.
+*/
+
 import { Point, StringThing, Line } from "/classes/classes.js";
 import { ptsOnLine, stitcher, drawLine, drawLines }
                                   from "/draw/drawUtilities.js";

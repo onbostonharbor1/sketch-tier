@@ -1,4 +1,11 @@
-// cycloid.js
+/* patterns/circles/cycloid.js
+
+   Cycloid. 240 nodes on a circle of radius 200 centred at (250, 250), blue, numCycloids 1,
+   drawn with drawCycloid. The xScale and yScale lines (commented out) would stretch it into an
+   ellipse. The Draw registry's Cycloid object defaults to numCycloids 2, which gives a
+   cardioid.
+*/
+
 import { Point, StringThing } from "/classes/classes.js";
 import { drawCycloid } from "/draw/drawUnicorns.js";
 

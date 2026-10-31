@@ -20,6 +20,10 @@
      - buildParameterControls exists
      - d3-delaunay is available as an ES module import
      - Gallery scripts panel id = "tab-scripts"
+
+   Transparency: params.alpha is copied to the drawing object and set as ctx.globalAlpha when
+   the cells are drawn. (This script also needs an internet connection, because it loads
+   d3-delaunay from a CDN.)
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

@@ -1,3 +1,13 @@
+/* patterns/figures/moreInCircles.js
+
+   Figure 246: More in circles. A blue circle of 200 nodes (radius 200, centred at (200, 250),
+   chord length 16). Its nodes are split into a right half and a left half, and a line of nodes
+   across the middle is stitched to each half (stitcher and drawLines) in five colors, #cb8383,
+   #6b6bff, #6bb56b, #ff6b6b and #cccc00. The start and end of the line shift a little with each
+   color (4 at the top, 2 at the bottom). Then the same construction is repeated with the circle
+   turned to 271 degrees.
+*/
+
 import { Ellipse } from "/classes/ellipseClass.js";
 import { Point, Line } from "/classes/classes.js";
 import { drawCircle, drawLines,ptsOnLine,stitcher } from "/draw/drawUtilities.js";

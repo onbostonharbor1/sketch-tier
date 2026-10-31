@@ -1,3 +1,12 @@
+/* patterns/fundamental/radiateInBlues.js
+
+   Figure 255d: Radiate in blues. Two curved rows of points are built with arcCurvature, one of
+   8 points between (100, 100) and (500, 100) with curvature 3, and one of 17 points between
+   (25, 500) and (575, 500) with curvature -2.8. Each point of the top row is joined to a window
+   of 10 points of the bottom row, and the window moves along by one for each top point. The
+   lines get their colors from a list of nine blues that goes from dark to light and back
+   (#0000a3 through #b8b8ff), and the bottom row is outlined.
+*/
 
 import { Point } from "/classes/classes.js";
 import { arcCurvature } from "/draw/drawEllipse.js";

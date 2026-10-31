@@ -1,3 +1,9 @@
+/* patterns/curve_stitch/regularPolygon.js
+
+   Regular polygon: a 4-node regular polygon (radius 100, centred at (125, 125), blue) drawn
+   with drawRegularPolygon from a CurveStitch object. The smallest example of this drawing.
+*/
+
 import { Line, Point }     from "../../classes/classes.js";
 import { CurveStitch }     from "../../classes/curveStitchClass.js";
 import { drawRegularPolygon } from "../../draw/drawRegular.js";

@@ -20,6 +20,9 @@
    -----------------------
    - global ctx exists
    - #action exists
+
+   Transparency: the guide lines use the fixed color rgba(0, 0, 0, 0.15) in params.guideColor;
+   the curves themselves are not translucent.
 ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

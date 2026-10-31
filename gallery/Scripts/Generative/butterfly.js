@@ -1,3 +1,17 @@
+/* gallery/Scripts/Generative/butterfly.js
+
+   Silk Interference (Gallery script with sliders). Draws `lines` closed curves (180 by
+   default). Each curve is a circle of radius baseRadius (180) bent by two waves: a 2-lobe sine
+   of the given amplitude (120) and a 5-lobe cosine at half that amplitude. The phase of both
+   waves moves a little from one curve to the next (shiftRate), and each curve is also turned
+   slightly more than the one before. The thin black lines are translucent, so they build up
+   density where they overlap, which gives the silky shading.
+
+   Transparency: the stroke is the fixed string rgba(0, 0, 0, 0.15) in params.strokeStyle; there
+   is no alpha slider. Sliders: line density, resolution, amplitude, base radius, shift rate,
+   line width.
+*/
+
 import { buildParameterControls } from "/ui/parameterControls.js";
 
 /* ============================================================

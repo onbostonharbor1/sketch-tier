@@ -5,6 +5,9 @@
    Finds isolines at specific vibration intensities.
    Level 0 = The standard nodal line.
    Level +/- X = The "echo" lines for stitching boundaries.
+
+   Transparency: an Opacity slider (0.1 to 1.0, default 0.8) is set as ctx.globalAlpha when the
+   curve is drawn.
    ============================================================ */
 
 import { Point } from "/classes/classes.js";

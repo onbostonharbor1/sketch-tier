@@ -1,3 +1,10 @@
+/* patterns/fundamental/radiate.js
+
+   Radiate, the basic example. One Radiate object with a radial point at (300, 20), a start
+   point (20, 150), an end point (500, 450) and 20 steps, drawn with drawRadiate: lines fan out
+   from the radial point to evenly spaced points along the line from start to end.
+*/
+
   import { Point }          from '/classes/classes.js';
   import { Radiate }        from '/classes/radiate.js';
   import { drawRadiate }    from '/draw/drawUnicorns.js';

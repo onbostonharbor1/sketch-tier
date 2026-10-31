@@ -12,6 +12,9 @@
    -----
    - Use ONLY the existing global ctx (do not declare or pass ctx)
    - No animation
+
+   Transparency: the stitch bands are drawn with the fixed color rgba(55, 60, 70, alpha), where
+   the alpha is passed to stitchBand and varies per band.
    ============================================================ */
 
 import { buildParameterControls } from "/ui/parameterControls.js";

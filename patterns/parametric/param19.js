@@ -1,3 +1,13 @@
+/* patterns/parametric/param19.js
+
+   Parametric curve, example 19: x = 1.5 cos t + 0.5 sin 196t and y = 1.5 sin t + 0.5 cos 201t.
+   The same curve as param17. It also declares unused variables (a, b, c, d, j, k) left over
+   from the param3 to param7 family.
+
+   Parametric curve, over t from 0 to 2 pi, with the number of points chosen automatically from
+   maxFreq 201 at 30 samples per cycle. Drawn with drawParametric from a Parametric object.
+*/
+
 import { drawParametric }    from "/draw/drawParametrics.js";
 import { Parametric }                    from "/classes/parametric.js";
 
