@@ -54,8 +54,9 @@ Failure: an alert box with a message, a console error, a layer drawn differently
 **B6. Figures in Home (`761756f`).** Utilities > Commands > Rebuild & Validate (this adds figures that have a status to
 Home). Edit Manifest on your figure (Figures has no Edit Manifest item yet; use Utilities or edit
 `figures/<category>/manifest.json`: `status` to `working`). Rebuild again. Home shows the figure under that status: click
-it: the Figures tab opens it. Known: Home does not re-read its list when you come back to the tab (the manifest bug you
-described); restart the page or Rebuild to see new entries. Undo: `git revert 761756f`.
+it: the Figures tab opens it. Note: Home keeps its list in memory and redraws it after Rebuild & Validate or an Edit Manifest,
+not every time you come back to the tab (I could not reproduce a Home reload bug in the sandbox; if you see one, tell me
+exactly what you did and what you saw). Undo: `git revert 761756f`.
 
 **B7. Title edit does not create a second file.** After B6, change the figure's title in its manifest, open the figure, make
 a change, Save. The same `.json` file is replaced and no new file appears. Failure: a new file under the new title.
