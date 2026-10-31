@@ -54,7 +54,7 @@ a change, Save. The same `.json` file is replaced and no new file appears. Failu
 **B8. The picture comparison (`npm run pixels:compare`) will show one intended difference:** the Utilities Commands panel
 (the timings controls). Everything else should be identical to a run from `sweep-1`.
 
-**B10. Copy, Archive, Reset (next commit after `faf235e`). Needs the Node service for Archive.**
+**B10. Copy, Archive, Reset (`be7a108`). Needs the Node service for Archive.**
 1. Open a saved figure (B5). Caption menu v > Copy: a new subtab "<name> copy" opens with the same layers; it is unsaved
    (closing it asks). Changing the copy does not change the original.
 2. In the original, make a change: menu > Reset is now enabled. Reset asks, then the change is gone and the figure is as
@@ -63,9 +63,13 @@ a change, Save. The same `.json` file is replaced and no new file appears. Failu
    file is gone, the manifest entry is gone, an "Archived" notice shows. The figure stays open and counts as unsaved
    (closing asks; Save As puts it back).
 Failure: Archive leaves the file in place or the entry in the manifest; Reset leaves a drawn layer from the unsaved state.
-Undo: `git revert` that commit (archived files stay in `archive/`; move them back by hand).
+Undo: `git revert be7a108` (archived files stay in `archive/`; move them back by hand).
 
-**B12. Header notes on every script (commit after `be7a108`).** All 195 scripts in `patterns/`, `gallery/` and `utilities/` now
+**B11. Deleted files (`faf235e`).** `draw/zzArchives.js` and `draw/zzFindBezierPoint.js` are gone (your instruction), and
+their lint-ignore line. `shorten.js` was not in the repo, so nothing was deleted for it; if you still have one on your PC,
+delete it there. Check: the app starts and `npm run lint:globals` shows 0 errors. Undo: `git revert faf235e`.
+
+**B12. Header notes on every script (`4f50256`).** All 195 scripts in `patterns/`, `gallery/` and `utilities/` now
 start with a comment that says what they draw (86 got a new one; the others kept theirs). 36 of them also say how they use
 transparency (a line starting "Transparency:"). Only comments were added; the one other change is that
 `patterns/circles/cycloid.js` lost its first line `// cycloid.js`, which only repeated the file name. Check: in Patterns,
@@ -73,9 +77,9 @@ Gallery and Utilities open a few items and use the caption menu v > Notes: the t
 example `patterns/builds/firstBuild.js`, `patterns/parametric/param29.js` and `gallery/Scripts/Generative/butterfly.js`, and
 tell me what is wrong; I wrote the notes from reading the code and could not check them against the pictures. Two notes flag
 things I noticed: `regularCorners.js` and `regularTouching.js` call each other's function, and `joiningPoints.js` looks
-unfinished (it passes numbers where other scripts pass points). Undo: `git revert` that commit.
+unfinished (it passes numbers where other scripts pass points). Undo: `git revert 4f50256`.
 
-**B13. Thumbnails (commits `25c7d84` and the next).** Start the app with the Node service running.
+**B13. Thumbnails (commits `25c7d84` and `2bbb663`).** Start the app with the Node service running.
 1. Utilities > Tools > Thumbnails > **Regenerate thumbnails**: choose Draw, press Regenerate, OK. It reports "Made 14 pictures".
    Check `drawRegistry/<key>/images/thumb_<key>.png` now exist. Then choose Patterns (about 5 seconds), Gallery scripts (about
    5 seconds; it lists animated scripts as skipped and `arcsAndInner` and `voronoi` as failed) and Gallery images (about a
