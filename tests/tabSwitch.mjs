@@ -1371,6 +1371,23 @@ const moved = await page.evaluate(async () => {
 if (Math.abs(moved.x - (handle.x + 30 / handle.sx)) > 3 || Math.abs(moved.y - (handle.y + 20 / handle.sy)) > 3) {
   problems.push("[draw handle drag] handle 0 went from " + JSON.stringify({ x: handle.x, y: handle.y }) + " to " + JSON.stringify(moved) + " (expected about +30,+20)");
 }
+/* Cycloid radius slider (work-list item 3): a bigger radius draws more pixels. */
+stage = "cycloid radius";
+const inkAt = async (v) => page.evaluate((v) => {
+  const e = [...document.querySelectorAll("#action input[type=range]")].find(r => r.min === "80" && r.max === "350");
+  e.value = v;
+  e.dispatchEvent(new Event("input", { bubbles: true }));
+  e.dispatchEvent(new Event("change", { bubbles: true }));
+  return new Promise(res => setTimeout(() => {
+    const c = document.getElementById("sharedCanvas");
+    const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+    let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++;
+    res(n);
+  }, 500));
+}, v);
+const inkSmall = await inkAt("150");
+const inkBig   = await inkAt("350");
+if (!(inkBig > inkSmall * 1.5)) problems.push(`[cycloid radius] radius 150 drew ${inkSmall} pixels, 350 drew ${inkBig}`);
 await page.click("#patterns-tab");              // leaving the tab disarms: the interaction layer is hidden
 await page.waitForTimeout(900);
 const layerShown = await page.evaluate(() => { const l = document.getElementById("interaction-layer"); return l && l.style.display !== "none"; });
@@ -1404,4 +1421,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, no errors");
