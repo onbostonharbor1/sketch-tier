@@ -49,6 +49,8 @@ revert if it fails: `git revert <commit>`.
 | `bd8c915` | `npm run pixels:save` and `pixels:compare` (25 pictures before and after a change; adds the `pngjs` dev dependency) |
 | `b73d47c` | `test:node` grows to 60 checks: writers, `editManifestEntry`, log requests, dispatcher table; Node follow-ups: atomic writes, shared manifest-folder list and helpers, quiet switch, comments fixed |
 | `1e2562d` | Offcanvas aliases removed; help pages match the helpers that moved out of `uiUtilities.js` |
+| `3b1ff9c` | `test:node` runs the service's manifest rebuild on its scratch copy (`SKETCHPAD_ROOT`), so a test run no longer touches your repo; found by testing in a fresh clone |
+| `ab8e17e` | `npm run time:startup`; the reanalysis report `docs/CHECK_REPORT_2026-10-31.md`; documents note where the Project-only files live |
 
 ## 1. Gates to run first (all on Windows)
 
@@ -194,7 +196,16 @@ timing on your machine). `npm install` adds `pngjs` first. Then delete the `pixe
    `showCommandsOffcanvas` and `showOffcanvasPanel` are gone). Undo: `git revert 1e2562d`.
 5. Help > Overview > Subsystems > "uiUtilities.js and the helpers that came out of it": the page reads correctly.
 
-**T20. `git status` after a run** shows no unexpected changed manifests. (If `home/manifest.json` or a category manifest
+**T20. Start-up times (commit `ab8e17e`).** With the app running: `npm run time:startup`. It prints the median of 5 runs
+(page load, ready, each tab's first and second visit, opening Draw > Cycloid and Patterns > First Build). For comparison, my
+numbers on the Linux sandbox are in `docs/CHECK_REPORT_2026-10-31.md`: about 1.2 s to ready now against 1.7 s before the
+sweep. Your machine will differ; send me yours if any line is much slower than the second-visit times (about 60 to 80 ms).
+
+**T21. Fresh-clone check (commit `3b1ff9c`).** In an empty folder: `git clone <repo> check`, `cd check`, `git checkout claude/sweep-1`,
+`npm ci`, `npm run test:node`. It should print `60 passed, 0 failed` the first time, and `git status` afterwards should show
+nothing changed.
+
+**T22. `git status` after a run** shows no unexpected changed manifests. (If `home/manifest.json` or a category manifest
 changed, that is the start-up rebuild, as before. `package-lock.json` should not change by itself.)
 
 ## 3. Things you can check from the pictures
@@ -221,6 +232,9 @@ changed, that is the start-up rebuild, as before. `package-lock.json` should not
 - `parametrics` needs `#sharedCanvas` in the page, so it fails if run before any canvas tab has opened.
 - After the Help button in a Commands panel, both the current tab and Home show as highlighted while the Help browser is
   open (seen before and after this sweep).
+- `voronoi.js` (Gallery > Scripts > Generative) loads `d3-delaunay` from the internet, so it needs a connection even though T14 says the app works offline.
+- `window.interactor` and `window.CanvasManager` are tested in a few places but nothing ever sets them (before and after the sweep); the tests are harmless.
+- On a fresh checkout `utilities/logfiles` does not exist until the first manifest rebuild; Show Logs before then says the folder is missing.
 - `#categories`, `#drawControls` and the popup menus are created by code, not written in `index.html`, because the region
   they sit in is emptied on each tab change. `index.html` says so.
 
