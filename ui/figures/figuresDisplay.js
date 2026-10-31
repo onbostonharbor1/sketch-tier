@@ -9,8 +9,8 @@
    Architectural rules:
      * Does NOT build or activate subtabs. That is figuresNav.js.
      * Does NOT build the caption bar. That is figuresCommands.js.
-     * Does NOT build figures. Saved figures open in Phase 10; until then
-       a category item only reports that it cannot be opened yet.
+     * Does NOT build figures. Clicking a saved figure calls
+       openSavedFigure() in figuresSave.js.
      * Reads and writes figuresState.js via getters and setters.
 
    Data formats:
@@ -22,17 +22,17 @@
      /figures/<category>/manifest.json      the figures in one category,
                                             each { title, filename, ... }
      Both are kept by the local Node service (port 5174);
-     node/createFigureService.mjs adds a category to the list. Until Save As
-     exists (Phase 10) there are no saved figures, so the Categories
+     node/figureFiles.mjs (Save and Save As) adds a category to the list
+     and a figure to its manifest. With no saved figures the Categories
      subtab shows "No saved figures yet".
 
    Exports:
      loadFiguresCategories()
-     loadFigure(filename, categoryName, title)
    ============================================================ */
 
 import { renderCategories }    from "/ui/categories.js";
 import { setFiguresRegistry }  from "./figuresState.js";
+import { openSavedFigure }     from "./figuresSave.js";
 
 
 /* ============================================================
@@ -72,13 +72,14 @@ export async function loadFiguresCategories() {
 
         for (const fig of manifest) {
           const { title, filename } = fig;       // copies fig.title and fig.filename into two names
+          const fileName = fig.path || (filename + ".json");
           items.push({
             name:        title,
             hasSubitems: false,
             // An arrow function: a small function written in place. It
             // remembers filename, categoryName and title from this
             // loop pass, so each item opens its own figure.
-            onClick:     () => loadFigure(filename, categoryName, title)
+            onClick:     () => openSavedFigure(categoryName, fileName, title)
           });
         }
 
@@ -104,20 +105,4 @@ export async function loadFiguresCategories() {
 
 } // end loadFiguresCategories
 
-
-/* ============================================================
-   loadFigure(filename, categoryName, title)
-   ------------------------------------------------------------
-   Opening a saved figure arrives with Save As and reload
-   (Phase 10). Until then there is nothing to open.
-
-   When it is built, this will read the saved figure (plain data,
-   see figureModel.js), open a new figure subtab for it, and rebuild
-   one live instance per layer from each layer's id and params, the
-   same way insertLayer() in figureLayers.js builds one today.
-   ============================================================ */
-export async function loadFigure(filename, categoryName, title) {
-
-  console.warn(`loadFigure: saved figures cannot be opened yet (${categoryName}/${filename})`);
-
-} // end loadFigure
+// end figuresDisplay.js

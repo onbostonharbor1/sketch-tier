@@ -1377,6 +1377,150 @@ if (delRes.afterC.order.includes(2) || delRes.afterC.active === 2) problems.push
 if (delRes.afterNext.welds.length !== 0 || delRes.layers !== 3) problems.push("[delete layer] second delete: " + JSON.stringify(delRes.afterNext));
 if (delRes.afterNext.rows !== 1) problems.push("[delete layer] strip should show one row, shows " + delRes.afterNext.rows);
 
+/* ---- Phase 10: Save As, close, reopen. The service and the figure files are stubbed with page.route,
+   so nothing is written to the repo. ---- */
+stage = "save and reopen";
+await page.click("#figures-tab");
+await page.waitForTimeout(600);
+await newFigure();
+await insertExact("drawLine", { pt1: { x: 100, y: 100 }, pt2: { x: 300, y: 300 } });
+await insertExact("drawLine", { pt1: { x: 300, y: 300 }, pt2: { x: 500, y: 100 } });
+await page.waitForTimeout(300);
+await page.evaluate(() => {
+  const f = uiState.figures.tabs[uiState.figures.activeSubtab].figure;
+  f.points.push({ n: 1, kind: "free", layer: 0, x: 300, y: 300, dx: 0, dy: 0, ox: 300, oy: 300 },
+                { n: 2, kind: "free", layer: 1, x: 300, y: 300, dx: 0, dy: 0, ox: 300, oy: 300 });
+  f.nextPoint = 3;
+  f.welds = [{ members: [{ layer: 0, n: 1 }, { layer: 1, n: 2 }] }];
+});
+
+let sentSave = null;
+let storedFigure = null;
+await page.route("**/dispatch", async (route) => {
+  sentSave = JSON.parse(route.request().postData());
+  storedFigure = sentSave.payload.figure;
+  await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ request: "saveFigure", status: "ok" }) });
+});
+await page.route("**/figures/directoryRegistry.json", (route) => route.fulfill({ contentType: "application/json", body: '["Boxes"]' }));
+await page.route("**/figures/Boxes/manifest.json", (route) => route.fulfill({ contentType: "application/json",
+  body: '[{"filename":"Demo","path":"Demo.json","title":"Demo","status":"new"}]' }));
+await page.route("**/figures/Boxes/Demo.json", (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(storedFigure) }));
+
+const dialogs = [];                       // what the page asked, in order
+let answers = [];                         // what to answer; "no" means Cancel / dismiss
+const onDialog = async (d) => {
+  dialogs.push(d.type() + ": " + d.message().split("\n")[0]);
+  const a = answers.shift();
+  if (a === "no" || a === undefined) await d.dismiss(); else await d.accept(a);
+};
+page.on("dialog", onDialog);
+
+const unsavedBefore = await page.evaluate(async () => {
+  const { hasUnsavedChanges } = await import("/ui/figures/figureModel.js");
+  return hasUnsavedChanges(uiState.figures.tabs[uiState.figures.activeSubtab]);
+});
+if (!unsavedBefore) problems.push("[save] a new figure with layers should count as unsaved");
+
+answers = ["Boxes", "Demo"];
+const savedOk = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  return await m.saveFigureAs(uiState.figures.activeSubtab);
+});
+await page.waitForTimeout(400);
+if (!savedOk) problems.push("[save] saveFigureAs returned false; dialogs: " + dialogs.join(" | "));
+if (!sentSave || sentSave.requestName !== "saveFigure" || sentSave.payload.category !== "Boxes" || sentSave.payload.name !== "Demo"
+    || sentSave.payload.overwrite !== false || sentSave.payload.figure.layers.length !== 2 || sentSave.payload.figure.format !== 1) {
+  problems.push("[save] request was " + JSON.stringify(sentSave).slice(0, 300));
+}
+const afterSave = await page.evaluate(async () => {
+  const { hasUnsavedChanges } = await import("/ui/figures/figureModel.js");
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  return { name: t.figure.name, category: t.figure.category, unsaved: hasUnsavedChanges(t),
+           subtab: document.querySelector("#subtabs .active")?.textContent || "" };
+});
+if (afterSave.name !== "Demo" || afterSave.category !== "Boxes" || afterSave.unsaved || !/Demo/.test(afterSave.subtab)) {
+  problems.push("[save] state after save: " + JSON.stringify(afterSave));
+}
+
+// Closing a saved figure does not ask.
+dialogs.length = 0;
+const closedSaved = await page.evaluate(async () => {
+  const nav = await import("/ui/figures/figuresNav.js");
+  const id = uiState.figures.activeSubtab;
+  nav.closeTab(id);
+  return !uiState.figures.tabs[id];
+});
+if (!closedSaved || dialogs.length) problems.push("[close saved] closed=" + closedSaved + " dialogs=" + dialogs.join(" | "));
+
+// Reopen it from the stubbed files.
+const reopened = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  const id = await m.openSavedFigure("Boxes", "Demo.json", "Demo");
+  await new Promise((r) => setTimeout(r, 400));
+  const t = uiState.figures.tabs[id];
+  const c = document.getElementById("sharedCanvas");
+  const d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+  let ink = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) ink++;
+  return { id, active: uiState.figures.activeSubtab === id, layers: t.figure.layers.length, instances: t.instances.length,
+           sameParams: t.instances[0].params === t.figure.layers[0].params, welds: JSON.stringify(t.figure.welds),
+           points: t.figure.points.length, nextPoint: t.figure.nextPoint, ink };
+});
+if (!reopened.id || !reopened.active || reopened.layers !== 2 || reopened.instances !== 2 || !reopened.sameParams
+    || reopened.points !== 2 || reopened.nextPoint !== 3 || reopened.ink < 100
+    || reopened.welds !== JSON.stringify([{ members: [{ layer: 0, n: 1 }, { layer: 1, n: 2 }] }])) {
+  problems.push("[reopen] " + JSON.stringify(reopened));
+}
+
+// Opening it again just shows the open one.
+const again = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  const before = Object.keys(uiState.figures.tabs).length;
+  await m.openSavedFigure("Boxes", "Demo.json", "Demo");
+  return Object.keys(uiState.figures.tabs).length === before;
+});
+if (!again) problems.push("[reopen] opening an open figure made a second tab");
+
+// A change makes it unsaved; closing then asks, and Cancel keeps it.
+await insertExact("drawLine", { pt1: { x: 50, y: 50 }, pt2: { x: 60, y: 90 } });
+dialogs.length = 0; answers = ["no"];
+const keptOpen = await page.evaluate(async () => {
+  const nav = await import("/ui/figures/figuresNav.js");
+  const id = uiState.figures.activeSubtab;
+  nav.closeTab(id);
+  return !!uiState.figures.tabs[id];
+});
+if (!keptOpen || dialogs.length !== 1 || !/not saved/.test(dialogs[0])) problems.push("[close unsaved] cancel: kept=" + keptOpen + " dialogs=" + dialogs.join(" | "));
+answers = ["yes"];
+const closedAnyway = await page.evaluate(async () => {
+  const nav = await import("/ui/figures/figuresNav.js");
+  const id = uiState.figures.activeSubtab;
+  nav.closeTab(id);
+  return !uiState.figures.tabs[id];
+});
+if (!closedAnyway) problems.push("[close unsaved] OK did not close the figure");
+
+// A name already used: the page asks, and Cancel sends nothing more.
+await newFigure();
+await insertExact("drawLine", { pt1: { x: 10, y: 10 }, pt2: { x: 90, y: 90 } });
+await page.unroute("**/dispatch");
+let dispatches = 0;
+await page.route("**/dispatch", async (route) => {
+  dispatches++;
+  await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ request: "saveFigure", status: "exists" }) });
+});
+dialogs.length = 0; answers = ["Boxes", "Demo", "no"];
+const dupSaved = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figuresSave.js");
+  return await m.saveFigureAs(uiState.figures.activeSubtab);
+});
+if (dupSaved || dispatches !== 1 || !/already exists/.test(dialogs[2] || "")) {
+  problems.push("[save duplicate] saved=" + dupSaved + " dispatches=" + dispatches + " dialogs=" + dialogs.join(" | "));
+}
+page.off("dialog", onDialog);
+await page.unroute("**/dispatch");
+
 /* ---- Instrumentation: Record timings, then Show timings lists what was timed ---- */
 stage = "instrumentation";
 await page.click("#utilities-tab");
@@ -1489,4 +1633,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, instrumentation, no errors");

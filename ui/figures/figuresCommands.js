@@ -16,6 +16,8 @@
      Hit radius (N px)... how close a points-mode click must be
      Delete selected point   points mode, with a disc selected
      Break apart          Phase 7c, not in points mode
+     Delete layer         the active layer and its discs; asks first
+     Save, Save As...     Phase 10 (figuresSave.js)
      Show Script, Copy, Archive, Reset    grayed: not built yet, shown
                                           so the menu has its final shape
 
@@ -41,6 +43,7 @@ import { openHelpHomeOverlay }      from "/ui/help.js";
 import { uiState }                  from "/ui/uiState.js";
 import { redrawFigure, canBreakApart, breakApartLayer, deleteLayer } from "./figureLayers.js";
 import { deletePoint }              from "./figurePoints.js";
+import { saveFigureTab, saveFigureAs } from "./figuresSave.js";
 
 
 /* ============================================================
@@ -213,6 +216,17 @@ export async function getFiguresCaptionMenuItems(title) {
     }
   };
 
+  const saveItem = {
+    label:   "Save",
+    tooltip: "Saves the figure. The first time it asks for a category and a name.",
+    onClick: () => saveFigureTab(uiState.figures.activeSubtab)
+  };
+  const saveAsItem = {
+    label:   "Save As...",
+    tooltip: "Saves the figure under a category and name you choose.",
+    onClick: () => saveFigureAs(uiState.figures.activeSubtab)
+  };
+
   return [
     await makeHelpItem("figures", null),
     await makeNotesItem(null, title),
@@ -220,6 +234,8 @@ export async function getFiguresCaptionMenuItems(title) {
     deletePointItem,
     breakApartItem,
     deleteLayerItem,
+    saveItem,
+    saveAsItem,
     later("Show Script"),
     later("Copy"),
     later("Archive"),

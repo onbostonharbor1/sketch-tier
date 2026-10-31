@@ -38,7 +38,9 @@
                     renumbers anything.
      activeLayer -- index into layers, -1 when there are none. Only
                     the active layer can be edited.
-     welds       -- added by figureWelds.js on the first weld (absent
+     format      -- 1. The layout of the saved file (Phase 10).
+   templates   -- [] for now; reserved for templates and scaffolds.
+   welds       -- added by figureWelds.js on the first weld (absent
                     until then):
                       [ { members: [ { layer, n }, ... ] }, ... ]
                     Each entry ties together discs that must stay
@@ -46,6 +48,8 @@
 
    Exports:
      createEmptyFigure(name)
+     snapshotOfFigure(figure)
+     hasUnsavedChanges(tabState)
      nextUntitledName(tabs)
      nextFigureTabId(tabs)
    ============================================================ */
@@ -56,15 +60,36 @@
 // missing (figure.welds || []).
 export function createEmptyFigure(name) {
   return {
+    format:      1,     // the saved-file layout (Phase 10); raise it if the layout changes
     name,               // shorthand for  name: name
     category:    null,
     nextPoint:   1,
     points:      [],
     layers:      [],
     drawOrder:   [],   // layer indices, top of the stack first
-    activeLayer: -1
+    activeLayer: -1,
+    templates:   []    // reserved for templates and scaffolds (not built); saved empty
   };
 } // end createEmptyFigure
+
+
+// The figure as text, for telling whether it changed since it was last
+// saved or opened. activeLayer is left out: choosing a layer to look at
+// is not a change to the figure.
+export function snapshotOfFigure(figure) {
+  return JSON.stringify({ ...figure, activeLayer: 0 });
+} // end snapshotOfFigure
+
+
+// True when closing this figure subtab would lose work. tabState.savedSnapshot
+// is set when the figure is saved or opened; a figure never saved counts as
+// unsaved once it has a layer.
+export function hasUnsavedChanges(tabState) {
+  const figure = tabState.figure;
+  if (!figure) return false;
+  if (tabState.savedSnapshot === undefined) return figure.layers.length > 0;
+  return tabState.savedSnapshot !== snapshotOfFigure(figure);
+} // end hasUnsavedChanges
 
 
 // Smallest "Untitled N" not used by an open figure tab.

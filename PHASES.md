@@ -22,7 +22,7 @@ Do one phase at a time. After each, stop and wait for him to review, play with i
 | 8, next pass | A handle dropped on another handle welds (see "Phase 8, next pass") | Specified; six questions open for Barry |
 | 8b | Magic points: more candidate kinds (midpoints, tops of loops, cusps), needed as weld targets and for parametric objects | |
 | 9 | Print aids: scale bar; minimum nail-spacing check (needs nail size and highlight-vs-list answers from Barry) | |
-| 10 | Save and recovery (Save As, category and manifest creation, reload) | |
+| 10 | Save and recovery (Save As, category and manifest creation, reload) | Built on `claude/batch-1` (see "Phase 10 as built"); Home listing of figures not yet |
 | 11 | Figure follow-ups  | |
 | 12 | Thumbnails (the Insert list becomes icons with a larger preview on mouseover) | |
 | 13 | Sweep tool | |
@@ -638,3 +638,22 @@ group is picked back up.
 - Open: inserting the same template again while a hidden copy exists: show the hidden one or add a new layer.
   Other inserts add a new layer offset 20 px.
 
+
+
+## Phase 10 as built (2026-10-31, branch `claude/batch-1`)
+
+- A saved figure is `figures/<category>/<name>.json`, plain JSON of the figure data (`ui/figures/figureModel.js`), with
+  `format: 1` and an empty `templates` list reserved. Status lives in the category's `manifest.json`, not in the file
+  (Barry: that is where Edit Manifest and Home look). A new category also gets a line in `figures/directoryRegistry.json`,
+  an empty manifest and a `help/figures/<category>` folder.
+- Node: `saveFigure` in `node/figureFiles.mjs` (atomic write; refuses bad names; `status: "exists"` unless `overwrite`;
+  a replace keeps the manifest status). Reading needs no request: the browser fetches the file.
+- UI (`ui/figures/figuresSave.js`): caption menu **Save** (same place if saved or opened before, else asks) and **Save As...**
+  (browser prompts for category and name; a taken name asks before replacing). Clicking a figure in the Categories list opens it
+  in a new subtab (`openSavedFigure`; an already-open one is just shown); live objects are rebuilt per layer
+  (`rebuildInstances` in `figureLayers.js`).
+- Closing a figure subtab asks when it has changes since it was saved or opened, or was never saved and has layers
+  (`hasUnsavedChanges`; choosing a different active layer does not count as a change).
+- Saved and reopened: layers (including `visible`, color, transform, deleted marks), discs, `nextPoint`, welds, stacking.
+  Not saved: mode, selection, Show All.
+- Not built: the move-to-another-category command (not needed yet), Home listing of figures, Copy / Archive / Reset.

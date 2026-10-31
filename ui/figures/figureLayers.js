@@ -188,9 +188,31 @@ export function insertLayer(tabId, registryKey, { params = null, transform = nul
   figure.layers.push(layer);
   tabState.instances.push(instance);
 
-  // The new layer's index. Captured here, so the callbacks below always
-  // refer to this layer, whatever happens to the stacking later.
+  // The new layer's index. Captured here, so the callbacks wireInstance()
+  // attaches always refer to this layer, whatever happens to the stacking later.
   const index = figure.layers.length - 1;
+  wireInstance(tabId, instance, layer, index);
+  tabState.centroidSelected = false;
+  figure.drawOrder.unshift(index);      // new layer goes on top (unshift adds at the front)
+  figure.activeLayer = index;
+
+  renderLayerPanel(tabId);
+  redrawFigure(tabId);
+
+} // end insertLayer
+
+
+/* ============================================================
+   wireInstance(tabId, instance, layer, index)
+   ------------------------------------------------------------
+   Attaches the callbacks that interactor.js and the weld code use to
+   one layer's live object. Shared by insertLayer() and
+   rebuildInstances(), so a reopened figure behaves like a fresh one.
+   ============================================================ */
+function wireInstance(tabId, instance, layer, index) {
+
+  const figure = uiState.figures.tabs[tabId].figure;
+
   instance.redrawHandler = () => redrawFigure(tabId);
   // Read by interactor.js: where this layer's handles really are, and
   // whether the centroid has the press instead.
@@ -208,14 +230,39 @@ export function insertLayer(tabId, registryKey, { params = null, transform = nul
   instance.afterMove = () => {
     propagateAfterChange(tabId, index, weldSnapshot);
   };
-  tabState.centroidSelected = false;
-  figure.drawOrder.unshift(index);      // new layer goes on top (unshift adds at the front)
-  figure.activeLayer = index;
 
-  renderLayerPanel(tabId);
-  redrawFigure(tabId);
+} // end wireInstance
 
-} // end insertLayer
+
+/* ============================================================
+   rebuildInstances(tabId)
+   ------------------------------------------------------------
+   For a figure that was read from a file (Phase 10): makes one live
+   object per saved layer, in the same order, the way insertLayer()
+   makes one. The layer's params object IS the instance's params (as
+   in insertLayer). A deleted layer gets an object too, so the two
+   arrays stay in step; nothing draws it.
+   ============================================================ */
+export function rebuildInstances(tabId) {
+
+  const tabState = uiState.figures.tabs[tabId];
+  const figure   = tabState.figure;
+  tabState.instances = [];
+
+  figure.layers.forEach((layer, index) => {
+    const entry = window.drawRegistry?.[layer.id];
+    if (!entry) throw new Error("Saved figure uses \"" + layer.id + "\", which is not in the draw registry.");
+
+    const instance    = Object.create(entry);
+    instance.params   = layer.params;
+    instance.elements = null;
+    instance.init();
+    if (!layer.transform) layer.transform = newTransform();
+    wireInstance(tabId, instance, layer, index);
+    tabState.instances.push(instance);
+  });
+
+} // end rebuildInstances
 
 
 /* ============================================================

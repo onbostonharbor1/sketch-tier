@@ -57,7 +57,8 @@ import { deactivateCentroid }    from "./figureCentroid.js";
 import {
   createEmptyFigure,
   nextUntitledName,
-  nextFigureTabId
+  nextFigureTabId,
+  hasUnsavedChanges
 }                             from "./figureModel.js";
 import { disarmInteractor } from "/ui/interactor.js";
 
@@ -68,7 +69,18 @@ import { disarmInteractor } from "/ui/interactor.js";
    Puts an empty tab bar (a Bootstrap "nav-tabs" list) into #subtabs.
    renderSubtabs() fills it.
    ============================================================ */
+let figureShowWired = false;     // the listener below is added once
+
 export function setFiguresSubtabs() {
+
+  // figuresSave.js asks for a figure to be shown (after Save, or opening a
+  // saved one) with this event, because it cannot import this file.
+  if (!figureShowWired) {
+    figureShowWired = true;
+    document.addEventListener("figure-show", (e) => {
+      if (uiState.figures.tabs[e.detail.tabId]) switchToFigureTab(e.detail.tabId);
+    });
+  }
 
   const el = document.getElementById("subtabs");
   if (!el) throw new Error("setFiguresSubtabs: #subtabs not found");
@@ -433,11 +445,18 @@ export function openNewFigureTab() {
 /* ============================================================
    closeTab(tabId)
    ------------------------------------------------------------
-   Throws the figure away (there is no Save yet, and no warning),
+   Throws the figure away (after asking, if it has unsaved changes),
    stops every mouse listener that may belong to it, and shows
    another subtab.
    ============================================================ */
 export function closeTab(tabId) {
+
+  // A figure with changes since it was saved (or never saved) asks first.
+  const ts = uiState.figures.tabs[tabId];
+  if (ts && hasUnsavedChanges(ts) &&
+      !window.confirm("\"" + ts.figure.name + "\" has changes that are not saved. Close it anyway?")) {
+    return;
+  }
 
   delete uiState.figures.tabs[tabId];
   disarmInteractor();
