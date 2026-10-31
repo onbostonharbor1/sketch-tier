@@ -31,6 +31,7 @@
 ------------------------------------------------------------ */
 
 import { fileLayer } from "./fileLayer.js";
+import { timed }     from "/ui/instrument.js";
 export class ManifestManager {
 
   constructor() {
@@ -73,7 +74,13 @@ export class ManifestManager {
 
       ALWAYS returns an array.
    ============================================================ */
-  async get(basedir) {
+  get(basedir) {
+    return timed("manifest " + basedir, () => this.loadOrCache(basedir));
+  } // end get
+
+
+  // The work of get(): the cache check, then reading from disk.
+  async loadOrCache(basedir) {
     console.time(`ManifestManager.get(${basedir})`);
 
     // 1) Check cache first

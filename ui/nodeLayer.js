@@ -17,6 +17,8 @@
 
    =========================================================== */
 
+import { timed } from "/ui/instrument.js";
+
 /* ===========================================================
    nodeDispatch(requestName, payload)
 
@@ -43,14 +45,14 @@ export async function nodeDispatch(requestName, payload = {}) {
 
   let response;
   try {
-    response = await fetch(url, {
+    response = await timed("service " + requestName, () => fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         requestName: requestName,
         payload: payload
       })
-    });
+    }));
   } catch (networkErr) {
     // The service is not running (or this is a read-only copy of Sketchpad
     // with no Node service). Say so in plain words.

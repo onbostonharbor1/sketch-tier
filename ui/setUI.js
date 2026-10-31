@@ -17,6 +17,7 @@ import { initOverlay }      from "./overlay.js";
 import { initCanvasLayers } from "./canvasLayerManager.js";
 import { uiState }          from "/ui/uiState.js";
 import { disableAllNextPrevOverlays } from "./nextPrevOverlay.js";
+import { timed }                from "/ui/instrument.js";
 
 const START = "START_APP";
 
@@ -164,7 +165,7 @@ async function activateWithReport(tab) {
   // failure at startup says where, not just what.
   const progress = { stage: "start" };
   try {
-    await runSetUI(tab, progress);
+    await timed("tab switch " + tab, () => runSetUI(tab, progress));
   } catch (e) {
     console.error(`setUI("${tab}") failed during stage "${progress.stage}":`, e);
     throw e;

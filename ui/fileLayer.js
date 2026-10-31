@@ -5,6 +5,8 @@
    Pure low-level ops.
    ------------------------------------------------------------ */
 
+import { timed } from "/ui/instrument.js";
+
 export const fileLayer = {
 
   // ----------------------------------------------------------
@@ -27,7 +29,7 @@ export const fileLayer = {
         throw new Error("fileLayer.exists: relative path not allowed: " + p);
       }
 
-      const resp = await fetch(p, { method: "GET", cache: "no-store" });
+      const resp = await timed("fetch " + p, () => fetch(p, { method: "GET", cache: "no-store" }));
       return resp.ok;
 
     } catch (err) {
@@ -43,7 +45,7 @@ export const fileLayer = {
   // ----------------------------------------------------------
   async loadText(path) {
     try {
-      const resp = await fetch(path);
+      const resp = await timed("fetch " + path, () => fetch(path));
       if (!resp.ok) return null;
       return await resp.text();
     } catch (err) {
@@ -60,7 +62,7 @@ export const fileLayer = {
 async loadJSON(path) {
   try {
 
-    const resp = await fetch(path, { cache: "no-store" });
+    const resp = await timed("fetch " + path, () => fetch(path, { cache: "no-store" }));
 
     if (!resp.ok) {
       return null;

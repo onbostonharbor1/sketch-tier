@@ -26,6 +26,7 @@ import { manifest }                          from "/ui/manifest.js";
 import { setCommandsButtonLabel, setCommandsButtonHandler } from "/ui/commandsButton.js";
 import { showOffcanvas } from "/ui/offcanvas.js";
 import { clearDivs } from "/ui/uiUtilities.js";
+import { setInstrumenting, clearTimings, formatTimings } from "/ui/instrument.js";
 import { formatRebuildReportShared } from "/ui/rebuildSync.js";
 import { nodeRebuildAndValidateManifests }   from "/ui/nodeLayer.js";
 import { openHelpHomeOverlay }               from "/ui/help.js";
@@ -264,6 +265,13 @@ function buildUtilitiesOffcanvasHtml() {
     </div>
     <div class="buttonSeparator"></div>
     <div id="utilitiesRebuildReport" class="utilitiesRebuildReport"></div>
+    <div class="buttonSeparator"></div>
+    <label><input type="checkbox" id="utilitiesTimingsOn"> Record timings</label>
+    <div class="cmdButtonRow">
+      <button id="utilitiesTimingsShow" class="cmdButton" type="button">Show timings</button>
+      <button id="utilitiesTimingsClear" class="cmdButton" type="button">Clear timings</button>
+    </div>
+    <pre id="utilitiesTimingsReport" class="utilitiesRebuildReport"></pre>
   `;
 } // end buildUtilitiesOffcanvasHtml
 
@@ -301,6 +309,19 @@ export function wireUtilitiesCommandsButton() {
 
           out.textContent = formatRebuildReportShared(report);
         });
+
+        // Timings (ui/instrument.js)
+        const timingsOn     = document.getElementById("utilitiesTimingsOn");
+        const timingsShow   = document.getElementById("utilitiesTimingsShow");
+        const timingsClear  = document.getElementById("utilitiesTimingsClear");
+        const timingsReport = document.getElementById("utilitiesTimingsReport");
+        if (!timingsOn || !timingsShow || !timingsClear || !timingsReport)
+          throw new Error("wireUtilitiesCommandsButton: timings controls missing");
+
+        timingsOn.checked = uiState.instrument.on;
+        timingsOn.addEventListener("change", () => setInstrumenting(timingsOn.checked));
+        timingsShow.addEventListener("click", () => { timingsReport.textContent = formatTimings(); });
+        timingsClear.addEventListener("click", () => { clearTimings(); timingsReport.textContent = ""; });
 
         const helpBtn = document.getElementById("utilitiesHelpButton");
         if (!helpBtn) throw new Error("wireUtilitiesCommandsButton: utilitiesHelpButton missing");

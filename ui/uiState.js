@@ -23,6 +23,14 @@ export const uiState = {
 
 
   /* =========================================================
+     Instrumentation (ui/instrument.js): record how long things take
+  ========================================================= */
+  instrument: {
+    on: false,             // boolean; ?instrument in the address sets it at load
+    entries: []            // [{ label, start, ms }]
+  },
+
+  /* =========================================================
      Canvas configuration
   ========================================================= */
   canvasWidth: 800,

@@ -1377,6 +1377,36 @@ if (delRes.afterC.order.includes(2) || delRes.afterC.active === 2) problems.push
 if (delRes.afterNext.welds.length !== 0 || delRes.layers !== 3) problems.push("[delete layer] second delete: " + JSON.stringify(delRes.afterNext));
 if (delRes.afterNext.rows !== 1) problems.push("[delete layer] strip should show one row, shows " + delRes.afterNext.rows);
 
+/* ---- Instrumentation: Record timings, then Show timings lists what was timed ---- */
+stage = "instrumentation";
+await page.click("#utilities-tab");
+await page.waitForTimeout(700);
+await page.click("#commandsButton");
+await page.waitForTimeout(500);
+await page.check("#utilitiesTimingsOn");
+await page.click("#offcanvasPanel .btn-close");
+await page.waitForTimeout(500);
+await page.click("#draw-tab");
+await page.waitForTimeout(900);
+await page.click("#utilities-tab");
+await page.waitForTimeout(900);
+await page.click("#commandsButton");
+await page.waitForTimeout(500);
+await page.click("#utilitiesTimingsShow");
+const timingsText = await page.locator("#utilitiesTimingsReport").textContent();
+if (!/tab switch draw/.test(timingsText) || !/tab switch utilities/.test(timingsText)) {
+  problems.push("[instrumentation] timings lack the tab switches: " + timingsText.slice(0, 300));
+}
+await page.click("#utilitiesTimingsClear");
+await page.uncheck("#utilitiesTimingsOn");
+const offState = await page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  return { on: uiState.instrument.on, n: uiState.instrument.entries.length };
+});
+if (offState.on || offState.n !== 0) problems.push("[instrumentation] after Clear and untick: " + JSON.stringify(offState));
+await page.click("#offcanvasPanel .btn-close");
+await page.waitForTimeout(500);
+
 stage = "draw handle drag";
 await page.click("#draw-tab");
 await page.waitForTimeout(700);
@@ -1459,4 +1489,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, instrumentation, no errors");
