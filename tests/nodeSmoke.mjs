@@ -108,7 +108,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
   "listLogFiles", "readLogFile", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
-  "writeHelpFile", "writeGalleryPatternPng", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
+  "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {
   const r = await call(n, {});
@@ -222,6 +222,45 @@ const tableNames = [...tableText.matchAll(/^\s{2}(\w+):/gm)].map(m => m[1]);
 check("dispatcher table names all appear in the test's list of request names",
   tableNames.length > 10 && tableNames.every(n => NAMES.includes(n)) && NAMES.every(n => tableNames.includes(n)),
   "table: " + tableNames.join(",") + " | missing from test: " + tableNames.filter(n => !NAMES.includes(n)).join(",") + " | not in table: " + NAMES.filter(n => !tableNames.includes(n)).join(","));
+
+/* ---- 5c. saveFigure (Phase 10) ---- */
+const sample = { name: "Untitled 1", category: null, nextPoint: 3, points: [], layers: [{ kind: "drawLine", id: "drawLine", visible: true }], drawOrder: [0], activeLayer: 0 };
+const readScratchJson = (...p) => JSON.parse(fs.readFileSync(path.join(scratch, ...p), "utf8"));
+r = await call("saveFigure", { category: "Boxes", name: "First try", figure: sample });
+check("saveFigure: a new category and figure are created", r.status === 200 && r.json.status === "ok" && r.json.newCategory === true, "status " + r.status + " " + JSON.stringify(r.json));
+check("saveFigure: the file holds the figure", exists("figures", "Boxes", "First try.json") && readScratchJson("figures", "Boxes", "First try.json").nextPoint === 3);
+check("saveFigure: the category is in directoryRegistry.json", readScratchJson("figures", "directoryRegistry.json").includes("Boxes"));
+check("saveFigure: the manifest has the entry, status new",
+  JSON.stringify(readScratchJson("figures", "Boxes", "manifest.json")) === JSON.stringify([{ filename: "First try", path: "First try.json", title: "First try", status: "new" }]));
+check("saveFigure: the help folder was made", exists("help", "figures", "Boxes"));
+r = await call("saveFigure", { category: "Boxes", name: "First try", figure: { ...sample, nextPoint: 9 } });
+check("saveFigure: same name is reported as exists", r.status === 200 && r.json.status === "exists");
+check("saveFigure: and nothing was written", readScratchJson("figures", "Boxes", "First try.json").nextPoint === 3);
+{ // Edit Manifest may have set a status; a replace keeps it.
+  const mp = ["figures", "Boxes", "manifest.json"]; const m = readScratchJson(...mp); m[0].status = "favorite";
+  fs.writeFileSync(path.join(scratch, ...mp), JSON.stringify(m));
+}
+r = await call("saveFigure", { category: "Boxes", name: "First try", figure: { ...sample, nextPoint: 9 }, overwrite: true });
+check("saveFigure: overwrite replaces the file", r.status === 200 && r.json.status === "ok" && r.json.replaced === true && readScratchJson("figures", "Boxes", "First try.json").nextPoint === 9);
+{ const m = readScratchJson("figures", "Boxes", "manifest.json");
+  check("saveFigure: overwrite keeps one entry and its status", m.length === 1 && m[0].status === "favorite", JSON.stringify(m)); }
+r = await call("saveFigure", { category: "Boxes", name: "Second", figure: sample });
+check("saveFigure: a second figure in an existing category", r.status === 200 && r.json.newCategory === false && readScratchJson("figures", "Boxes", "manifest.json").length === 2);
+check("saveFigure: the registry lists the category once", readScratchJson("figures", "directoryRegistry.json").filter((c) => c === "Boxes").length === 1);
+const figBefore = JSON.stringify(fs.readdirSync(path.join(scratch, "figures")));
+for (const [label, payload] of [
+  ["category ..",         { category: "..", name: "x", figure: sample }],
+  ["name with a slash",   { category: "Boxes", name: "a/b", figure: sample }],
+  ["name with a colon",   { category: "Boxes", name: "a:b", figure: sample }],
+  ["name starting a dot", { category: "Boxes", name: ".hidden", figure: sample }],
+  ["empty name",          { category: "Boxes", name: " ", figure: sample }],
+  ["no figure",           { category: "Boxes", name: "x" }],
+  ["figure without layers", { category: "Boxes", name: "x", figure: { points: [], drawOrder: [] } }],
+]) {
+  r = await call("saveFigure", payload);
+  check("saveFigure refuses: " + label, refused(r), "status " + r.status);
+}
+check("saveFigure: refused requests changed nothing", JSON.stringify(fs.readdirSync(path.join(scratch, "figures"))) === figBefore);
 
 // Atomic writes leave no temporary files behind.
 const strayTmp = [];
