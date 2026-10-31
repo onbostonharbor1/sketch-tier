@@ -107,13 +107,11 @@
    The Parabola's other end and its corner do not move: only the
    welded end follows, and the parabola reshapes.
 
-   Why the weld mark looks like a ring, not a + (2026-10-27): the mark
-   is drawn on the main canvas, but the handles are drawn on the
-   interaction layer above it. A weld made on a handle has that
-   handle's dot (radius 5) right on top of the + (arms 5 long), so
-   only the white halo around it shows. Proposed fix, not built: draw
-   the + larger than a handle, or on the interaction layer after the
-   handles. See PHASES.md.
+   Why the weld mark is large: the mark is drawn on the main canvas,
+   but the handles are drawn on the interaction layer above it. With
+   arms 5 long, a weld on a handle had the handle's dot (radius 5) right
+   on top of the + and only the white halo showed, as a ring. The arms
+   are now 10 (Phase 8 next pass), so the + reaches past the dot.
 
    Exports:
      weldOf(figure, n)
