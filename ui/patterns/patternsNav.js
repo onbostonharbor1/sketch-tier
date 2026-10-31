@@ -25,6 +25,7 @@
 
 import { renderCategories, buildCategoryDescriptor } from "/ui/categories.js";
 import { manifest }                                  from "/ui/manifest.js";
+import { patternsThumb }                             from "/ui/thumbnailSettings.js";
 import { setCurrentCategory, setCurrentIndex }       from "./patternsState.js";
 import { showSelectedPattern }                       from "./patternsDisplay.js";
 
@@ -179,7 +180,8 @@ export async function showCategoryList() {
 
       addPatternSubtab(categoryName);
       showSelectedPattern(categoryName, idx);
-    }
+    },
+    (categoryName, entry) => patternsThumb(categoryName, entry.filename)
   );
 
   textDiv.innerHTML = "";

@@ -27,6 +27,7 @@
    ============================================================ */
 
 import { renderCategories }        from "/ui/categories.js";
+import { galleryThumb } from "/ui/thumbnailSettings.js";
 import { clearDivs } from "/ui/uiUtilities.js";
 import {
   setCurrentDomain,
@@ -205,6 +206,7 @@ export async function showIdeabookCategories() {
       items: list.map((entry, idx) => ({
         name:        entry.title || entry.filename || entry.path || "(untitled)",
         hasSubitems: false,
+        thumb:       galleryThumb(DOMAIN_IDEABOOK, cat, entry.filename),
         onClick: async () => {
           ensureResultsSubtab(DOMAIN_IDEABOOK);
           activateGallerySubtab(SUBTAB_RESULTS);
@@ -238,6 +240,7 @@ export async function showPatternsCategories() {
       items: list.map((entry, idx) => ({
         name:        entry.title || entry.filename || entry.path || "(untitled)",
         hasSubitems: false,
+        thumb:       galleryThumb(DOMAIN_PATTERNS, cat, entry.filename),
         onClick: async () => {
           ensureResultsSubtab(DOMAIN_PATTERNS);
           activateGallerySubtab(SUBTAB_RESULTS);
@@ -272,6 +275,7 @@ export async function showScriptsCategories() {
       items: list.map((entry, idx) => ({
         name:        entry.title || entry.filename || "(untitled)",
         hasSubitems: false,
+        thumb:       galleryThumb(DOMAIN_SCRIPTS, cat, entry.filename),
         onClick: async () => {
           ensureResultsSubtab(DOMAIN_SCRIPTS);
           activateGallerySubtab(SUBTAB_RESULTS);

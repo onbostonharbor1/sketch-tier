@@ -84,13 +84,13 @@ for (let run = 0; run < RUNS; run++) {
 
   await page.click("#draw-tab"); await page.waitForFunction(tabDrawn, "draw", { polling: 10 });
   let t2 = Date.now();
-  await page.click('#text .item[data-key="Cycloid"] span');
+  await page.click('#text .item[data-key="Cycloid"]');
   await page.waitForFunction(canvasDrawn, null, { polling: 10 });
   add("open Draw > Cycloid", Date.now() - t2);
 
   await page.click("#patterns-tab"); await page.waitForFunction(tabDrawn, "patterns", { polling: 10 });
   t2 = Date.now();
-  await page.click('#text .item[data-key="First Build"] span');
+  await page.click('#text .item[data-key="First Build"]');
   await page.waitForFunction(canvasDrawn, null, { polling: 10 });
   add("open Patterns > First Build", Date.now() - t2);
 

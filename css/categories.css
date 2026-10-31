@@ -47,6 +47,30 @@
   max-height: 200px;
 } /* end .category-content */
 
+/* With pictures: the items wrap across the frame and the frame grows to fit */
+.category-content.thumb-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-height: none;
+} /* end .category-content.thumb-grid */
+
+.item.has-thumb {
+  padding: 2px;
+  border-bottom: none;
+  border: 1px solid #e4e4e4;
+} /* end .item.has-thumb */
+
+.item.has-thumb.active {
+  border-color: #0d6efd;
+} /* end .item.has-thumb.active */
+
+.cat-thumb {
+  display: block;
+  object-fit: contain;
+  background: #fff;
+} /* end .cat-thumb */
+
 /* Individual item entries */
 .item {
   display: flex;

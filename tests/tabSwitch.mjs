@@ -84,7 +84,7 @@ async function stateScenario(tab, itemKey) {
   stage = `${tab} open ${itemKey}`;
   await page.click(`#${tab}-tab`);
   await page.waitForTimeout(800);
-  await page.click(`#text .item[data-key="${itemKey}"] span`);
+  await page.click(`#text .item[data-key="${itemKey}"]`);
   await page.waitForTimeout(1500);
   const opened = await snapshot(tab);
   await page.click("#utilities-tab");
@@ -113,7 +113,7 @@ async function drawMenuItems(key) {
   await page.waitForTimeout(800);
   await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
   await page.waitForTimeout(600);
-  await page.click(`#text .item[data-key="${key}"] span`);
+  await page.click(`#text .item[data-key="${key}"]`);
   await page.waitForTimeout(1500);
   await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click();
   await page.waitForTimeout(700);
@@ -158,7 +158,7 @@ await page.click("#patterns-tab");
 await page.waitForTimeout(800);
 await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
 await page.waitForTimeout(600);
-await page.click('#text .item[data-key="First Build"] span');
+await page.click('#text .item[data-key="First Build"]');
 await page.waitForTimeout(1500);
 await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click();
 await page.waitForTimeout(700);
@@ -1189,7 +1189,7 @@ for (const seq of [["gallery", "patterns"], ["patterns", "utilities", "gallery"]
 stage = "utilities result";
 await page.click("#utilities-tab");
 await page.waitForTimeout(1000);
-await page.click('#text .item[data-key="Validate Draw Registry"] span');
+await page.click('#text .item[data-key="Validate Draw Registry"]');
 await page.waitForTimeout(2000);
 await page.click("#home-tab");
 await page.waitForTimeout(800);
@@ -1284,7 +1284,7 @@ await page.click("#draw-tab");
 await page.waitForTimeout(700);
 await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
 await page.waitForTimeout(500);
-await page.click('#text .item[data-key="Parametrics"] span');
+await page.click('#text .item[data-key="Parametrics"]');
 await page.waitForTimeout(1500);
 const accState = () => page.evaluate(() => {
   const b = document.querySelector(".accordion-button");
@@ -1396,9 +1396,12 @@ await page.evaluate(() => {
 
 let sentSave = null;
 let storedFigure = null;
+const thumbsSent = [];
 await page.route("**/dispatch", async (route) => {
-  sentSave = JSON.parse(route.request().postData());
-  if (sentSave.requestName === "saveFigure") storedFigure = sentSave.payload.figure;
+  const sent = JSON.parse(route.request().postData());
+  if (sent.requestName === "writeThumbnail") thumbsSent.push(sent);
+  else sentSave = sent;
+  if (sent.requestName === "saveFigure") storedFigure = sent.payload.figure;
   await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
                         body: JSON.stringify({ request: "saveFigure", status: "ok" }) });
 });
@@ -1432,6 +1435,10 @@ if (!savedOk) problems.push("[save] saveFigureAs returned false; dialogs: " + di
 if (!sentSave || sentSave.requestName !== "saveFigure" || sentSave.payload.category !== "Boxes" || sentSave.payload.name !== "Demo"
     || sentSave.payload.overwrite !== false || sentSave.payload.figure.layers.length !== 2 || sentSave.payload.figure.format !== 1) {
   problems.push("[save] request was " + JSON.stringify(sentSave).slice(0, 300));
+}
+if (thumbsSent.length !== 1 || thumbsSent[0].payload.kind !== "figures" || thumbsSent[0].payload.category !== "Boxes"
+    || thumbsSent[0].payload.name !== "Demo" || !/^iVBORw0KGgo/.test(thumbsSent[0].payload.pngBase64 || "")) {
+  problems.push("[save] picture request: " + JSON.stringify(thumbsSent).slice(0, 200));
 }
 const afterSave = await page.evaluate(async () => {
   const { hasUnsavedChanges } = await import("/ui/figures/figureModel.js");
@@ -1609,6 +1616,78 @@ await page.unroute("**/figures/directoryRegistry.json");
 await page.unroute("**/figures/Boxes/manifest.json");
 await page.unroute("**/figures/Boxes/Demo.json");
 
+/* ---- Thumbnails in the category lists: pictures on by default, names when off, size, Utilities keep names ---- */
+stage = "thumbnails";
+const catInfo = () => page.evaluate(() => ({
+  pictures: document.querySelectorAll("#text .cat-thumb").length,
+  withPicture: document.querySelectorAll("#text .item.has-thumb").length,
+  labels: document.querySelectorAll("#text .item > span").length,
+  firstWidth: document.querySelector("#text .cat-thumb")?.style.width || null,
+  firstTitle: document.querySelector("#text .item.has-thumb")?.title || null,
+}));
+await page.evaluate(() => { try { localStorage.removeItem("sketchpad.thumbnails"); } catch (e) {} });
+await page.click("#patterns-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
+await page.waitForTimeout(700);
+let ti = await catInfo();
+if (ti.pictures < 3 || ti.firstWidth !== "100px" || !ti.firstTitle) problems.push("[thumbnails] Patterns list with pictures on: " + JSON.stringify(ti));
+
+await page.click("#utilities-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Tools" }).first().click();   // an earlier stage left Utilities on Result
+await page.waitForTimeout(500);
+ti = await catInfo();
+if (ti.pictures !== 0 || ti.labels < 3) problems.push("[thumbnails] Utilities list should show names only: " + JSON.stringify(ti));
+
+// The two Utilities tools change the settings and are remembered.
+await page.locator('#text .item[data-key="Thumbnails on or off"]').click();
+await page.waitForTimeout(700);
+await page.locator("#action input[type=checkbox]").uncheck();
+await page.waitForTimeout(300);
+let saved = await page.evaluate(() => ({ on: uiState.thumbnails.on, stored: localStorage.getItem("sketchpad.thumbnails") }));
+if (saved.on !== false || !/"on":false/.test(saved.stored || "")) problems.push("[thumbnails] on/off tool: " + JSON.stringify(saved));
+await page.click("#patterns-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
+await page.waitForTimeout(700);
+ti = await catInfo();
+if (ti.pictures !== 0 || ti.labels < 3) problems.push("[thumbnails] Patterns list with pictures off should show names: " + JSON.stringify(ti));
+
+await page.click("#utilities-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Tools" }).first().click();   // an earlier stage left Utilities on Result
+await page.waitForTimeout(500);
+await page.locator('#text .item[data-key="Thumbnails on or off"]').click();
+await page.waitForTimeout(500);
+await page.locator("#action input[type=checkbox]").check();
+await page.waitForTimeout(300);
+await page.locator("#subtabs button", { hasText: "Tools" }).first().click();
+await page.waitForTimeout(500);
+await page.locator('#text .item[data-key="Thumbnail size"]').click();
+await page.waitForTimeout(700);
+await page.evaluate(() => {
+  const r = document.querySelector("#action input[type=range]");
+  r.value = "60"; r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true }));
+});
+await page.waitForTimeout(300);
+saved = await page.evaluate(() => ({ on: uiState.thumbnails.on, size: uiState.thumbnails.size, stored: localStorage.getItem("sketchpad.thumbnails") }));
+if (!saved.on || saved.size !== 60 || !/"size":60/.test(saved.stored || "")) problems.push("[thumbnails] size tool: " + JSON.stringify(saved));
+await page.click("#patterns-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
+await page.waitForTimeout(700);
+ti = await catInfo();
+if (ti.pictures < 3 || ti.firstWidth !== "60px") problems.push("[thumbnails] Patterns list at size 60: " + JSON.stringify(ti));
+// Gallery Scripts has no picture files yet: every item falls back to its name.
+await page.click("#gallery-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Scripts" }).first().click();
+await page.waitForTimeout(1200);
+ti = await catInfo();
+if (ti.labels < 10) problems.push("[thumbnails] missing pictures should show the name instead: " + JSON.stringify(ti));
+await page.evaluate(async () => { const m = await import("/ui/thumbnailSettings.js"); m.setThumbnailSize(100); });
+
 /* ---- Instrumentation: Record timings, then Show timings lists what was timed ---- */
 stage = "instrumentation";
 await page.click("#utilities-tab");
@@ -1644,7 +1723,7 @@ await page.click("#draw-tab");
 await page.waitForTimeout(700);
 await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
 await page.waitForTimeout(500);
-await page.click('#text .item[data-key="Cycloid"] span');
+await page.click('#text .item[data-key="Cycloid"]');
 await page.waitForFunction(async () => {
   const { uiState } = await import("/ui/uiState.js");
   return !!(uiState.draw.tabs["tab-cycloid"] && uiState.draw.tabs["tab-cycloid"].drawRegistry);
@@ -1722,4 +1801,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, instrumentation, no errors");

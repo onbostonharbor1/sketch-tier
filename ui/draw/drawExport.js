@@ -7,6 +7,7 @@
 
 import { nodeDispatch } from "/ui/nodeLayer.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
+import { THUMB_FILE_SIZE } from "/ui/thumbnailSettings.js";
 import { manifest } from "/ui/manifest.js";
 
 /*************************************************************
@@ -70,7 +71,7 @@ export async function createGalleryPatternPng(spec = {}) {
   const pngBase64 = dataUrl.split(",")[1];
 
   // 3. Generate Cropped Thumbnail Base64 (Using the shared utility)
-  const thumbBase64 = buildCanvasThumbnailBase64(canvas, 50, 50);
+  const thumbBase64 = buildCanvasThumbnailBase64(canvas, THUMB_FILE_SIZE, THUMB_FILE_SIZE);
 
   const payload = {
     category: category,

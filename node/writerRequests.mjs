@@ -71,7 +71,7 @@ function appendManifestEntry(manifestPath, entry, who) {
 
    DESCRIPTION
    -----------
-   Writes a 50x50 PNG thumbnail provided by the browser.
+   Writes a PNG thumbnail provided by the browser (200x200 since the category lists show pictures; any size is accepted).
 
    Payload:
      {

@@ -32,6 +32,14 @@ export const uiState = {
   },
 
   /* =========================================================
+     Thumbnails in the category lists (ui/thumbnailSettings.js)
+  ========================================================= */
+  thumbnails: {
+    on:   true,            // boolean; false shows names, as before
+    size: 100              // how big a thumbnail is drawn on screen, in pixels
+  },
+
+  /* =========================================================
      Canvas configuration
   ========================================================= */
   canvasWidth: 800,

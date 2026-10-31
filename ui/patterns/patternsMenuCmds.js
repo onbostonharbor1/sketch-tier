@@ -38,6 +38,7 @@ import { showScriptOffcanvas } from "/ui/scriptView.js";
 import { archiveItem } from "/ui/archiveItem.js";
 import { openEditManifestDialog } from "/ui/editManifestDialog.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
+import { THUMB_FILE_SIZE } from "/ui/thumbnailSettings.js";
 import { setCommandsButtonHandler } from "/ui/commandsButton.js";
 import { showOffcanvas, hideOffcanvas } from "/ui/offcanvas.js";
 import { formatRebuildReportShared } from "/ui/rebuildSync.js";
@@ -105,7 +106,7 @@ export async function createPatternThumbnail(info) {
   }
 
   try {
-    const base64Data = buildCanvasThumbnailBase64(canvas, 50, 50);
+    const base64Data = buildCanvasThumbnailBase64(canvas, THUMB_FILE_SIZE, THUMB_FILE_SIZE);
     const baseName   = info.filename.replace(/\.js$/i, "");
 
     const { nodeDispatch } = await import("/ui/nodeLayer.js");

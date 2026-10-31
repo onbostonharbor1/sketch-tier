@@ -33,6 +33,7 @@
 import { renderCategories }    from "/ui/categories.js";
 import { setFiguresRegistry }  from "./figuresState.js";
 import { openSavedFigure }     from "./figuresSave.js";
+import { figureThumb }         from "/ui/thumbnailSettings.js";
 
 
 /* ============================================================
@@ -76,6 +77,7 @@ export async function loadFiguresCategories() {
           items.push({
             name:        title,
             hasSubitems: false,
+            thumb:       figureThumb(categoryName, fileName.replace(/\.json$/i, "")),
             // An arrow function: a small function written in place. It
             // remembers filename, categoryName and title from this
             // loop pass, so each item opens its own figure.

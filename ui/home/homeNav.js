@@ -22,6 +22,7 @@
    ============================================================ */
 
 import { renderCategories }              from "/ui/categories.js";
+import { drawThumb, thumbFromEntryPath } from "/ui/thumbnailSettings.js";
 import { buildSubtabBar, activateSubtab } from "/ui/resultsViewController.js";
 import { getHomeManifestGrouped }        from "./homeState.js";
 
@@ -178,6 +179,7 @@ function buildHomeCategoryDescriptor(grouped) {
         return {
           name,
           hasSubitems: false,
+          thumb: entry.sourceType === "drawRegistry" ? drawThumb(entry.registryKey) : thumbFromEntryPath(entry.path),
           onClick: () => {
             const saved = uiState.home?.saved;
             if (!saved) throw new Error("buildHomeCategoryDescriptor onClick: uiState.home.saved missing");

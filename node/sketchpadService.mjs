@@ -30,6 +30,7 @@
      • writeHelpFile                  one help page under ./help
      • createFigure                   a figure file (createFigureService.mjs)
      • saveFigure                     a figure from the Figures tab, as JSON (figureFiles.mjs)
+     • writeThumbnail                 the picture shown for an item in a category list (thumbnailRequests.mjs)
 
    Secondary objects (saved Draw settings)
      • saveSecondaryObject, readSecondaryObject, archiveSecondaryObject,
@@ -44,6 +45,7 @@
    WHERE THE TASKS LIVE
      • manifestRequests.mjs        manifest edits, archiveItem
      • figureFiles.mjs             saving a Figures-tab figure
+     • thumbnailRequests.mjs       thumbnail pictures
      • writerRequests.mjs          thumbnails, help pages, Gallery PNGs, Pattern scripts
      • secondaryRequests.mjs       saved Draw settings
      • logAndEditorRequests.mjs    log files, open in VS Code
@@ -66,6 +68,7 @@
 import { runManifestMaintenance } from "./maintain_manifests.mjs";
 import { createFigure }           from "./createFigureService.mjs";
 import { saveFigure }             from "./figureFiles.mjs";
+import { writeThumbnail }         from "./thumbnailRequests.mjs";
 import { editManifestEntry, archiveItem }                     from "./manifestRequests.mjs";
 import { writePatternThumbnail, writePatternFromDrawRegistry,
          writeGalleryPatternPng, writeHelpFile }                  from "./writerRequests.mjs";
@@ -102,6 +105,7 @@ const HANDLERS = {
   manifestMaintenance:              () => runManifestMaintenance({ mode: "ui" }),
   createFigure:                     createFigure,
   saveFigure:                       saveFigure,
+  writeThumbnail:                   writeThumbnail,
 
   editManifestEntry:                editManifestEntry,
   archiveItem:                      archiveItem,

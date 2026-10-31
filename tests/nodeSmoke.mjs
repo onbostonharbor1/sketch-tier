@@ -108,7 +108,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
   "listLogFiles", "readLogFile", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
-  "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
+  "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "writeThumbnail", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {
   const r = await call(n, {});
@@ -272,6 +272,31 @@ for (const [label, payload] of [
   check("saveFigure refuses: " + label, refused(r), "status " + r.status);
 }
 check("saveFigure: refused requests changed nothing", JSON.stringify(fs.readdirSync(path.join(scratch, "figures"))) === figBefore);
+
+/* ---- 5d. writeThumbnail ---- */
+const PNG_1PX = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+const patCat2 = fs.readdirSync(path.join(scratch, "patterns"), { withFileTypes: true }).find((e) => e.isDirectory() && exists("patterns", e.name, "manifest.json")).name;
+r = await call("writeThumbnail", { kind: "patterns", category: patCat2, name: "Smoke thumb", pngBase64: PNG_1PX });
+check("writeThumbnail: patterns picture is written", r.status === 200 && r.json.status === "ok" && exists("patterns", patCat2, "images", "thumb_Smoke thumb.png"), "status " + r.status + " " + JSON.stringify(r.json));
+r = await call("writeThumbnail", { kind: "figures", category: "Boxes", name: "First try", pngBase64: PNG_1PX });
+check("writeThumbnail: figures picture is written", r.status === 200 && exists("figures", "Boxes", "images", "thumb_First try.png"));
+r = await call("writeThumbnail", { kind: "gallery", domain: "Scripts", category: fs.readdirSync(path.join(scratch, "gallery", "Scripts"), { withFileTypes: true }).find((e) => e.isDirectory()).name, name: "Smoke thumb", pngBase64: PNG_1PX });
+check("writeThumbnail: gallery picture is written", r.status === 200 && r.json.status === "ok", "status " + r.status + " " + JSON.stringify(r.json));
+r = await call("writeThumbnail", { kind: "drawRegistry", category: "cycloid", name: "cycloid", pngBase64: PNG_1PX });
+check("writeThumbnail: a Draw object's folder is made", r.status === 200 && exists("drawRegistry", "cycloid", "images", "thumb_cycloid.png"), "status " + r.status + " " + JSON.stringify(r.json));
+for (const [label, payload] of [
+  ["not a PNG",            { kind: "patterns", category: patCat2, name: "x", pngBase64: Buffer.from("hello world, not a png").toString("base64") }],
+  ["category ..",          { kind: "patterns", category: "..", name: "x", pngBase64: PNG_1PX }],
+  ["name with a slash",    { kind: "patterns", category: patCat2, name: "a/b", pngBase64: PNG_1PX }],
+  ["unknown kind",         { kind: "utilities", category: "Tools", name: "x", pngBase64: PNG_1PX }],
+  ["gallery bad domain",   { kind: "gallery", domain: "../x", category: "c", name: "x", pngBase64: PNG_1PX }],
+  ["category that does not exist", { kind: "patterns", category: "NoSuchCategory", name: "x", pngBase64: PNG_1PX }],
+  ["missing picture",      { kind: "patterns", category: patCat2, name: "x" }],
+]) {
+  r = await call("writeThumbnail", payload);
+  check("writeThumbnail refuses: " + label, refused(r), "status " + r.status);
+}
+check("writeThumbnail: refused requests wrote nothing", !exists("patterns", patCat2, "images", "thumb_x.png") && !exists("patterns", "NoSuchCategory"));
 
 // Atomic writes leave no temporary files behind.
 const strayTmp = [];

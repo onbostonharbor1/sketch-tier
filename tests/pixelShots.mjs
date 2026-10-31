@@ -44,7 +44,7 @@ async function shot(label) {
 }
 const tab = async (t, ms = 1200) => { await page.click(`#${t}-tab`); await page.waitForTimeout(ms); };
 const sub = async (txt) => { await page.locator("#subtabs button", { hasText: txt }).first().click(); await page.waitForTimeout(700); };
-const item = async (key, ms = 1800) => { await page.click(`#text .item[data-key="${key}"] span`); await page.waitForTimeout(ms); };
+const item = async (key, ms = 1800) => { await page.click(`#text .item[data-key="${key}"]`); await page.waitForTimeout(ms); };
 const cmds = async (label) => {
   await page.click("#commandsButton"); await page.waitForTimeout(700); await shot(label);
   await page.keyboard.press("Escape"); await page.waitForTimeout(500);

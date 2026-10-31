@@ -31,7 +31,7 @@ import { readJsonFileSync, writeJsonFileSync, writeFileAtomicSync } from "./serv
 // the systems this runs on), plus control characters.
 const BAD_NAME_CHARS = /[<>:"|?*\u0000-\u001f]/;
 
-function assertFileName(value, label) {
+export function assertFileName(value, label) {
   assertSimpleName(value, label);
   if (BAD_NAME_CHARS.test(value)) {
     throw new RequestError(label + " cannot contain any of < > : \" | ? *");

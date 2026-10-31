@@ -41,6 +41,7 @@ import { uiState }                    from "/ui/uiState.js";
 import { openHelpHomeOverlay }        from "/ui/help.js";
 import { nodeRebuildAndValidateManifests } from "/ui/nodeLayer.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
+import { THUMB_FILE_SIZE } from "/ui/thumbnailSettings.js";
 import { setCommandsButtonHandler } from "/ui/commandsButton.js";
 import { showOffcanvas } from "/ui/offcanvas.js";
 import { formatRebuildReportShared } from "/ui/rebuildSync.js";
@@ -379,7 +380,7 @@ export async function saveActiveDrawObjectAsSecondary(menuContext) {
   const canvas = window.drawCanvas;
   if (!canvas) throw new Error("saveActiveDrawObjectAsSecondary: window.drawCanvas missing");
 
-  const thumbBase64 = buildCanvasThumbnailBase64(canvas, 50, 50);
+  const thumbBase64 = buildCanvasThumbnailBase64(canvas, THUMB_FILE_SIZE, THUMB_FILE_SIZE);
   await saveSecondary(primaryId, name, payload, thumbBase64);
   alert("Secondary object created.");
 
@@ -412,7 +413,7 @@ export async function saveActiveSecondaryObject(menuContext) {
   };
 
   const canvas      = window.drawCanvas;
-  const thumbBase64 = buildCanvasThumbnailBase64(canvas, 50, 50);
+  const thumbBase64 = buildCanvasThumbnailBase64(canvas, THUMB_FILE_SIZE, THUMB_FILE_SIZE);
   await saveSecondary(primaryId, name, payload, thumbBase64);
 
   info.dirty = false;

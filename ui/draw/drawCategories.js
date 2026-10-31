@@ -28,6 +28,7 @@
    ============================================================ */
 
 import { renderCategories }      from "/ui/categories.js";
+import { drawThumb } from "/ui/thumbnailSettings.js";
 import { getIdsWithSecondaries } from "./drawTabState.js";
 
 
@@ -88,6 +89,7 @@ export function renderDrawCategories() {
     items: items.map((it) => ({
       name:        it.name,
       hasSubitems: false,
+      thumb:       drawThumb(it.key),
 
       onClick: () => {
         import("/ui/draw/drawNav.js").then((m) => {

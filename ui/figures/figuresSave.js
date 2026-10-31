@@ -39,7 +39,9 @@ import { uiState }                   from "/ui/uiState.js";
 import { nodeDispatch }              from "/ui/nodeLayer.js";
 import { getFiguresRegistry }        from "./figuresState.js";
 import { snapshotOfFigure, nextFigureTabId } from "./figureModel.js";
-import { rebuildInstances }          from "./figureLayers.js";
+import { rebuildInstances, redrawFigure } from "./figureLayers.js";
+import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
+import { THUMB_FILE_SIZE }           from "/ui/thumbnailSettings.js";
 import { archiveItem }               from "/ui/archiveItem.js";
 
 
@@ -125,6 +127,8 @@ async function sendSave(tabId, category, name, overwrite) {
   tabState.savedSnapshot = snapshotOfFigure(figure);
   uiState.figures.needsUpdate = true;                   // the Categories list reloads when next shown
 
+  await writeFigureThumbnail(tabId, category, name);
+
   // Tell figuresNav.js to show the figure again, so the subtab and caption
   // carry the new name. (An event, not an import: figuresNav imports the
   // files that import this one.)
@@ -132,6 +136,38 @@ async function sendSave(tabId, category, name, overwrite) {
   return true;
 
 } // end sendSave
+
+
+/* ------------------------------------------------------------
+   writeFigureThumbnail(tabId, category, name)
+   After a save, the picture for the category list: the figure as Show All
+   draws it (hidden layers included), cropped and scaled to THUMB_FILE_SIZE.
+   A failure here only warns; the figure itself is already saved.
+   ------------------------------------------------------------ */
+async function writeFigureThumbnail(tabId, category, name) {
+
+  const tabState = uiState.figures.tabs[tabId];
+  const canvas   = document.getElementById("sharedCanvas");
+  if (!tabState || !canvas) return;
+
+  let pngBase64;
+  const wasPreview = tabState.preview;
+  try {
+    tabState.preview = true;
+    redrawFigure(tabId);
+    pngBase64 = buildCanvasThumbnailBase64(canvas, THUMB_FILE_SIZE, THUMB_FILE_SIZE);
+  } finally {
+    tabState.preview = wasPreview;
+    redrawFigure(tabId);
+  }
+
+  try {
+    await nodeDispatch("writeThumbnail", { kind: "figures", category, name, pngBase64 });
+  } catch (err) {
+    console.warn("The figure was saved, but its picture was not: " + err.message);
+  }
+
+} // end writeFigureThumbnail
 
 
 /* ------------------------------------------------------------

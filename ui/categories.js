@@ -17,7 +17,8 @@
            {
              name: "Item Name",
              onClick: function,     // required
-             hasSubitems: boolean   // optional
+             hasSubitems: boolean,  // optional
+             thumb: "/path.png"     // optional: a picture shown instead of the name
            },
            ...
          ]
@@ -28,7 +29,16 @@
    All logic determining titles, items, handlers, or category
    grouping is performed by the calling tab.  This module only
    renders the provided structure.
+
+   Pictures: when an item has a thumb path and uiState.thumbnails.on is
+   true, the picture is shown in place of the name, at
+   uiState.thumbnails.size pixels (the Thumbnails utilities set both).
+   The name is still the item's key and its hover text, and it is shown
+   instead if the picture file is missing. Utilities lists give no thumb,
+   so they always show names.
 ------------------------------------------------------------ */
+
+import { uiState } from "/ui/uiState.js";
 
 
 /* ============================================================
@@ -43,6 +53,8 @@
                   items: [ { name, onClick, hasSubitems? }, ... ]
 ============================================================ */
 export function renderCategories(targetId, descriptor) {
+
+  const showPictures = !!uiState.thumbnails.on;
 
   // Fail-fast container check
   const container = document.getElementById(targetId);
@@ -147,11 +159,14 @@ export function renderCategories(targetId, descriptor) {
         );
       }
 
+      const thumbSrc = (showPictures && typeof itemDesc.thumb === "string") ? itemDesc.thumb : null;
       const itemEl = buildCategoryItemElement(
         itemDesc.name,
         itemDesc.hasSubitems,
-        itemDesc.secondaryAction
+        itemDesc.secondaryAction,
+        thumbSrc
       );
+      if (thumbSrc) content.classList.add("thumb-grid");     // pictures wrap across the frame
 
       itemEl.setAttribute("data-key", itemDesc.name);
 
@@ -169,7 +184,7 @@ export function renderCategories(targetId, descriptor) {
 
 
 /* ============================================================
-   buildCategoryDescriptor(groups, itemLabelFn, onClickFn)
+   buildCategoryDescriptor(groups, itemLabelFn, onClickFn, thumbFn)
    ------------------------------------------------------------
    Helper function to build a category descriptor array from a
    grouped data structure.
@@ -191,6 +206,8 @@ export function renderCategories(targetId, descriptor) {
                    This signature allows access to both the category
                    context and the entry's position in the sorted list
 
+     thumbFn     - Optional. (categoryName, entry) => picture path, or null.
+
    Returns:
      Array in descriptor format ready for renderCategories()
 
@@ -204,7 +221,7 @@ export function renderCategories(targetId, descriptor) {
      );
      renderCategories("text", descriptor);
 ============================================================ */
-export function buildCategoryDescriptor(groups, itemLabelFn, onClickFn) {
+export function buildCategoryDescriptor(groups, itemLabelFn, onClickFn, thumbFn) {
   return Object.keys(groups).sort().map(category => {
     const list = groups[category] || [];
     // A copy in manifest order. (This used to call sort(itemLabelFn), which passes a
@@ -217,6 +234,7 @@ export function buildCategoryDescriptor(groups, itemLabelFn, onClickFn) {
       items: sorted.map((entry, idx) => ({
         name: itemLabelFn(entry),
         hasSubitems: false,
+        thumb: thumbFn ? thumbFn(category, entry) : undefined,
         onClick: () => onClickFn(category, sorted, entry, idx)
       }))
     };
@@ -293,7 +311,7 @@ function buildCategoryFrameElement(title, count) {
 //   [chevron icon if hasSubitems]
 // </div>
 // ------------------------------------------------------------
-function buildCategoryItemElement(name, hasSubitems, secondaryAction) {
+function buildCategoryItemElement(name, hasSubitems, secondaryAction, thumbSrc) {
   const itemEl = document.createElement("div");
   itemEl.className = "item";
   itemEl.style.display = "flex";
@@ -303,7 +321,26 @@ function buildCategoryItemElement(name, hasSubitems, secondaryAction) {
   const label = document.createElement("span");
   label.textContent = name;
   label.style.flexGrow = "1";
-  itemEl.appendChild(label);
+
+  if (thumbSrc) {
+    // A picture instead of the name. If the file is missing, the name comes back.
+    itemEl.classList.add("has-thumb");
+    itemEl.title = name;
+    const size = uiState.thumbnails.size;
+    const img = document.createElement("img");
+    img.className = "cat-thumb";
+    img.src = thumbSrc;
+    img.alt = name;
+    img.style.width  = size + "px";
+    img.style.height = size + "px";
+    img.addEventListener("error", () => {
+      img.replaceWith(label);
+      itemEl.classList.remove("has-thumb");
+    }, { once: true });
+    itemEl.appendChild(img);
+  } else {
+    itemEl.appendChild(label);
+  }
 
   if (typeof secondaryAction === "function") {
     const btn = document.createElement("button");
