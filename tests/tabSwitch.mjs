@@ -1345,10 +1345,14 @@ await page.waitForTimeout(700);
 await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
 await page.waitForTimeout(500);
 await page.click('#text .item[data-key="Cycloid"] span');
-await page.waitForTimeout(1800);
+await page.waitForFunction(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  return !!(uiState.draw.tabs["tab-cycloid"] && uiState.draw.tabs["tab-cycloid"].drawRegistry);
+}, null, { timeout: 8000 });
+await page.waitForTimeout(800);
 const handle = await page.evaluate(async () => {
   const { uiState } = await import("/ui/uiState.js");
-  const tab = uiState.draw.tabs[uiState.draw.activeSubtab];
+  const tab = uiState.draw.tabs["tab-cycloid"];       // the open object's tab, whatever activeSubtab says
   const pts = tab.drawRegistry.params.points;
   const c = window.drawCanvas, r = c.getBoundingClientRect();
   return { n: pts.length, x: pts[0].x, y: pts[0].y, sx: r.width / c.width, sy: r.height / c.height, left: r.left, top: r.top };
@@ -1361,7 +1365,7 @@ await page.mouse.up();
 await page.waitForTimeout(300);
 const moved = await page.evaluate(async () => {
   const { uiState } = await import("/ui/uiState.js");
-  const p = uiState.draw.tabs[uiState.draw.activeSubtab].drawRegistry.params.points[0];
+  const p = uiState.draw.tabs["tab-cycloid"].drawRegistry.params.points[0];
   return { x: p.x, y: p.y };
 });
 if (Math.abs(moved.x - (handle.x + 30 / handle.sx)) > 3 || Math.abs(moved.y - (handle.y + 20 / handle.sy)) > 3) {
