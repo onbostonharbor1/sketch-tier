@@ -1376,6 +1376,24 @@ await page.waitForTimeout(900);
 const layerShown = await page.evaluate(() => { const l = document.getElementById("interaction-layer"); return l && l.style.display !== "none"; });
 if (layerShown) problems.push("[draw handle drag] interaction layer still shown after leaving Draw");
 
+/* ---- Launch intent: Home hands a Draw object to the Draw tab (setUI awaits the second switch) ---- */
+stage = "launch intent";
+const launched = await page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  const { setUI } = await import("/ui/setUI.js");
+  uiState.launch.pending     = true;
+  uiState.launch.sourceTab   = "home";
+  uiState.launch.targetTab   = "draw";
+  uiState.launch.sourceType  = "drawRegistry";
+  uiState.launch.registryKey = "cycloid";
+  await setUI("home");
+  return { activeTab: uiState.activeTab, pending: uiState.launch.pending,
+           drawButton: document.getElementById("draw-tab").classList.contains("active") };
+});
+if (launched.activeTab !== "draw" || launched.pending || !launched.drawButton) {
+  problems.push("[launch intent] after setUI('home') with a Draw launch pending: " + JSON.stringify(launched));
+}
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -1386,4 +1404,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, no errors");

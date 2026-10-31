@@ -19,7 +19,6 @@ import { uiState }          from "/ui/uiState.js";
 import { disableAllNextPrevOverlays } from "./nextPrevOverlay.js";
 
 const START = "START_APP";
-const LAST_TAB_KEY = "sketchpad.lastActiveTab";
 
 /* ============================================================
    Tab Registry
@@ -183,38 +182,22 @@ async function runSetUI(tab, progress) {
     throw new Error("setUI: unknown tab " + tabName);
   }
 
-  // 1. Persist the tab selection
-  progress.stage = "persist tab selection";
-  if (tabName !== START) {
-    sessionStorage.setItem(LAST_TAB_KEY, tabName);
-  }
-
-  // 2. THE CLEANUP
-  // If we are leaving Patterns, forget its bookmark
-  // if (tabName !== "patterns") {
-  //   sessionStorage.removeItem("sketchpad.patterns.saved");
-  // }
-
-  // // If we are leaving Gallery, forget its bookmark
-  // // (This was the missing logic!)
-  // if (tabName !== "gallery") {
-  //   sessionStorage.removeItem("sketchpad.gallery.saved");
-  // }
-
-  // 3. Apply theme
+  // 1. Apply theme
   progress.stage = "apply theme";
   applyTheme(tabName === START ? "home" : tabName);
 
-  // 4. Activate
+  // 2. Activate
   progress.stage = "activate " + tabName;
   await activateTab(tabName);
 
-  // 5. Handle Launch Intents
+  // 3. Handle launch intents
   progress.stage = "launch intent";
   if (!uiState.launch || uiState.launch.pending !== true) return;
   const targetTab = uiState.launch.targetTab;
   uiState.launch.pending = false;
-  if (uiState.activeTab !== targetTab) setUI(targetTab);
+  // Run the target tab now, inside this switch. (Calling setUI here would
+  // queue behind this very switch; awaiting that would never finish.)
+  if (uiState.activeTab !== targetTab) await runSetUI(targetTab, progress);
 } // end runSetUI
 
 /* --- Tab Handling Logic --- */
@@ -262,12 +245,6 @@ async function onDomContentLoaded() {
       box.textContent = "Sketchpad failed to start. See the console for the stage that failed: " + e.message;
     }
   }
-  // const lastTab = sessionStorage.getItem(LAST_TAB_KEY);
-  // if (lastTab && TabRegistry[lastTab]) {
-  //   setUI(lastTab);
-  // } else {
-  //   setUI(START);
-  // }
 }
 
 
