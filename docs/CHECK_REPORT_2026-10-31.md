@@ -36,10 +36,12 @@ focus looks, real printing.
 | Open Draw > Cycloid | 107 ms | 104 ms | no change |
 | Open Patterns > First Build | 107 ms | 95 ms | |
 
-The gain is the help editor (TinyMCE) no longer loaded at start-up. The run-to-run spread is a few milliseconds on the small
+How the "before" was run: the `claude1` checkout served by its own dev server on a second port, using this branch's installed packages (its own list was out of date, see below), with Bootstrap served from a local copy. The gain is the help editor (TinyMCE) no longer loaded at start-up. The run-to-run spread is a few milliseconds on the small
 numbers, so only the load, ready, Patterns, Gallery and Utilities differences mean much. On your PC run
 `npm run time:startup` (5 runs by default) for your own numbers; to time the old checkout use
 `SKETCHPAD_BOOTSTRAP_FROM` (see the top of `tests/timeStartup.mjs`).
+
+Final gates on the last commit (`df476e5`): lint 0 errors, imports 0 problems, ids pass, `test:node` 60 of 60, `test:tabs` pass.
 
 ## Fixed during the check
 
