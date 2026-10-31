@@ -287,4 +287,6 @@ covers the group.
 - `scripts/extractBootstrapCss.mjs`: a record of how `css/base.css` was made (needs `npm install --no-save bootstrap@5.3.3`).
 - `npm run pixels:save -- <name>` and `npm run pixels:compare -- <before> <after>`: 25 pictures of the app, before and after
   a change (`tests/pixelShots.mjs`, `tests/pixelCompare.mjs`; pictures go in `pixel-refs/`, not committed). Uses `pngjs`.
+- `npm run time:startup`: start-up and tab times (`tests/timeStartup.mjs`).
 - `docs/RUNBOOK_deferred.md`: step-by-step jobs for the work deferred from this sweep.
+- `docs/CHECK_REPORT_2026-10-31.md`: what the final reanalysis checked, found and fixed, with the start-up times.
