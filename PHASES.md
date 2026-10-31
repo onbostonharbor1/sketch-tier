@@ -665,3 +665,19 @@ group is picked back up.
   stays open, unsaved. **Reset** reads the saved file again and discards changes since (needs a saved figure with changes).
   Archive and Reset ask first.
 - Not built: the move-to-another-category command (not needed yet), Show Script for figures.
+
+
+## Thumbnails in the category lists (2026-10-31, branch `claude/batch-1`; Barry's design)
+
+- Category frames in Draw, Patterns, Gallery, Figures and Home show a picture for each item, not its name. Utilities lists
+  keep names. The name is the hover text, and it comes back if an item's picture file is missing. Home uses the pictures made
+  for the other tabs (derived from each entry's path; Utilities tools have none).
+- Files: `<category>/images/thumb_<name>.png` (Patterns, Gallery, Figures) and `drawRegistry/<key>/images/thumb_<key>.png`
+  (Draw), 200 by 200. How big they are drawn on screen is a separate setting, so changing size never remakes a file.
+- Settings (`ui/thumbnailSettings.js`, `uiState.thumbnails`, remembered in localStorage): on or off, and size 40 to 200.
+- Node: `writeThumbnail` (`node/thumbnailRequests.mjs`). No hash and no scan at start-up (Barry): a picture is made when an item
+  is saved (Figures Save; Create Pattern, Create Gallery PNG and saved Draw settings now write 200 by 200 instead of 50 by 50),
+  and by the regenerate tool.
+- Utilities > Tools > Thumbnails: **Thumbnails on or off**, **Thumbnail size**, **Regenerate thumbnails** (All or one set:
+  Patterns, Gallery scripts, Gallery images, Draw, Figures; runs scripts on the canvas, skips animated ones, lists failures)
+  and, in Tools > ManifestFiles, **Check Missing Images** (lists items without a picture; writes nothing).

@@ -8,5 +8,10 @@
     "filename": "thumbnailSize",
     "path": "thumbnailSize.js",
     "title": "Thumbnail size"
+  },
+  {
+    "filename": "regenerateThumbnails",
+    "path": "regenerateThumbnails.js",
+    "title": "Regenerate thumbnails"
   }
 ]

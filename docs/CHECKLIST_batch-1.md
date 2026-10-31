@@ -75,4 +75,21 @@ tell me what is wrong; I wrote the notes from reading the code and could not che
 things I noticed: `regularCorners.js` and `regularTouching.js` call each other's function, and `joiningPoints.js` looks
 unfinished (it passes numbers where other scripts pass points). Undo: `git revert` that commit.
 
+**B13. Thumbnails (commits `25c7d84` and the next).** Start the app with the Node service running.
+1. Utilities > Tools > Thumbnails > **Regenerate thumbnails**: choose Draw, press Regenerate, OK. It reports "Made 14 pictures".
+   Check `drawRegistry/<key>/images/thumb_<key>.png` now exist. Then choose Patterns (about 5 seconds), Gallery scripts (about
+   5 seconds; it lists animated scripts as skipped and `arcsAndInner` and `voronoi` as failed) and Gallery images (about a
+   minute and a half, 782 pictures). Then All, if you like.
+2. Open Patterns > Categories, Gallery (Ideabook, Patterns, Scripts), Draw, Figures: each frame shows pictures, not names.
+   Hover shows the name; click opens the item as before. Utilities lists still show names. Home shows pictures for items from
+   those tabs.
+3. **Thumbnails on or off**: untick it; open Patterns: names. Reload the page: still off. Tick it again.
+4. **Thumbnail size**: move the slider; open Patterns: the pictures are that size. Try 40, 100, 200 and tell me the size you
+   want as the default.
+5. **Check Missing Images**: lists items with no picture (should be none after step 1, apart from the skipped scripts).
+6. Save a figure (B5): its picture appears in the Figures list. Create Pattern or Create Gallery PNG in Draw: the new item's
+   picture is 200 by 200.
+Failure: pictures that are blank or cropped oddly (tell me which item), a script listed as failed that you expected to work,
+names showing where pictures should be. Undo: `git revert` the thumbnail commits (picture files stay; delete them by hand).
+
 **B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.

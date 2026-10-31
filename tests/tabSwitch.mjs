@@ -1688,6 +1688,67 @@ ti = await catInfo();
 if (ti.labels < 10) problems.push("[thumbnails] missing pictures should show the name instead: " + JSON.stringify(ti));
 await page.evaluate(async () => { const m = await import("/ui/thumbnailSettings.js"); m.setThumbnailSize(100); });
 
+/* ---- Regenerate thumbnails and Check Missing Images (service stubbed; nothing is written) ---- */
+stage = "regenerate thumbnails";
+const thumbWrites = [];
+await page.route("**/dispatch", async (route) => {
+  const r = JSON.parse(route.request().postData());
+  if (r.requestName === "writeThumbnail") thumbWrites.push(r.payload);
+  await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ request: r.requestName, status: "ok" }) });
+});
+const acceptDialog = (d) => d.accept();
+page.on("dialog", acceptDialog);
+await page.click("#utilities-tab");
+await page.waitForTimeout(900);
+await page.locator("#subtabs button", { hasText: "Tools" }).first().click();
+await page.waitForTimeout(500);
+await page.locator('#text .item[data-key="Regenerate thumbnails"]').click();
+await page.waitForTimeout(700);
+await page.locator("#action select").selectOption("Draw");
+await page.locator("#action button", { hasText: "Regenerate" }).click();
+await page.waitForFunction(() => /Made \d+ pictures/.test(document.getElementById("text").innerText), null, { timeout: 30000 });
+const regenText = await page.evaluate(() => document.getElementById("text").innerText);
+const drawKeys = await page.evaluate(() => Object.keys(window.drawRegistry).filter((k) => window.drawRegistry[k]));
+if (!/Made 14 pictures\. Skipped 0\. Failed 0\./.test(regenText)) problems.push("[regenerate] summary: " + regenText.slice(0, 200));
+if (thumbWrites.length !== drawKeys.length || thumbWrites.some((w) => w.kind !== "drawRegistry" || w.category !== w.name || !/^iVBORw0KGgo/.test(w.pngBase64 || ""))) {
+  problems.push("[regenerate] requests: " + thumbWrites.length + " for " + drawKeys.length + " Draw objects; first " + JSON.stringify(thumbWrites[0] && { ...thumbWrites[0], pngBase64: "..." }));
+}
+// A Patterns script goes through the same path (one is enough here; the whole set is a long run).
+const oneScript = await page.evaluate(async () => {
+  const m = await import("/ui/thumbnailMaker.js");
+  const all = await m.listThumbnailTargets(["Patterns"]);
+  const t = all.find((x) => x.name === "firstBuild");
+  return { count: all.length, found: !!t, thumbUrl: t && t.thumbUrl, sourcePath: t && t.sourcePath };
+});
+if (oneScript.count < 50 || !oneScript.found || oneScript.thumbUrl !== "/patterns/builds/images/thumb_firstBuild.png") problems.push("[regenerate] Patterns targets: " + JSON.stringify(oneScript));
+// A saved figure is drawn the way Show All draws it (served from stubs).
+await page.route("**/figures/directoryRegistry.json", (route) => route.fulfill({ contentType: "application/json", body: '["Boxes"]' }));
+await page.route("**/figures/Boxes/manifest.json", (route) => route.fulfill({ contentType: "application/json",
+  body: '[{"filename":"Demo","path":"Demo.json","title":"Demo","status":"new"}]' }));
+await page.route("**/figures/Boxes/Demo.json", (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(storedFigure) }));
+thumbWrites.length = 0;
+const figRes = await page.evaluate(async () => {
+  const m = await import("/ui/thumbnailMaker.js");
+  const r = await m.regenerateThumbnails(["Figures"]);
+  return { made: r.made, failed: r.failed.map((x) => x.message), tempLeft: Object.keys(uiState.figures.tabs).includes("tab-thumbnail-temp") };
+});
+if (figRes.made !== 1 || figRes.failed.length || figRes.tempLeft || thumbWrites.length !== 1 || thumbWrites[0].kind !== "figures" || thumbWrites[0].name !== "Demo") {
+  problems.push("[regenerate figures] " + JSON.stringify(figRes) + " writes=" + thumbWrites.length);
+}
+await page.unroute("**/figures/directoryRegistry.json");
+await page.unroute("**/figures/Boxes/manifest.json");
+await page.unroute("**/figures/Boxes/Demo.json");
+// Missing-picture check: the Draw objects have no picture files yet, so all are reported.
+const missing = await page.evaluate(async () => {
+  const m = await import("/ui/thumbnailMaker.js");
+  const r = await m.findMissingThumbnails(["Draw", "Patterns"]);
+  return { total: r.total, missingDraw: r.missing.filter((t) => t.set === "Draw").length, missingPatterns: r.missing.filter((t) => t.set === "Patterns").length };
+});
+if (missing.missingDraw < 10 || missing.total < 100) problems.push("[missing images] " + JSON.stringify(missing));
+page.off("dialog", acceptDialog);
+await page.unroute("**/dispatch");
+
 /* ---- Instrumentation: Record timings, then Show timings lists what was timed ---- */
 stage = "instrumentation";
 await page.click("#utilities-tab");
@@ -1801,4 +1862,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, instrumentation, no errors");
