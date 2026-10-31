@@ -3,6 +3,10 @@
 The branch sits on top of `claude/docs` (which is `claude1` plus 8 documentation commits), so merging goes:
 docs into `claude1` first, then this branch as a fast-forward. Nothing here touches `main`.
 
+> Where the other documents are: `NEXT_PASS.md`, `FOLLOWUPS_node-service.md`, `DESIGN_composed-figures.md`, `CHECKLIST_sweep-1.md`
+> (this file's twin) and `INTERIM_MESSAGES.md` are documents in the Claude Project "sketchpad", under `claude/`. They are not
+> files in this repository. `docs/CHECKLIST_sweep-1.md` and `docs/RUNBOOK_deferred.md` are kept in both places.
+
 Pictures for the iPad: the artifact "Sketchpad Sweep Review" (first half of the sweep) and "Sketchpad: Bootstrap removed,
 before and after" (25 screens, tap to flip between before and after).
 

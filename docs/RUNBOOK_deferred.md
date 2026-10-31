@@ -4,6 +4,10 @@ For the jobs that need your eyes. Each one is self-contained: goal, what to look
 undo. Do them in any order; each is on its own branch off `claude1` (after the sweep is merged). Hand any one to Claude
 Code on the PC as it stands.
 
+> Where the other documents are: `NEXT_PASS.md`, `FOLLOWUPS_node-service.md`, `DESIGN_composed-figures.md`, `CHECKLIST_sweep-1.md`
+> (this file's twin) and `INTERIM_MESSAGES.md` are documents in the Claude Project "sketchpad", under `claude/`. They are not
+> files in this repository. `docs/CHECKLIST_sweep-1.md` and `docs/RUNBOOK_deferred.md` are kept in both places.
+
 Before any of them:
 
 1. The sweep is merged: `claude/docs` into `claude1`, then `claude/sweep-1` as a fast-forward, and the checklist

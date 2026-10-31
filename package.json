@@ -27,7 +27,8 @@
     "test:node": "node tests/nodeSmoke.mjs",
     "build:static": "node scripts/buildStatic.mjs",
     "pixels:save": "node tests/pixelShots.mjs",
-    "pixels:compare": "node tests/pixelCompare.mjs"
+    "pixels:compare": "node tests/pixelCompare.mjs",
+    "time:startup": "node tests/timeStartup.mjs"
   },
   "dependencies": {
     "@melloware/coloris": "^0.25.0",
