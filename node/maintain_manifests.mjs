@@ -8,7 +8,8 @@ import { writeFileAtomicSync } from "./serviceFileHelpers.mjs";
 // --- PATH SETUP ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PROJECT_ROOT = path.resolve(__dirname, "..");
+// SKETCHPAD_ROOT lets a test point the whole run at a scratch copy; normally it is the folder above node/.
+const PROJECT_ROOT = process.env.SKETCHPAD_ROOT ? path.resolve(process.env.SKETCHPAD_ROOT) : path.resolve(__dirname, "..");
 
 const LOG_DIR   = path.join(PROJECT_ROOT, "utilities", "logfiles");
 const HOME_DIR  = path.join(PROJECT_ROOT, "home");

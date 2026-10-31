@@ -58,7 +58,7 @@ const port = await new Promise((resolve) => {
   const s = net.createServer().listen(0, "127.0.0.1", () => { const p = s.address().port; s.close(() => resolve(p)); });
 });
 const server = spawn(process.execPath, [path.join(nodeDir, "sketchpadServer.mjs")], {
-  cwd: scratch, env: { ...process.env, SKETCHPAD_PORT: String(port) }, stdio: ["ignore", "pipe", "pipe"]
+  cwd: scratch, env: { ...process.env, SKETCHPAD_PORT: String(port), SKETCHPAD_ROOT: scratch }, stdio: ["ignore", "pipe", "pipe"]
 });
 let serverLog = "";
 server.stdout.on("data", d => serverLog += d);
@@ -66,7 +66,7 @@ server.stderr.on("data", d => serverLog += d);
 await new Promise((resolve, reject) => {
   const t0 = Date.now();
   const timer = setInterval(() => {
-    if (/listening at/.test(serverLog)) { clearInterval(timer); resolve(); }
+    if (/listening at/.test(serverLog) && /(SUCCESS|FAILED)/.test(serverLog)) { clearInterval(timer); resolve(); }
     else if (Date.now() - t0 > 30000) { clearInterval(timer); reject(new Error("service did not start:\n" + serverLog)); }
   }, 100);
 });
