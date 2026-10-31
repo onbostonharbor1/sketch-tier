@@ -81,7 +81,7 @@
 import { resetCanvas, drawState }    from "/draw/drawState.js";
 import { buildParameterControls }   from "/ui/parameterControls.js";
 import { syncLayerToCanvas as syncOverlayToCanvas } from "/ui/canvasLayerManager.js";
-import { refreshPoints, drawFigurePoints } from "./figurePoints.js";
+import { refreshPoints, drawFigurePoints, deletePoint } from "./figurePoints.js";
 import { activatePointsInput, deactivatePointsInput } from "./figurePointer.js";
 import { activateCentroid, centroidHit, drawCentroid } from "./figureCentroid.js";
 import { snapshotWeldMembers, propagateAfterChange, drawWeldMarks } from "./figureWelds.js";
@@ -414,6 +414,8 @@ export function renderLayerPanel(tabId) {
 
     figure.layers.forEach((layer, i) => {
 
+      if (layer.deleted) return;        // a deleted layer keeps its number but has no row
+
       const reg = window.drawRegistry?.[layer.id];
 
       const row = document.createElement("div");
@@ -585,6 +587,48 @@ export function selectLayer(tabId, index) {
   redrawFigure(tabId);
 
 } // end selectLayer
+
+
+/* ============================================================
+   deleteLayer(tabId)
+   ------------------------------------------------------------
+   Deletes the active layer. Layer numbers never change, so the entry
+   stays in figure.layers marked deleted (and hidden), and leaves
+   figure.drawOrder, the strip and every drawing. Its discs are
+   deleted; deletePoint takes each out of its weld. A weld whose
+   members were all on this layer disappears with it; a weld that also
+   reaches other layers keeps its other members, unless that leaves
+   fewer than two, in which case it is dropped too (removeFromWeld).
+   Returns true when a layer was deleted.
+   ============================================================ */
+export function deleteLayer(tabId) {
+
+  const ts = uiState.figures.tabs[tabId];
+  const figure = ts?.figure;
+  if (!figure || figure.activeLayer < 0) return false;
+
+  const index = figure.activeLayer;
+  const layer = figure.layers[index];
+
+  // Collect the numbers first: deletePoint changes figure.points.
+  const numbers = figure.points.filter((p) => p.layer === index).map((p) => p.n);
+  for (const n of numbers) deletePoint(figure, n);
+
+  layer.deleted = true;
+  layer.visible = false;
+  figure.drawOrder = figure.drawOrder.filter((i) => i !== index);
+
+  // Next layer down the stack becomes active (the top one if none is below).
+  const next = figure.drawOrder.find((i) => figure.layers[i].visible) ?? figure.drawOrder[0];
+  figure.activeLayer  = next === undefined ? -1 : next;
+  ts.selectedPoint    = null;
+  ts.centroidSelected = false;
+
+  renderLayerPanel(tabId);
+  redrawFigure(tabId);
+  return true;
+
+} // end deleteLayer
 
 
 /* ============================================================

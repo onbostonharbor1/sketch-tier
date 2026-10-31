@@ -39,7 +39,7 @@ import { formatRebuildReportShared } from "/ui/rebuildSync.js";
 import { nodeRebuildAndValidateManifests } from "/ui/nodeLayer.js";
 import { openHelpHomeOverlay }      from "/ui/help.js";
 import { uiState }                  from "/ui/uiState.js";
-import { redrawFigure, canBreakApart, breakApartLayer } from "./figureLayers.js";
+import { redrawFigure, canBreakApart, breakApartLayer, deleteLayer } from "./figureLayers.js";
 import { deletePoint }              from "./figurePoints.js";
 
 
@@ -198,12 +198,28 @@ export async function getFiguresCaptionMenuItems(title) {
     onClick: () => breakApartLayer(uiState.figures.activeSubtab)
   };
 
+  // Deletes the active layer and its discs; welds to other layers keep their
+  // other members. There is no undo yet, so it asks first.
+  const deleteLayerItem = {
+    label:    "Delete layer",
+    disabled: !(ts0 && ts0.figure && ts0.figure.activeLayer >= 0 && ts0.mode !== "points"),
+    tooltip:  "Removes the active layer and its discs. Welds to other layers keep their other members. Cannot be undone.",
+    onClick: () => {
+      const ts = activeTab();
+      if (!ts || !ts.figure || ts.figure.activeLayer < 0) return;
+      const n = ts.figure.activeLayer + 1;
+      if (!window.confirm("Delete layer " + n + " and its points? This cannot be undone.")) return;
+      deleteLayer(uiState.figures.activeSubtab);
+    }
+  };
+
   return [
     await makeHelpItem("figures", null),
     await makeNotesItem(null, title),
     hitRadiusItem,
     deletePointItem,
     breakApartItem,
+    deleteLayerItem,
     later("Show Script"),
     later("Copy"),
     later("Archive"),

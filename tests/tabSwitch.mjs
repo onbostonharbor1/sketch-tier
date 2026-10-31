@@ -1339,6 +1339,44 @@ if (!tiny.editor || !tiny.menubar || tiny.requests === 0) problems.push("[help e
 await page.evaluate(() => document.getElementById("overlayClose")?.click());
 await page.waitForTimeout(300);
 
+/* ---- Delete layer: discs go, welds keep their members on other layers ---- */
+stage = "delete layer";
+await page.click("#figures-tab");
+await page.waitForTimeout(600);
+await newFigure();
+await insertExact("drawLine", { pt1: { x: 100, y: 100 }, pt2: { x: 300, y: 300 } });   // layer 0 (A)
+await insertExact("drawLine", { pt1: { x: 300, y: 300 }, pt2: { x: 500, y: 100 } });   // layer 1 (B)
+await insertExact("drawLine", { pt1: { x: 300, y: 300 }, pt2: { x: 500, y: 500 } });   // layer 2 (C)
+await page.waitForTimeout(300);
+const delRes = await page.evaluate(async () => {
+  const m  = await import("/ui/figures/figureLayers.js");
+  const id = uiState.figures.activeSubtab;
+  const ts = uiState.figures.tabs[id];
+  const f  = ts.figure;
+  // Free discs on the shared corner (300,300) of A, B, C, and one on C's far end.
+  const disc = (n, layer, x, y) => ({ n, kind: "free", layer, x, y, dx: 0, dy: 0, ox: x, oy: y });
+  f.points.push(disc(1, 0, 300, 300), disc(2, 1, 300, 300), disc(3, 2, 300, 300), disc(4, 2, 500, 500), disc(5, 0, 100, 100));
+  f.nextPoint = 6;
+  f.welds = [ { members: [ { layer: 0, n: 1 }, { layer: 1, n: 2 }, { layer: 2, n: 3 } ] },
+              { members: [ { layer: 2, n: 4 }, { layer: 0, n: 5 } ] } ];
+  const snap = () => ({ active: f.activeLayer, order: [...f.drawOrder],
+    points: f.points.map(p => p.n), welds: f.welds.map(w => w.members.map(x => x.n)),
+    rows: document.querySelectorAll("#figure-sidebar .figure-layer-row").length,
+    deleted: f.layers.map(l => !!l.deleted) });
+  f.activeLayer = 2;                       // C
+  m.deleteLayer(id);
+  const afterC = snap();
+  m.deleteLayer(id);                       // the new active layer
+  const afterNext = snap();
+  return { afterC, afterNext, layers: f.layers.length };
+});
+const wantC = JSON.stringify({ points: [1, 2, 5], welds: [[1, 2]], rows: 2, deleted: [false, false, true] });
+const gotC  = JSON.stringify({ points: delRes.afterC.points, welds: delRes.afterC.welds, rows: delRes.afterC.rows, deleted: delRes.afterC.deleted });
+if (gotC !== wantC) problems.push("[delete layer] after deleting layer 3: " + gotC + " wanted " + wantC);
+if (delRes.afterC.order.includes(2) || delRes.afterC.active === 2) problems.push("[delete layer] layer 3 still in the stack or active: " + JSON.stringify(delRes.afterC));
+if (delRes.afterNext.welds.length !== 0 || delRes.layers !== 3) problems.push("[delete layer] second delete: " + JSON.stringify(delRes.afterNext));
+if (delRes.afterNext.rows !== 1) problems.push("[delete layer] strip should show one row, shows " + delRes.afterNext.rows);
+
 stage = "draw handle drag";
 await page.click("#draw-tab");
 await page.waitForTimeout(700);
@@ -1421,4 +1459,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, no errors");
