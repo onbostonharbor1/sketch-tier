@@ -120,7 +120,7 @@ and a color you pick is saved as `#rrggbb` (names such as "blue" still draw, and
    missing file (or a category folder or manifest is missing). Nothing is changed by the check.
 2. Open the newest file in `utilities/logfiles`: it starts with `PROBLEMS: n` and `ADDED: n`, each followed by its list.
 3. Make a test problem: add an entry to a Patterns `manifest.json` for a file that does not exist (for example
-   `{"filename":"ghost","path":"ghost.js","title":"Ghost"}`), reload the page (the check runs at start-up), and open Home: a
+   `{"filename":"ghost","path":"ghost.js","title":"Ghost"}`), then run Rebuild & Validate (or restart the app: the check also runs at start-up), reload the page and open Home: a
    yellow bar under the caption says "The last manifest check found 1 problem" and lists it with the log name. Dismiss hides it;
    it stays hidden for that log, and a later log with problems shows it again. Other tabs never show the bar. Remove the test
    entry afterward. With the Node service not running the bar simply does not appear.
