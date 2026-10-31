@@ -7,6 +7,7 @@
    =========================================================== */
 
 import { nodeDispatch } from "./nodeLayer.js";
+import { rebuildAllManifests } from "/ui/rebuildSync.js";
 import { overlayManager } from "./overlay.js";
 import { escapeHtml } from "/ui/htmlText.js";
 import { manifest } from "./manifest.js";
@@ -350,9 +351,9 @@ async function applyEditManifest(spec, resolve) {
     throw new Error("applyEditManifest: unexpected response: " + JSON.stringify(result));
   }
 
-  // The manifest on disk changed; drop the cached category/status maps
-  // so Home, Gallery and the other tabs read the edited entry.
-  manifest.clearCache();
+  // The manifest on disk changed. Rebuild everything, so the combined Home list is
+  // rewritten too and every tab reads the edited entry again (ui/rebuildSync.js).
+  await rebuildAllManifests();
 
   spec._resultTitle  = newTitle;
   spec._resultStatus = newStatus;

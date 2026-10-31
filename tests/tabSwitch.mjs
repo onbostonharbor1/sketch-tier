@@ -1400,7 +1400,7 @@ const thumbsSent = [];
 await page.route("**/dispatch", async (route) => {
   const sent = JSON.parse(route.request().postData());
   if (sent.requestName === "writeThumbnail") thumbsSent.push(sent);
-  else sentSave = sent;
+  else if (sent.requestName !== "manifestMaintenance") sentSave = sent;      // the rebuild that follows a save is not the save
   if (sent.requestName === "saveFigure") storedFigure = sent.payload.figure;
   await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
                         body: JSON.stringify({ request: "saveFigure", status: "ok" }) });
@@ -1631,7 +1631,7 @@ await page.waitForTimeout(900);
 await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
 await page.waitForTimeout(700);
 let ti = await catInfo();
-if (ti.pictures < 3 || ti.firstWidth !== "100px" || !ti.firstTitle) problems.push("[thumbnails] Patterns list with pictures on: " + JSON.stringify(ti));
+if (ti.pictures < 3 || ti.firstWidth !== "50px" || !ti.firstTitle) problems.push("[thumbnails] Patterns list with pictures on: " + JSON.stringify(ti));
 
 await page.click("#utilities-tab");
 await page.waitForTimeout(900);
@@ -1686,7 +1686,7 @@ await page.locator("#subtabs button", { hasText: "Scripts" }).first().click();
 await page.waitForTimeout(1200);
 ti = await catInfo();
 if (ti.labels < 10) problems.push("[thumbnails] missing pictures should show the name instead: " + JSON.stringify(ti));
-await page.evaluate(async () => { const m = await import("/ui/thumbnailSettings.js"); m.setThumbnailSize(100); });
+await page.evaluate(async () => { const m = await import("/ui/thumbnailSettings.js"); m.setThumbnailSize(50); });
 
 /* ---- Regenerate thumbnails and Check Missing Images (service stubbed; nothing is written) ---- */
 stage = "regenerate thumbnails";
@@ -1747,6 +1747,32 @@ const missing = await page.evaluate(async () => {
 });
 if (missing.missingDraw < 10 || missing.total < 100) problems.push("[missing images] " + JSON.stringify(missing));
 page.off("dialog", acceptDialog);
+await page.unroute("**/dispatch");
+
+/* ---- Complete rebuild after a manifest change (a status edit must reach Home) ---- */
+stage = "complete rebuild";
+const seen = [];
+await page.route("**/dispatch", async (route) => {
+  const r = JSON.parse(route.request().postData());
+  seen.push(r.requestName);
+  await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" },
+                        body: JSON.stringify({ request: r.requestName, status: "ok" }) });
+});
+await page.evaluate(() => { uiState.home.needsUpdate = false; });
+const rebuilt = await page.evaluate(async () => {
+  const m = await import("/ui/rebuildSync.js");
+  const report = await m.rebuildAllManifests();
+  return { report: report && report.request, homeNeedsUpdate: uiState.home.needsUpdate, draw: uiState.draw.needsUpdate };
+});
+if (!seen.includes("manifestMaintenance") || rebuilt.report !== "manifestMaintenance" || !rebuilt.homeNeedsUpdate || !rebuilt.draw) {
+  problems.push("[complete rebuild] rebuildAllManifests: " + JSON.stringify(rebuilt) + " requests " + seen.join(","));
+}
+seen.length = 0;
+await page.evaluate(async () => {
+  const { archiveItem } = await import("/ui/archiveItem.js");
+  await archiveItem({ payload: { manifestPath: "/patterns/x/manifest.json", filename: "x.js" }, showAlert: false });
+});
+if (seen.join(",") !== "archiveItem,manifestMaintenance") problems.push("[complete rebuild] archive should be followed by a rebuild: " + seen.join(","));
 await page.unroute("**/dispatch");
 
 /* ---- Home alert: the last manifest check's problems are summarized on Home ---- */
@@ -1931,4 +1957,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, home alert, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, no errors");

@@ -6,6 +6,7 @@
    =========================================================== */
 
 import { manifest } from "./manifest.js";
+import { nodeRebuildAndValidateManifests } from "./nodeLayer.js";
 import { uiState } from "/ui/uiState.js";
 
 /**
@@ -26,6 +27,33 @@ export async function syncSystemStateAfterRebuild() {
   });
 
 } // end syncSystemStateAfterRebuild
+
+/**
+ * The complete rebuild (Barry's rule): after anything changes a manifest -- Edit Manifest,
+ * Archive, saving a figure, Create Pattern, Create Gallery PNG -- the Node service scans the
+ * folders again, rewrites the manifests and the combined Home list, and the app then drops
+ * everything it holds in memory and reads it again. Nothing is patched in memory. Most of what
+ * the rebuild writes is what was already there, and it is quick.
+ *
+ * This is also why a status change shows up on Home: the Home list (home/manifest.json) is
+ * built from all the other manifests by the rebuild, so editing one manifest alone left it stale.
+ *
+ * If the Node service cannot be reached, the app still drops its memory so the next read comes
+ * from disk. Returns the rebuild report, or null when the rebuild could not run.
+ */
+export async function rebuildAllManifests() {
+
+  let report = null;
+  try {
+    report = await nodeRebuildAndValidateManifests();
+  } catch (err) {
+    console.error("rebuildAllManifests: the rebuild did not run:", err);
+  }
+
+  await syncSystemStateAfterRebuild();
+  return report;
+
+} // end rebuildAllManifests
 
 export function formatRebuildReportShared(report) {
 

@@ -8,7 +8,7 @@
 import { nodeDispatch } from "/ui/nodeLayer.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
 import { THUMB_FILE_SIZE } from "/ui/thumbnailSettings.js";
-import { manifest } from "/ui/manifest.js";
+import { rebuildAllManifests } from "/ui/rebuildSync.js";
 
 /*************************************************************
     createGalleryPatternPng(spec)
@@ -33,7 +33,7 @@ import { manifest } from "/ui/manifest.js";
       1) Validate spec + canvas
       2) Convert canvas to PNG base64 + 50x50 thumb base64
       3) Dispatch Node request: writeGalleryPatternPng
-      4) Force manifest refresh (same pattern as archive/edit)
+      4) Rebuild all manifests (same as archive and Edit Manifest)
       5) Display a clear completion message
 
     NOTE
@@ -87,8 +87,8 @@ export async function createGalleryPatternPng(spec = {}) {
     throw new Error("createGalleryPatternPng: service failed: " + JSON.stringify(result));
   }
 
-  // 5. Invalidate manifest cache
-  manifest.invalidate("gallery/Patterns");
+  // 5. Rebuild the manifests so the new picture is listed everywhere
+  await rebuildAllManifests();
 
   // 6. User Feedback
   alert(
@@ -111,7 +111,7 @@ export async function createGalleryPatternPng(spec = {}) {
       1) Validate spec
       2) Build pattern .js source text from drawRegistry entry+params
       3) Dispatch Node request: writePatternScriptFromDraw
-      4) Invalidate manifest cache (patterns)
+      4) Rebuild all manifests
       5) Alert what was created
 ============================================================ */
 export async function createPatternScript(spec = {}) {
@@ -170,8 +170,8 @@ export async function createPatternScript(spec = {}) {
     throw new Error("createPatternScript: service failed: " + JSON.stringify(result));
   }
 
-  // Invalidate manifest cache so Patterns picks up the new entry deterministically
-  manifest.invalidate("patterns");
+  // Rebuild the manifests so Patterns and Home pick up the new entry
+  await rebuildAllManifests();
 
   alert(
     "Pattern created:\n" +

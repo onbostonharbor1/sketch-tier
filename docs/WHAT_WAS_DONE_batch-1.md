@@ -31,6 +31,11 @@ printing, and looking at pictures with human eyes. That is what your checklist i
 | Color control | `95f6617` | Coloris is removed (package, style sheet, setup, CSS rules, lint global). Color controls use the browser's own color input (no transparency; colors are saved as `#rrggbb`). |
 | Manifest problems and Home alert | `7235fa6` | The manifest check now reports an entry whose file is missing, a category listed without a folder or manifest, and an entry with no path. It changes nothing. Each log starts with `PROBLEMS: n` and `ADDED: n` with the lists. Home shows an alert bar summarizing the newest log's problems (first 5, with a Dismiss button); it stays quiet when the log is clean or the Node service is not running. Rebuild & Validate lists them under "Broken files". |
 
+- **Manifest phase.** The start-up check runs once (`sketchpad.bat`); the import-time run and `predev` run are gone, and
+  `maintain_manifests.mjs` runs by itself only from a command line. Missing-file entries stay and are only reported. After
+  Edit Manifest, Archive, Create Pattern/Gallery PNG and figure Save the app does a complete rebuild (`rebuildAllManifests()`
+  in `ui/rebuildSync.js`). Default thumbnail size is 50. Check: B16.
+
 ## 3. Decisions recorded, nothing built (in `claude/DESIGN_composed-figures.md`)
 
 - Three kinds of template: guides, a flattened earlier drawing used as a base (saved outside the figure), and scaffold.
@@ -47,7 +52,7 @@ running Vite (restart Vite after big edits). Scripts to look at later are in `cl
 
 ## 5. Not done
 
-- Thumbnail default size (you choose after trying 40 to 200), the manifest phase, hardening, 8b, templates and scaffold,
+- Final thumbnail size (default is 50; you choose after trying 40 to 200), hardening, 8b, templates and scaffold,
   background image import, Phase 9 (merge points, red circles, dot size), the 46 `!important` and 46 show/hide lines (see
   `docs/RUNBOOK_deferred.md`; the Coloris `!important` lines went with the color change).
 - `claude/phase-8b` on GitHub (a copy of `sweep-1`) still has to be deleted by you.

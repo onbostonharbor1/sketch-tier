@@ -2,7 +2,7 @@ console.log(">>> Script Loaded");
 
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { writeFileAtomicSync } from "./serviceFileHelpers.mjs";
 
 // --- PATH SETUP ---
@@ -418,10 +418,15 @@ function stripExt(name, ext) { return name.endsWith(ext) ? name.slice(0, -ext.le
  */
 function countStatusItems(l) { return l.filter(e => e.status).length; } // end countStatusItems
 
-runManifestMaintenance()
-  .then(report => {
-    const n = report.manifestsWritten.length;
-    const home = report.homeWritten ? "yes" : "no";
-    console.log(`>>> SUCCESS: ${report.homeCounts.total} items sorted. manifestsWritten=${n} homeWritten=${home}`);
-  })
-  .catch(err => { console.error("!!! FAILED", err); process.exit(1); });
+// Run the check when this file is started from the command line (sketchpad.bat, `npm run build:home`).
+// When another file imports it (the Node service does), nothing runs: the service calls
+// runManifestMaintenance() only when the app asks for a rebuild.
+if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+  runManifestMaintenance()
+    .then(report => {
+      const n = report.manifestsWritten.length;
+      const home = report.homeWritten ? "yes" : "no";
+      console.log(`>>> SUCCESS: ${report.homeCounts.total} items sorted. manifestsWritten=${n} homeWritten=${home}`);
+    })
+    .catch(err => { console.error("!!! FAILED", err); process.exit(1); });
+}

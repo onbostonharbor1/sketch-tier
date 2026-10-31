@@ -43,6 +43,7 @@ import { rebuildInstances, redrawFigure } from "./figureLayers.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
 import { THUMB_FILE_SIZE }           from "/ui/thumbnailSettings.js";
 import { archiveItem }               from "/ui/archiveItem.js";
+import { rebuildAllManifests }       from "/ui/rebuildSync.js";
 
 
 /* ------------------------------------------------------------
@@ -127,6 +128,8 @@ async function sendSave(tabId, category, name, overwrite) {
   tabState.savedSnapshot = snapshotOfFigure(figure);
   uiState.figures.needsUpdate = true;                   // the Categories list reloads when next shown
 
+  // The manifest changed (a new entry, or a refreshed title): rebuild everything so Home lists it too.
+  await rebuildAllManifests();
   await writeFigureThumbnail(tabId, category, name);
 
   // Tell figuresNav.js to show the figure again, so the subtab and caption

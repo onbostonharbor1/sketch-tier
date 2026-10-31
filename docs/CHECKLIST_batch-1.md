@@ -100,8 +100,8 @@ unfinished (it passes numbers where other scripts pass points). Undo: `git rever
    Hover shows the name; click opens the item as before. Utilities lists still show names. Home shows pictures for items from
    those tabs.
 3. **Thumbnails on or off**: untick it; open Patterns: names. Reload the page: still off. Tick it again.
-4. **Thumbnail size**: move the slider; open Patterns: the pictures are that size. Try 40, 100, 200 and tell me the size you
-   want as the default.
+4. **Thumbnail size**: move the slider; open Patterns: the pictures are that size. The default is now 50 by 50 (picture files stay 200 by 200).
+   Try 40, 100, 200 and tell me if you want a different default.
 5. **Check Missing Images**: lists items with no picture (should be none after step 1, apart from the skipped scripts).
 6. Save a figure (B5): its picture appears in the Figures list. Create Pattern or Create Gallery PNG in Draw: the new item's
    picture is 200 by 200.
@@ -121,9 +121,22 @@ and a color you pick is saved as `#rrggbb` (names such as "blue" still draw, and
    missing file (or a category folder or manifest is missing). Nothing is changed by the check.
 2. Open the newest file in `utilities/logfiles`: it starts with `PROBLEMS: n` and `ADDED: n`, each followed by its list.
 3. Make a test problem: add an entry to a Patterns `manifest.json` for a file that does not exist (for example
-   `{"filename":"ghost","path":"ghost.js","title":"Ghost"}`), then run Rebuild & Validate (or restart the app: the check also runs at start-up), reload the page and open Home: a
+   `{"filename":"ghost","path":"ghost.js","title":"Ghost"}`), then run Rebuild & Validate (or restart with `sketchpad.bat`: the check runs once at start-up), reload the page and open Home: a
    yellow bar under the caption says "The last manifest check found 1 problem" and lists it with the log name. Dismiss hides it;
    it stays hidden for that log, and a later log with problems shows it again. Other tabs never show the bar. Remove the test
    entry afterward. With the Node service not running the bar simply does not appear.
 Failure: no bar although the log lists problems, a bar on other tabs, or a log that does not start with the PROBLEMS summary.
 Undo: `git revert 7235fa6`.
+
+**B16. Manifest phase: one start-up run, complete rebuild after changes.**
+1. Start with `sketchpad.bat`. The manifest check runs once (not three times). `npm run dev` alone no longer runs it, and the
+   Node service no longer runs it when it starts.
+2. Entries whose file is gone stay in the manifest and show in the app until you deal with them; the check only reports them
+   (log, and the Home alert bar). Nothing is removed.
+3. After Edit Manifest, Archive, Create Pattern, Create Gallery PNG, or a figure Save, the app does a complete rebuild: it
+   rescans the folders, rewrites every manifest and the combined Home list, drops all in-memory caches and reads them again.
+4. Home status: Patterns > Categories > Edit Manifest on an item, change its status, OK, then click Home. The new status shows
+   without a reload. (The Node service already copied the edit into the Home list; the rebuild also refreshes the app's copy.)
+5. `node node/maintain_manifests.mjs` from a command line still runs the rebuild by itself.
+Failure: Home shows the old status, a missing-file entry disappears, or the check runs more than once at start.
+Undo: `git revert` the commit titled "Manifest phase".

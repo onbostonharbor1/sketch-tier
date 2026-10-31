@@ -172,10 +172,7 @@ where both a thumbnail grid and sliders appear (Draw with saved settings), and t
    throws; both work on a fresh page. In the browser console, before and after a run, type
    `JSON.stringify((await import("/draw/drawState.js")).drawState)` and compare: the field that differs between a fresh page and a late run is the leak. Report
    the field; the fix is to reset it in `resetCanvas()` in `draw/drawState.js`.
-5. **Manifest phase** (`maintain_manifests.mjs` guard). The last lines of the file are an unguarded `runManifestMaintenance().then(...).catch(... process.exit(1))`, so
-   importing the file (which the Node service does) runs the whole rebuild. Wrap that call in
-   `if (import.meta.url === pathToFileURL(process.argv[1]).href) { ... }` and add `import { pathToFileURL } from "node:url";`
-   at the top. Then confirm `sketchpad.bat` still rebuilds manifests once at start.
+5. **Manifest phase** (done in `claude/batch-1`: the `maintain_manifests.mjs` guard, one start-up run, complete rebuild after changes; see B16 in `docs/CHECKLIST_batch-1.md`). Nothing left to do here.
 
 ---
 

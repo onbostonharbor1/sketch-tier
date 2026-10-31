@@ -7,10 +7,10 @@
   "scripts": {
     "build:home": "node ./node/maintain_manifests.mjs",
     "// Note": "Combined predev into concurrently to prevent one script failure from blocking others",
-    "predev": "node ./node/check_ports.mjs & node ./node/generateHelpManifest.mjs & node ./node/maintain_manifests.mjs",
+    "predev": "node ./node/check_ports.mjs & node ./node/generateHelpManifest.mjs",
     "dev:vite": "vite --port 5173 --strictPort",
     "dev:svc": "node ./node/sketchpadServer.mjs",
-    "// Logic": "Run maintenance tasks first, then launch the environment",
+    "// Logic": "sketchpad.bat runs the manifest check once (node ./node/maintain_manifests.mjs) and then launches the environment; the app asks the service for a complete rebuild after any manifest change",
     "dev:all": "concurrently -k -n SVC,VITE \"npm run dev:svc\" \"npm run dev:vite\"",
     "dev:sketchpad": "npm run predev && npm run dev:all",
     "open:sketchpad": "wait-on http://localhost:5173/ && start http://localhost:5173/",

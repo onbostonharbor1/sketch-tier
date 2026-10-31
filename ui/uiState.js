@@ -43,7 +43,7 @@ export const uiState = {
   ========================================================= */
   thumbnails: {
     on:   true,            // boolean; false shows names, as before
-    size: 100              // how big a thumbnail is drawn on screen, in pixels
+    size: 50               // how big a thumbnail is drawn on screen, in pixels (Barry's default)
   },
 
   /* =========================================================

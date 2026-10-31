@@ -6,7 +6,7 @@
    =========================================================== */
 
 import { nodeDispatch } from "./nodeLayer.js";
-import { manifest } from "./manifest.js";
+import { rebuildAllManifests } from "./rebuildSync.js";
 
 /* ============================================================
     archiveItem(specOrPayload)
@@ -53,6 +53,9 @@ export async function archiveItem(specOrPayload) {
     "archiveItem",
     { manifestPath, filename }
   );
+
+  // The file moved and its entry is gone: rebuild everything (ui/rebuildSync.js).
+  await rebuildAllManifests();
 
   // Default success alert (restores yesterday's behavior)
   const showAlert = (spec.showAlert !== false);

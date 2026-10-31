@@ -66,7 +66,7 @@ server.stderr.on("data", d => serverLog += d);
 await new Promise((resolve, reject) => {
   const t0 = Date.now();
   const timer = setInterval(() => {
-    if (/listening at/.test(serverLog) && /(SUCCESS|FAILED)/.test(serverLog)) { clearInterval(timer); resolve(); }
+    if (/listening at/.test(serverLog)) { clearInterval(timer); resolve(); }
     else if (Date.now() - t0 > 30000) { clearInterval(timer); reject(new Error("service did not start:\n" + serverLog)); }
   }, 100);
 });
@@ -292,6 +292,16 @@ check("saveFigure: refused requests changed nothing", JSON.stringify(fs.readdirS
   r = await call("manifestMaintenance", {});
   const textAfter = (await call("readLogFile", { name: (await call("listLogFiles", {})).json.files[0].name })).json.text;
   check("after the entry is removed the log says PROBLEMS: 0 (or lists only others)", !/ghost\.js/.test(textAfter), textAfter.slice(0, 200));
+}
+
+/* ---- 5c3. a status edit is in the Home list at once (the service mirrors it) and survives a rebuild ---- */
+{
+  const cat = fs.readdirSync(path.join(scratch, "patterns"), { withFileTypes: true }).find((e) => e.isDirectory() && exists("patterns", e.name, "manifest.json")).name;
+  const entry = readScratchJson("patterns", cat, "manifest.json")[0];
+  r = await call("editManifestEntry", { manifestPath: "/patterns/" + cat + "/manifest.json", matchField: "filename", matchValue: entry.filename, title: entry.title || entry.filename, status: "zzStatusProbe" });
+  check("the edit is mirrored into the Home list", r.status === 200 && readScratchJson("home", "manifest.json").some((e) => e.status === "zzStatusProbe" && e.file === entry.filename), "status " + r.status);
+  r = await call("manifestMaintenance", {});
+  check("a rebuild keeps the new status in the Home list", r.status === 200 && readScratchJson("home", "manifest.json").some((e) => e.status === "zzStatusProbe" && e.file === entry.filename));
 }
 
 /* ---- 5d. writeThumbnail ---- */

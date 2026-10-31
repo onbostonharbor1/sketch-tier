@@ -248,7 +248,7 @@ changed, that is the start-up rebuild, as before. `package-lock.json` should not
 | What is left in `FOLLOWUPS_node-service.md` | Few items: confirm two Node scripts are still wanted, one possible duplicate escape function, the manifest-run guard and VS Code quoting (Runbook Job 4), splitting the Edit Manifest dialog file. Everything else on that list is done. |
 | 46 `!important` in the CSS, the 46 show/hide lines, fixed `#categories` / `#drawControls`, and the small items | Written as step-by-step jobs in `docs/RUNBOOK_deferred.md` for you to do on the PC (Jobs 1 to 4). |
 | Visibility held in state: 46 `.style.display` assignments remain | One by one, section 7 below lists each with its own check; the recipe is Job 2 in `docs/RUNBOOK_deferred.md`. The checkbox walk (the one that read the page) was dead code and is gone. |
-| Manifest phase: maintenance runs three times at start, import-time run with `process.exit(1)` | Belongs to the manifest phase you planned before Phase 10. |
+| Manifest phase: maintenance runs three times at start, import-time run with `process.exit(1)` | Done in `claude/batch-1` (B16). |
 | Phase items (handle-drop weld, delete layer, Phase 10, thumbnails, native color input, Phase 9 reshape, template import and welding to templates, instrumentation) | Large; each needs your design call or your eyes. |
 | Help Overview PDFs (`docs/*.pdf`) | Not regenerated; the HTML pages and the PDF builder are updated, so rebuilding gives current text. Help pages that still say "Bootstrap" were not rewritten. |
 
