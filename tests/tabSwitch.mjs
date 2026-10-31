@@ -1456,7 +1456,7 @@ if (!closedSaved || dialogs.length) problems.push("[close saved] closed=" + clos
 // Reopen it from the stubbed files.
 const reopened = await page.evaluate(async () => {
   const m = await import("/ui/figures/figuresSave.js");
-  const id = await m.openSavedFigure("Boxes", "Demo.json", "Demo");
+  const id = await m.openSavedFigure("Boxes", "Demo.json");
   await new Promise((r) => setTimeout(r, 400));
   const t = uiState.figures.tabs[id];
   const c = document.getElementById("sharedCanvas");
@@ -1476,7 +1476,7 @@ if (!reopened.id || !reopened.active || reopened.layers !== 2 || reopened.instan
 const again = await page.evaluate(async () => {
   const m = await import("/ui/figures/figuresSave.js");
   const before = Object.keys(uiState.figures.tabs).length;
-  await m.openSavedFigure("Boxes", "Demo.json", "Demo");
+  await m.openSavedFigure("Boxes", "Demo.json");
   return Object.keys(uiState.figures.tabs).length === before;
 });
 if (!again) problems.push("[reopen] opening an open figure made a second tab");
@@ -1518,8 +1518,33 @@ const dupSaved = await page.evaluate(async () => {
 if (dupSaved || dispatches !== 1 || !/already exists/.test(dialogs[2] || "")) {
   problems.push("[save duplicate] saved=" + dupSaved + " dispatches=" + dispatches + " dialogs=" + dialogs.join(" | "));
 }
+// Home hands a saved figure to the Figures tab (what homeNav.js sets when you click one in Home).
+await page.evaluate(() => {
+  for (const id of Object.keys(uiState.figures.tabs)) if (id !== "tab-categories") delete uiState.figures.tabs[id];
+  uiState.figures.activeSubtab = "tab-categories";
+});
+const fromHome = await page.evaluate(async () => {
+  const { setUI } = await import("/ui/setUI.js");
+  uiState.launch.pending    = true;
+  uiState.launch.sourceTab  = "home";
+  uiState.launch.targetTab  = "figures";
+  uiState.launch.sourceType = "figure";
+  uiState.launch.figurePath = "/figures/Boxes/Demo.json";
+  await setUI("home");
+  await new Promise((r) => setTimeout(r, 1200));
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  return { tab: uiState.activeTab, name: t?.figure?.name, category: t?.figure?.category, layers: t?.figure?.layers?.length,
+           pending: uiState.launch.pending, path: uiState.launch.figurePath };
+});
+if (fromHome.tab !== "figures" || fromHome.name !== "Demo" || fromHome.category !== "Boxes" || fromHome.layers !== 2 || fromHome.pending || fromHome.path) {
+  problems.push("[home figure] " + JSON.stringify(fromHome));
+}
+
 page.off("dialog", onDialog);
 await page.unroute("**/dispatch");
+await page.unroute("**/figures/directoryRegistry.json");
+await page.unroute("**/figures/Boxes/manifest.json");
+await page.unroute("**/figures/Boxes/Demo.json");
 
 /* ---- Instrumentation: Record timings, then Show timings lists what was timed ---- */
 stage = "instrumentation";
@@ -1616,10 +1641,11 @@ const launched = await page.evaluate(async () => {
   uiState.launch.sourceType  = "drawRegistry";
   uiState.launch.registryKey = "cycloid";
   await setUI("home");
-  return { activeTab: uiState.activeTab, pending: uiState.launch.pending,
+  return { activeTab: uiState.activeTab, pending: uiState.launch.pending, key: uiState.launch.registryKey,
+           drawSub: uiState.draw.activeSubtab,
            drawButton: document.getElementById("draw-tab").classList.contains("active") };
 });
-if (launched.activeTab !== "draw" || launched.pending || !launched.drawButton) {
+if (launched.activeTab !== "draw" || launched.pending || launched.key || launched.drawSub !== "tab-cycloid" || !launched.drawButton) {
   problems.push("[launch intent] after setUI('home') with a Draw launch pending: " + JSON.stringify(launched));
 }
 
@@ -1633,4 +1659,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, delete layer, save and reopen, Figures launch from Home, instrumentation, no errors");

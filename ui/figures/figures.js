@@ -76,6 +76,7 @@ import {
   openNewFigureTab
 }                                    from "/ui/figures/figuresNav.js";
 import { loadFiguresCategories }     from "/ui/figures/figuresDisplay.js";
+import { openSavedFigure }           from "/ui/figures/figuresSave.js";
 
 
 /* ============================================================
@@ -152,6 +153,9 @@ export function initFiguresTab(restored = false) {
     switchToCategories();
   }
 
+  // Home asked for a saved figure (uiState.launch, set by homeNav.js).
+  consumeLaunchIfForFigures();
+
   // Register with the manifest system once, so a Rebuild & Validate
   // re-runs this init. A function is an object in JavaScript, so it can
   // carry a property (_registered) that remembers it was done.
@@ -161,6 +165,31 @@ export function initFiguresTab(restored = false) {
   }
 
 } // end initFiguresTab
+
+
+/* ============================================================
+   consumeLaunchIfForFigures()
+   ------------------------------------------------------------
+   If Home launched this tab for a saved figure, clears the launch
+   request and opens the figure. figurePath looks like
+   "/figures/<category>/<file>.json".
+   ============================================================ */
+function consumeLaunchIfForFigures() {
+
+  const launch = uiState.launch;
+  if (!launch.pending || launch.targetTab !== "figures") return;
+
+  const parts = String(launch.figurePath || "").split("/");     // "", "figures", category, file
+  launch.pending     = false;
+  launch.sourceTab   = null;
+  launch.targetTab   = null;
+  launch.sourceType  = null;
+  launch.figurePath  = null;
+  if (parts.length !== 4 || parts[1] !== "figures") throw new Error("consumeLaunchIfForFigures: bad figure path: " + parts.join("/"));
+
+  openSavedFigure(parts[2], parts[3]);      // alerts by itself if it cannot open
+
+} // end consumeLaunchIfForFigures
 
 
 /* ============================================================

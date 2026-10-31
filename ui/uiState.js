@@ -18,7 +18,8 @@ export const uiState = {
     sourceTab: null,       // string, e.g. "home"
     targetTab: null,       // string, e.g. "draw"
     sourceType: null,      // string, e.g. "drawRegistry"
-    registryKey: null      // string, e.g. "linkedCircles"
+    registryKey: null,     // string, e.g. "linkedCircles"
+    figurePath: null       // string, e.g. "/figures/Boxes/Demo.json" (sourceType "figure")
   }, // end launch
 
 

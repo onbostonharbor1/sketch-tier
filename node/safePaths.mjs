@@ -23,11 +23,11 @@ import path from "path";
 /* ------------------------------------------------------------
    Where the service may find manifests. This is the one place that
    says it. "home" holds the combined list that the Home tab shows;
-   the other three hold the real per-category manifests, and are the
+   the others hold the real per-category manifests, and are the
    only places a file may be archived from.
 ------------------------------------------------------------ */
-export const MANIFEST_FOLDERS_ALL       = ["home", "patterns", "gallery", "utilities"];
-export const MANIFEST_FOLDERS_ORIGINALS = ["patterns", "gallery", "utilities"];
+export const MANIFEST_FOLDERS_ALL       = ["home", "patterns", "gallery", "utilities", "figures"];
+export const MANIFEST_FOLDERS_ORIGINALS = ["patterns", "gallery", "utilities", "figures"];
 
 export function manifestRoots(folders = MANIFEST_FOLDERS_ALL) {
   return folders.map(name => path.resolve("./" + name));

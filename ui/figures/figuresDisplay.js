@@ -79,7 +79,7 @@ export async function loadFiguresCategories() {
             // An arrow function: a small function written in place. It
             // remembers filename, categoryName and title from this
             // loop pass, so each item opens its own figure.
-            onClick:     () => openSavedFigure(categoryName, fileName, title)
+            onClick:     () => openSavedFigure(categoryName, fileName)
           });
         }
 

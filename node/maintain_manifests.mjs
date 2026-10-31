@@ -17,6 +17,7 @@ const HOME_FILE = path.join(HOME_DIR, "manifest.json");
 
 const GALLERY_DIR   = path.join(PROJECT_ROOT, "gallery");
 const UTILITIES_DIR = path.join(PROJECT_ROOT, "utilities");
+const FIGURES_DIR   = path.join(PROJECT_ROOT, "figures");
 const PATTERNS_DIR  = path.join(PROJECT_ROOT, "patterns");
 const DRAW_REGISTRY = path.join(PROJECT_ROOT, "drawRegistry");
 
@@ -231,7 +232,7 @@ async function processDrawRegistry(report, log) {
 function buildHomeListFromReport(report) {
   const out = [];
   const manifestFiles = [];
-  [PATTERNS_DIR, GALLERY_DIR, UTILITIES_DIR].forEach(r => {
+  [PATTERNS_DIR, GALLERY_DIR, UTILITIES_DIR, FIGURES_DIR].forEach(r => {
     if (fs.existsSync(r)) walkFindManifestJson(r, manifestFiles);
   });
 

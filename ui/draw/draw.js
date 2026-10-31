@@ -263,5 +263,6 @@ function clearLaunch() {
   uiState.launch.targetTab   = null;
   uiState.launch.sourceType  = null;
   uiState.launch.registryKey = null;
+  uiState.launch.figurePath  = null;
 
 } // end clearLaunch

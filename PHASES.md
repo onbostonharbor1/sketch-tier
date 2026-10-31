@@ -22,7 +22,7 @@ Do one phase at a time. After each, stop and wait for him to review, play with i
 | 8, next pass | A handle dropped on another handle welds (see "Phase 8, next pass") | Specified; six questions open for Barry |
 | 8b | Magic points: more candidate kinds (midpoints, tops of loops, cusps), needed as weld targets and for parametric objects | |
 | 9 | Print aids: scale bar; minimum nail-spacing check (needs nail size and highlight-vs-list answers from Barry) | |
-| 10 | Save and recovery (Save As, category and manifest creation, reload) | Built on `claude/batch-1` (see "Phase 10 as built"); Home listing of figures not yet |
+| 10 | Save and recovery (Save As, category and manifest creation, reload) | Built on `claude/batch-1` (see "Phase 10 as built") |
 | 11 | Figure follow-ups  | |
 | 12 | Thumbnails (the Insert list becomes icons with a larger preview on mouseover) | |
 | 13 | Sweep tool | |
@@ -656,4 +656,8 @@ group is picked back up.
   (`hasUnsavedChanges`; choosing a different active layer does not count as a change).
 - Saved and reopened: layers (including `visible`, color, transform, deleted marks), discs, `nextPoint`, welds, stacking.
   Not saved: mode, selection, Show All.
-- Not built: the move-to-another-category command (not needed yet), Home listing of figures, Copy / Archive / Reset.
+- Home: `maintain_manifests.mjs` now includes `figures/` in the Home list (figures that have a status); `figures` was added to
+  the folders Edit Manifest and Archive may touch (`safePaths.mjs`). Clicking a figure in Home sets a launch request
+  (`uiState.launch.figurePath`) and Figures opens it. A newly saved figure shows in Home after the next manifest rebuild, like
+  other new items. A figure's name is its file name; the manifest title (Edit Manifest) only changes the list.
+- Not built: the move-to-another-category command (not needed yet), Copy / Archive / Reset.

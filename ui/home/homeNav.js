@@ -202,6 +202,23 @@ function buildHomeCategoryDescriptor(grouped) {
               return;
             }
 
+            /* saved figure: open it in the Figures tab */
+            if (entry.path && entry.path.startsWith("/figures/") && entry.path.endsWith(".json")) {
+              saved.view         = HOME_VIEW_CATEGORIES;
+              saved.activeStatus = null;
+              saved.activeEntry  = null;
+              saved.activeIndex  = null;
+
+              uiState.launch.pending     = true;
+              uiState.launch.sourceTab   = "home";
+              uiState.launch.targetTab   = "figures";
+              uiState.launch.sourceType  = "figure";
+              uiState.launch.figurePath  = entry.path;
+
+              launchTabViaSetUI("figures").catch((err) => { throw err; });
+              return;
+            }
+
             /* Normal Home Results path */
             saved.view         = HOME_VIEW_RESULTS;
             saved.activeStatus = status;

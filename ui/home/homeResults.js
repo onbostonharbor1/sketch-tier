@@ -185,6 +185,7 @@ export function deriveHomeOriginFromPath(path) {
   if (p.startsWith("/patterns/"))     return "Patterns";
   if (p.startsWith("/gallery/"))      return "Gallery";
   if (p.startsWith("/utilities/"))    return "Utilities";
+  if (p.startsWith("/figures/"))      return "Figures";
   if (p.startsWith("/drawregistry/")) return "Draw";
   if (p.startsWith("/home/"))         return "Home";
   return "Unknown";

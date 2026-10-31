@@ -247,6 +247,13 @@ check("saveFigure: overwrite replaces the file", r.status === 200 && r.json.stat
 r = await call("saveFigure", { category: "Boxes", name: "Second", figure: sample });
 check("saveFigure: a second figure in an existing category", r.status === 200 && r.json.newCategory === false && readScratchJson("figures", "Boxes", "manifest.json").length === 2);
 check("saveFigure: the registry lists the category once", readScratchJson("figures", "directoryRegistry.json").filter((c) => c === "Boxes").length === 1);
+r = await call("editManifestEntry", { manifestPath: "/figures/Boxes/manifest.json", matchField: "path", matchValue: "Second.json", title: "Second", status: "current" });
+check("editManifestEntry works on a figure manifest", r.status === 200 && readScratchJson("figures", "Boxes", "manifest.json").some((e) => e.path === "Second.json" && e.status === "current"), "status " + r.status + " " + JSON.stringify(r.json));
+r = await call("manifestMaintenance", {});
+{ const home = exists("home", "home.json") ? [] : readScratchJson("home", "manifest.json");
+  const f = home.filter((e) => String(e.path).startsWith("/figures/"));
+  check("Home list includes figures that have a status", f.length === 2 && f.some((e) => e.path === "/figures/Boxes/First try.json" && e.status === "favorite"),
+    "status " + r.status + " " + JSON.stringify(f)); }
 const figBefore = JSON.stringify(fs.readdirSync(path.join(scratch, "figures")));
 for (const [label, payload] of [
   ["category ..",         { category: "..", name: "x", figure: sample }],

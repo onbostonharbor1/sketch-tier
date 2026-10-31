@@ -25,7 +25,7 @@
    Exports:
      saveFigureAs(tabId)
      saveFigureTab(tabId)           Save: same place if saved before
-     openSavedFigure(category, fileName, title)
+     openSavedFigure(category, fileName)
    ============================================================ */
 
 import { uiState }                   from "/ui/uiState.js";
@@ -127,11 +127,16 @@ async function sendSave(tabId, category, name, overwrite) {
 
 
 /* ------------------------------------------------------------
-   openSavedFigure(category, fileName, title)
+   openSavedFigure(category, fileName)
    Reads the file, makes a new figure subtab for it and rebuilds
    the live objects. A figure that is already open is just shown.
    ------------------------------------------------------------ */
-export async function openSavedFigure(category, fileName, title) {
+export async function openSavedFigure(category, fileName) {
+
+  // The figure's name is its file name without ".json". (The manifest title
+  // can be changed with Edit Manifest; the name must stay the file's, or Save
+  // would write a second file.)
+  const title = fileName.replace(/\.json$/i, "");
 
   const tabs = uiState.figures.tabs;
 

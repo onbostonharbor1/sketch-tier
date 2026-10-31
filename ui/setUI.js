@@ -191,14 +191,22 @@ async function runSetUI(tab, progress) {
   progress.stage = "activate " + tabName;
   await activateTab(tabName);
 
-  // 3. Handle launch intents
+  // 3. Handle launch intents. The target tab's init reads the request and
+  // clears it (Draw: consumeLaunchIfForDraw; Figures: consumeLaunchIfForFigures),
+  // so it must still be pending when that tab activates. If the target never
+  // read it, it is cleared here so it cannot go stale.
   progress.stage = "launch intent";
   if (!uiState.launch || uiState.launch.pending !== true) return;
   const targetTab = uiState.launch.targetTab;
-  uiState.launch.pending = false;
   // Run the target tab now, inside this switch. (Calling setUI here would
   // queue behind this very switch; awaiting that would never finish.)
   if (uiState.activeTab !== targetTab) await runSetUI(targetTab, progress);
+  uiState.launch.pending     = false;
+  uiState.launch.sourceTab   = null;
+  uiState.launch.targetTab   = null;
+  uiState.launch.sourceType  = null;
+  uiState.launch.registryKey = null;
+  uiState.launch.figurePath  = null;
 } // end runSetUI
 
 /* --- Tab Handling Logic --- */
