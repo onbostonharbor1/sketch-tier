@@ -41,7 +41,7 @@ numbers, so only the load, ready, Patterns, Gallery and Utilities differences me
 `npm run time:startup` (5 runs by default) for your own numbers; to time the old checkout use
 `SKETCHPAD_BOOTSTRAP_FROM` (see the top of `tests/timeStartup.mjs`).
 
-Final gates on the last commit (`df476e5`): lint 0 errors, imports 0 problems, ids pass, `test:node` 60 of 60, `test:tabs` pass.
+Final gates on the last code commit (`972d8f8` has the same code): lint 0 errors, imports 0 problems (344 files), ids pass, `test:node` 60 of 60, `test:tabs` pass.
 
 ## Fixed during the check
 
