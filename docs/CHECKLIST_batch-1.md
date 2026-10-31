@@ -5,6 +5,15 @@ cannot see or that need your PC (Windows, real files, the real Home list). Each 
 and how to undo. Branch: `claude/batch-1`. Setup: `git fetch`, `git checkout claude/batch-1`, `npm install`, start as usual.
 If `ui/uiState.js` or many files change while Vite is running, stop and restart Vite.
 
+## Suggested order for a big session
+
+1. Set up: `git fetch`, `git checkout claude/batch-1`, `npm install` (Coloris goes away), start the app and the Node service
+   (`npm run dev:all` or `sketchpad.bat`). Run `npm run lint:globals`, `npm run test:node` and `npm run test:tabs` once as a
+   baseline (set `TEST_LOCAL_BOOTSTRAP=1` only if the CDN is blocked; Bootstrap is gone, so normally not needed).
+2. B13 first (Regenerate thumbnails, Draw then Patterns then Gallery), because it fills the pictures the other tabs show.
+3. B1 to B4 and B14 (quick looks), then B5 to B7 and B10 (figure saving, Home, copy, archive, reset), then B3, B12, B15.
+4. B8 (picture compare) last. Tell me anything odd; small interface differences are fine and need no report.
+
 **B1. Tab switching and launching from Home (`80a9961`, `761756f`).** Click through all six tabs twice. Home: open a Draw
 registry item from a category (for example one under a status): Draw opens with that object. Failure: the right tab opens
 but not the object, or the app stays on Home. Undo: `git revert 761756f 80a9961`.
@@ -54,6 +63,8 @@ a change, Save. The same `.json` file is replaced and no new file appears. Failu
 **B8. The picture comparison (`npm run pixels:compare`) will show one intended difference:** the Utilities Commands panel
 (the timings controls). Everything else should be identical to a run from `sweep-1`.
 
+**B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.
+
 **B10. Copy, Archive, Reset (`be7a108`). Needs the Node service for Archive.**
 1. Open a saved figure (B5). Caption menu v > Copy: a new subtab "<name> copy" opens with the same layers; it is unsaved
    (closing it asks). Changing the copy does not change the original.
@@ -96,7 +107,7 @@ unfinished (it passes numbers where other scripts pass points). Undo: `git rever
 Failure: pictures that are blank or cropped oddly (tell me which item), a script listed as failed that you expected to work,
 names showing where pictures should be. Undo: `git revert` the thumbnail commits (picture files stay; delete them by hand).
 
-**B14. Color control without Coloris (commit after `2bbb663`).** Coloris is removed (the package, its style sheet, `main.js` setup, its
+**B14. Color control without Coloris (`95f6617`).** Coloris is removed (the package, its style sheet, `main.js` setup, its
 CSS rules and the lint global). Every `colorPicker` control (Draw objects, Utilities > Lab) is now the browser's own color input:
 click the swatch and the system color chooser opens. Check on Windows: Draw > Cycloid: the Color swatch shows blue; pick red:
 the drawing turns red as you choose; reload and look at a few other Draw objects. Utilities > Lab > Color > "Change Color
@@ -104,4 +115,14 @@ HSL/RGB": the two swatches work. Limits: no transparency in the chooser (the scr
 and a color you pick is saved as `#rrggbb` (names such as "blue" still draw, and show as their hex in the swatch). After
 `npm install` the Coloris package is gone from `node_modules`. Undo: `git revert` that commit, then `npm install`.
 
-**B9. Loose end.** On GitHub, delete the old branch `claude/phase-8b` (a copy of `sweep-1`). I cannot delete it from here.
+**B15. Manifest problems in the log, and the Home alert bar (`7235fa6`).**
+1. Utilities > Commands > Rebuild & Validate. The report now has a "Broken files" list if any manifest entry points at a
+   missing file (or a category folder or manifest is missing). Nothing is changed by the check.
+2. Open the newest file in `utilities/logfiles`: it starts with `PROBLEMS: n` and `ADDED: n`, each followed by its list.
+3. Make a test problem: add an entry to a Patterns `manifest.json` for a file that does not exist (for example
+   `{"filename":"ghost","path":"ghost.js","title":"Ghost"}`), reload the page (the check runs at start-up), and open Home: a
+   yellow bar under the caption says "The last manifest check found 1 problem" and lists it with the log name. Dismiss hides it;
+   it stays hidden for that log, and a later log with problems shows it again. Other tabs never show the bar. Remove the test
+   entry afterward. With the Node service not running the bar simply does not appear.
+Failure: no bar although the log lists problems, a bar on other tabs, or a log that does not start with the PROBLEMS summary.
+Undo: `git revert 7235fa6`.
