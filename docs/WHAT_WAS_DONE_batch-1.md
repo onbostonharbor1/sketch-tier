@@ -2,9 +2,9 @@
 
 For reading before you sit down at the PC. The branch is stacked on `claude/sweep-1`; nothing is merged, and `main` and
 `claude1` are untouched. Size: 179 files changed, 3,693 lines added, 362 removed (121 of the files are comment-only
-script headers). The matching list of what to check is `docs/CHECKLIST_batch-1.md` (items B1 to B15). Every change below has
+script headers). The matching list of what to check is `docs/CHECKLIST_batch-1.md` (items B1 to B16). Every change below has
 automated tests that pass in the Linux sandbox: `test:tabs` (the whole app in a browser, about 45 stages), `test:node`
-(100 checks of the Node service), lint (0 errors, 7 known warnings), import check, id check, and the import-loop count
+(102 checks of the Node service), lint (0 errors, 7 known warnings), import check, id check, and the import-loop count
 (10, unchanged). What the sandbox could not do: Windows, your real files, the real Node service writing to your folders, real
 printing, and looking at pictures with human eyes. That is what your checklist is for.
 
