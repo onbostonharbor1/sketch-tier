@@ -19,6 +19,7 @@ export const REGIONS = [
   { id: "caption",           clear: "empty-show" },
   { id: "text",              clear: "empty-show" },   // lists, categories, results
   { id: "sketchpad",         clear: "empty-show" },   // hosts the drawing canvas
+  { id: "alertBar",          clear: "empty-hide" },   // Home only (ui/homeAlert.js)
   { id: "figure-sidebar",    clear: "empty-hide" },   // Figures only
   { id: "interface-controls", clear: "empty" },
   { id: "sketchpad-wrapper", clear: "hide" },

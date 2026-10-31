@@ -32,6 +32,13 @@ export const uiState = {
   },
 
   /* =========================================================
+     Home alert (ui/homeAlert.js): the log whose problems were dismissed
+  ========================================================= */
+  homeAlert: {
+    dismissedLog: null     // name of the manifest log the person dismissed, or null
+  },
+
+  /* =========================================================
      Thumbnails in the category lists (ui/thumbnailSettings.js)
   ========================================================= */
   thumbnails: {

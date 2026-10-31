@@ -37,6 +37,7 @@ export async function runManifestMaintenance() {
     request: "manifestMaintenance", status: "ok", logName, logPath,
     manifestsWritten: [], homeWritten: false,
     added: {}, broken: {},
+    brokenFiles: [],      // problems found by checkManifestEntries(); nothing is changed because of them
 
     // NEW: better UI reporting
     addedFiles: [],
@@ -53,6 +54,10 @@ export async function runManifestMaintenance() {
     await processGalleryImages(report, log);
     await processUtilities(report, log);
     await processDrawRegistry(report, log);
+    checkManifestEntries(report);
+
+    // The summary goes at the top of the log, where the Home tab's alert reads it.
+    log.splice(2, 0, ...summaryLines(report), "");
 
     const homeList = buildHomeListFromReport(report);
 
@@ -200,6 +205,71 @@ async function processUtilities(report, log) {
     }
   }
 } // end processUtilities
+
+/**
+ * Looks for manifest entries that point at nothing, and categories that are listed but not there.
+ * It only reports: a missing file may have been moved, renamed or deleted by mistake, and which
+ * it was is for a person to decide. The problems are put in report.brokenFiles, and from there
+ * at the top of the log (summaryLines) and in the Rebuild & Validate report.
+ */
+function checkManifestEntries(report) {
+
+  const trees = [
+    ["patterns"],
+    ["gallery", "Scripts"], ["gallery", "Ideabook"], ["gallery", "Patterns"],
+    ["utilities", "Tools"], ["utilities", "Lab"],
+    ["figures"]
+  ];
+
+  for (const parts of trees) {
+    const treeDir = path.join(PROJECT_ROOT, ...parts);
+    const regPath = path.join(treeDir, "directoryRegistry.json");
+    const label   = parts.join("/");
+    if (!fs.existsSync(regPath)) continue;
+
+    let categories;
+    try { categories = readJson(regPath); } catch (err) {
+      report.brokenFiles.push(label + ": directoryRegistry.json cannot be read (" + err.message + ")");
+      continue;
+    }
+    if (!Array.isArray(categories)) { report.brokenFiles.push(label + ": directoryRegistry.json is not a list"); continue; }
+
+    for (const category of categories) {
+      const catDir       = path.join(treeDir, category);
+      const manifestPath = path.join(catDir, "manifest.json");
+      if (!fs.existsSync(catDir))       { report.brokenFiles.push(label + "/" + category + ": listed in directoryRegistry.json but the folder is missing"); continue; }
+      if (!fs.existsSync(manifestPath)) { report.brokenFiles.push(label + "/" + category + ": the folder has no manifest.json"); continue; }
+
+      let list;
+      try { list = readJson(manifestPath); } catch (err) {
+        report.brokenFiles.push(label + "/" + category + ": manifest.json cannot be read (" + err.message + ")");
+        continue;
+      }
+      if (!Array.isArray(list)) { report.brokenFiles.push(label + "/" + category + ": manifest.json is not a list"); continue; }
+
+      for (const entry of list) {
+        if (!entry || typeof entry.path !== "string" || entry.path === "") {
+          report.brokenFiles.push(label + "/" + category + ": an entry has no path (" + JSON.stringify(entry && (entry.title || entry.filename || entry)).slice(0, 60) + ")");
+        } else if (!fs.existsSync(path.join(catDir, entry.path))) {
+          report.brokenFiles.push(label + "/" + category + ": \"" + entry.path + "\" is listed in manifest.json but the file is missing");
+        }
+      }
+    }
+  }
+
+} // end checkManifestEntries
+
+/**
+ * The lines that go at the top of the log: the problems, then the files added to manifests.
+ * The Home tab reads the "PROBLEMS: n" line and the indented lines under it.
+ */
+function summaryLines(report) {
+  const lines = ["PROBLEMS: " + report.brokenFiles.length];
+  for (const b of report.brokenFiles) lines.push("  " + b);
+  lines.push("ADDED: " + report.addedFiles.length);
+  for (const a of report.addedFiles) lines.push("  " + a);
+  return lines;
+} // end summaryLines
 
 /**
  * Performs text analysis on DrawRegistry files to extract metadata (id, status, name).

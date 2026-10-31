@@ -273,6 +273,27 @@ for (const [label, payload] of [
 }
 check("saveFigure: refused requests changed nothing", JSON.stringify(fs.readdirSync(path.join(scratch, "figures"))) === figBefore);
 
+/* ---- 5c2. maintenance reports a manifest entry whose file is missing (and changes nothing) ---- */
+{
+  const ghostCat = fs.readdirSync(path.join(scratch, "patterns"), { withFileTypes: true }).find((e) => e.isDirectory() && exists("patterns", e.name, "manifest.json")).name;
+  const mp = path.join(scratch, "patterns", ghostCat, "manifest.json");
+  const original = fs.readFileSync(mp, "utf8");
+  const list = JSON.parse(original);
+  list.push({ filename: "ghost", path: "ghost.js", title: "Ghost", status: "new" });
+  fs.writeFileSync(mp, JSON.stringify(list, null, 2));
+  r = await call("manifestMaintenance", {});
+  check("maintenance lists a manifest entry with no file", r.status === 200 && Array.isArray(r.json.brokenFiles) && r.json.brokenFiles.some((x) => x.includes('"ghost.js"') && x.includes(ghostCat)),
+    "status " + r.status + " " + JSON.stringify(r.json && r.json.brokenFiles));
+  check("maintenance leaves the entry in the manifest", JSON.parse(fs.readFileSync(mp, "utf8")).some((e) => e.path === "ghost.js"));
+  const logs = (await call("listLogFiles", {})).json.files;
+  const text = (await call("readLogFile", { name: logs[0].name })).json.text;
+  check("the newest log starts with a PROBLEMS summary", /^PROBLEMS: [1-9]\d*$/m.test(text) && /^  patterns\/.*ghost\.js/m.test(text), text.slice(0, 200));
+  fs.writeFileSync(mp, original);
+  r = await call("manifestMaintenance", {});
+  const textAfter = (await call("readLogFile", { name: (await call("listLogFiles", {})).json.files[0].name })).json.text;
+  check("after the entry is removed the log says PROBLEMS: 0 (or lists only others)", !/ghost\.js/.test(textAfter), textAfter.slice(0, 200));
+}
+
 /* ---- 5d. writeThumbnail ---- */
 const PNG_1PX = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
 const patCat2 = fs.readdirSync(path.join(scratch, "patterns"), { withFileTypes: true }).find((e) => e.isDirectory() && exists("patterns", e.name, "manifest.json")).name;

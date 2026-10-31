@@ -403,3 +403,32 @@ body {
 .figure-overlay-btn:hover .figure-tooltip {
   display: block;
 }
+
+
+/* Home alert bar: a summary of the last manifest check when it found problems */
+#alertBar {
+  margin: 6px 8px;
+  padding: 6px 10px;
+  background: #fff3cd;
+  border: 1px solid #e0b84a;
+  border-radius: 4px;
+  color: #5c4500;
+  font-size: 0.8rem;
+}
+#alertBar .alert-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#alertBar ul {
+  margin: 4px 0 4px 18px;
+  padding: 0;
+}
+#alertBar .alert-foot {
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+#alertBar .alert-dismiss {
+  font-size: 0.72rem;
+  padding: 0 8px;
+}

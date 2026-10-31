@@ -1749,6 +1749,50 @@ if (missing.missingDraw < 10 || missing.total < 100) problems.push("[missing ima
 page.off("dialog", acceptDialog);
 await page.unroute("**/dispatch");
 
+/* ---- Home alert: the last manifest check's problems are summarized on Home ---- */
+stage = "home alert";
+let alertLogName = "manifestMaintenance_2026-10-31T10-00-00.txt";
+let alertLogText = "Manifest Maintenance Log - test\n\nPROBLEMS: 2\n  patterns/circles: \"ghost.js\" is listed in manifest.json but the file is missing\n  figures/Boxes: the folder has no manifest.json\nADDED: 0\n";
+await page.route("**/dispatch", async (route) => {
+  const r = JSON.parse(route.request().postData());
+  let body = { request: r.requestName, status: "ok" };
+  if (r.requestName === "listLogFiles") body.files = [{ name: alertLogName, mtimeMs: 1 }, { name: "older.txt", mtimeMs: 0 }];
+  if (r.requestName === "readLogFile")  body.text = alertLogText;
+  await route.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify(body) });
+});
+const goHome = async () => {
+  await page.evaluate(() => { uiState.home.needsUpdate = true; });      // Home starts over, as on a reload
+  await page.click("#home-tab");
+  await page.waitForTimeout(1200);
+};
+const alertState = () => page.evaluate(() => {
+  const b = document.getElementById("alertBar");
+  return { shown: getComputedStyle(b).display !== "none", text: b.innerText };
+});
+await goHome();
+let al = await alertState();
+if (!al.shown || !/found 2 problems/.test(al.text) || !/ghost\.js/.test(al.text) || !/Boxes/.test(al.text) || !al.text.includes(alertLogName)) problems.push("[home alert] with problems: " + JSON.stringify(al));
+await page.click("#alertBar .alert-dismiss");
+al = await alertState();
+if (al.shown) problems.push("[home alert] Dismiss left it showing");
+await page.click("#draw-tab");
+await page.waitForTimeout(700);
+al = await alertState();
+if (al.shown) problems.push("[home alert] still showing on the Draw tab");
+await goHome();
+al = await alertState();
+if (al.shown) problems.push("[home alert] a dismissed log came back: " + JSON.stringify(al));
+alertLogName = "manifestMaintenance_2026-10-31T11-00-00.txt";          // a newer log with problems
+await goHome();
+al = await alertState();
+if (!al.shown || !al.text.includes(alertLogName)) problems.push("[home alert] a newer log with problems should show again: " + JSON.stringify(al));
+alertLogName = "manifestMaintenance_2026-10-31T12-00-00.txt";
+alertLogText = "Manifest Maintenance Log - test\n\nPROBLEMS: 0\nADDED: 0\n";
+await goHome();
+al = await alertState();
+if (al.shown) problems.push("[home alert] a clean log should show nothing: " + JSON.stringify(al));
+await page.unroute("**/dispatch");
+
 /* ---- Instrumentation: Record timings, then Show timings lists what was timed ---- */
 stage = "instrumentation";
 await page.click("#utilities-tab");
@@ -1887,4 +1931,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, instrumentation, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, home alert, instrumentation, no errors");

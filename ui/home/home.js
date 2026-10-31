@@ -29,6 +29,7 @@ import { clearDivs } from "/ui/uiUtilities.js";
 import { setCommandsButtonLabel } from "/ui/commandsButton.js";
 import { setCaptionBar }                     from "/ui/caption.js";
 import { manifest }                          from "/ui/manifest.js";
+import { showHomeAlert } from "/ui/homeAlert.js";
 import { resetHomeState }                    from "/ui/home/homeState.js";
 import { loadHomeManifest, loadHomeManifest_async } from "/ui/home/homeManifest.js";
 import {
@@ -112,6 +113,7 @@ export function initHomeTab(restored = false) {
   switchHomeView(uiState.home.saved.view);
 
   loadHomeManifest();
+  showHomeAlert();
 
   if (!initHomeTab._registered) {
     manifest.register("home", () => {
@@ -137,6 +139,7 @@ function restoreHomeTab() {
   ensureHomeSavedState();
   setHomeSubtabs();
   loadHomeManifest();
+  showHomeAlert();
   switchHomeView(uiState.home.saved.view);
 
 } // end restoreHomeTab
