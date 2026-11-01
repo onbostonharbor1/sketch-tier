@@ -25,6 +25,7 @@
     "check:imports": "node tests/importCheck.mjs",
     "check:ids": "node tests/idCheck.mjs",
     "test:node": "node tests/nodeSmoke.mjs",
+    "test:scripts": "node tests/scriptOrder.mjs",
     "build:static": "node scripts/buildStatic.mjs",
     "pixels:save": "node tests/pixelShots.mjs",
     "pixels:compare": "node tests/pixelCompare.mjs",

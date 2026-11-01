@@ -28,6 +28,31 @@ export let drawState = {
   bounds: null       // { minX, minY, maxX, maxY } of what was drawn, object space
 };
 
+// The starting values of every field above, kept so each script run can
+// begin from them. Taken once, when this file loads.
+const DRAW_STATE_START = JSON.parse(JSON.stringify(drawState));
+
+/**
+ * resetDrawStateForScript()
+ * Puts drawState back to its starting values before a pattern or gallery
+ * script runs, so nothing one script leaves behind reaches the next:
+ * the point list (pts) and number counter (ctr) start empty and at 0,
+ * final, transform and bounds are cleared, and any field a script added
+ * is removed. The canvas size is kept (Utilities sets it on purpose).
+ * Without this, scripts that number points through createPrintNodes
+ * failed after a script that left points behind (v1-finish item 3).
+ */
+export function resetDrawStateForScript() {
+  const keepW = drawState.canvasWidth;
+  const keepH = drawState.canvasHeight;
+  for (const key of Object.keys(drawState)) {
+    if (!(key in DRAW_STATE_START)) delete drawState[key];
+  }
+  Object.assign(drawState, JSON.parse(JSON.stringify(DRAW_STATE_START)));
+  drawState.canvasWidth  = keepW;
+  drawState.canvasHeight = keepH;
+}
+
 /**
  * resetCanvas()
  * Clears the bitmap and resets the context state.

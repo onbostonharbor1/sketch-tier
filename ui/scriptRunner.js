@@ -59,7 +59,7 @@
    This MUST be a concrete file import (".js") so the browser
    never falls back to index.html.
 */
-import { drawState, resetCanvas } from "/draw/drawState.js";
+import { drawState, resetCanvas, resetDrawStateForScript } from "/draw/drawState.js";
 
 /*
    ParameterControls builder.
@@ -233,7 +233,7 @@ function buildControlsIfPresent(mod, options) {
    DEFAULTS
    --------
    - attaches canvas to #sketchpad
-   - resetCanvas() each run
+   - resetDrawStateForScript() and resetCanvas() each run
    - clears white background
    - runs runPattern() once (compat: may pass ctx)
    - optionally builds parameterControls if scriptInfo exists
@@ -262,7 +262,9 @@ export async function executeScriptToCanvas(mod, title, options = {}) {
   // Ensure the physical canvas is in the right place
   attachCanvasToRegion(regionId);
 
-  // Blue Core State Reset
+  // A fresh start: drawState as it was at load (canvas size kept), then a
+  // cleared canvas. Nothing from the previous script carries over.
+  resetDrawStateForScript();
   resetCanvas();
 
   const clearBg = (options.clearBackground !== false);

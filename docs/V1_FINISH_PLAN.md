@@ -11,7 +11,7 @@ finished item, so it is always the true state.
 switch models; keep going until paused.
 
 **Rules for this branch:** every item ends with its tests passing (`lint:globals`, `check:imports`, `check:ids`,
-`test:tabs`; `test:node` where Node changes). Every guess on an open question goes in the decisions log below. The figure
+`test:tabs`; `test:node` where Node changes; `test:scripts` where scripts or the runner change). Every guess on an open question goes in the decisions log below. The figure
 file format, once item 1 is done, may only gain fields (never rename or remove), so V2 can always import it.
 
 ## Items
@@ -20,7 +20,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 |---|---|---|---|
 | 1 | Figure file format made upgradeable: layer `lid`, `objectVersion`; named handles; layer `role`; `includeInOutput`; `units` and `scale`; `createdBy`; documented in `docs/FIGURE_FORMAT_V1.md`; round-trip test | Opus | Done |
 | 2 | Bug: Draw, Figures and Patterns share one set of object settings | Opus | Done |
-| 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Not started |
+| 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Done |
 | 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Not started |
 | 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Not started |
 | 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Not started |
