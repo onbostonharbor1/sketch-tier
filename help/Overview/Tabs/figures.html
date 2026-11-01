@@ -113,11 +113,17 @@ active layer. The next Phase 8 pass is meant to remove it: drop one handle on an
 <tr><td><code>figuresDisplay.js</code></td><td>the saved-figure category list (empty until Phase 10)</td></tr>
 <tr><td><code>figuresState.js</code></td><td>navigation bookkeeping</td></tr>
 <tr><td><code>figureModel.js</code></td><td>the figure as plain data</td></tr>
-<tr><td><code>figureLayers.js</code></td><td>insert, draw, select, hide layers; arming the mouse handling</td></tr>
+<tr><td><code>figureLayers.js</code></td><td>insert, select, delete, hide layers; rebuild a saved figure</td></tr>
+<tr><td><code>figureDraw.js</code></td><td>drawing the figure: layers, discs, weld marks, centroid</td></tr>
+<tr><td><code>figureLayerPanel.js</code></td><td>the layer number strip, the active layer's controls, arming the mouse handling</td></tr>
+<tr><td><code>figureBreakApart.js</code></td><td>break apart a layer into pieces</td></tr>
 <tr><td><code>figurePoints.js</code></td><td>discs: data, finding candidates, drawing</td></tr>
 <tr><td><code>figurePointer.js</code></td><td>mouse and keys in points mode</td></tr>
 <tr><td><code>figureCentroid.js</code></td><td>moving and turning a whole layer</td></tr>
-<tr><td><code>figureWelds.js</code></td><td>welds: make, unmake, follow, draw the mark</td></tr>
+<tr><td><code>figureWelds.js</code></td><td>welds: make and unmake (right-click, handle dropped on a handle)</td></tr>
+<tr><td><code>figureWeldModel.js</code></td><td>welds: the data (find, join, remove)</td></tr>
+<tr><td><code>figureWeldMove.js</code></td><td>welds: partners follow a move</td></tr>
+<tr><td><code>figureWeldMarks.js</code></td><td>welds: the plus marks</td></tr>
 <tr><td><code>draw/drawTransform.js</code></td><td>the transform math</td></tr>
 </table>
 <p>A separate document, <em>The Figures code, commented</em> (<code>docs/Figures-code.pdf</code>), has every

@@ -67,7 +67,9 @@ path), say so and let him decide.
 - `ui/interactor.js`: drag handles on `params.points` for one armed object at a time. A pressed handle is selected
   and the arrow keys nudge it (1 px, 10 with Shift). All handle moves go through `moveHandle`.
 - Figures (`ui/figures/`): `figureModel.js` (data), `figuresNav.js` (subtabs, caption tools, left buttons),
-  `figureLayers.js` (insert, draw, dim, select), `figureCentroid.js` (centroid, bounding box, move and rotate a
+  `figureLayers.js` (insert, select, delete, hide), `figureDraw.js` (draw, dim), `figureLayerPanel.js` (number strip,
+  controls, arming), `figureBreakApart.js`, `figureWelds.js` with `figureWeldModel.js`, `figureWeldMove.js` and
+  `figureWeldMarks.js` (welds: make, data, follow, marks), `figureCentroid.js` (centroid, bounding box, move and rotate a
   layer), `figuresCommands.js`, `figuresDisplay.js`, `figures.js` (TabSpec).
   A figure is `{name, category, nextPoint, points[], layers[], drawOrder[], activeLayer}` in
   `uiState.figures.tabs[tabId].figure`. Layer numbers are stable; `drawOrder` (top first) is separate.
