@@ -2432,6 +2432,27 @@ if (insertCells.length < 14 || insertCells.some((k) => k.startsWith("guide")) ||
   problems.push("[insert by picture] " + JSON.stringify({ cells: insertCells.length, previewText, afterPick }));
 }
 
+/* v1-finish item 11: Pursuit (temp)'s centre is a handle, not a text box. */
+stage = "pursuit handle";
+await newFigure();
+await page.selectOption("#figureInsertSelect", "regularPursuit");
+await page.waitForTimeout(400);
+const pursuit = await page.evaluate(() => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  const p = t.instances[0].params;
+  return { handles: p.points.length, at: p.points[0] && [p.points[0].x, p.points[0].y],
+           textBoxes: [...document.querySelectorAll("#action input[type=text]")].length };
+});
+await dragTo(300, 300, 340, 330);
+const pursuitMoved = await page.evaluate(() => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  const m = t.instances[0].params.midpoint, tr = t.figure.layers[0].transform;
+  return [Math.round(m.x + tr.tx), Math.round(m.y + tr.ty)];
+});
+if (pursuit.handles !== 1 || JSON.stringify(pursuit.at) !== "[300,300]" || pursuit.textBoxes !== 0 || Math.abs(pursuitMoved[0] - 340) > 1 || Math.abs(pursuitMoved[1] - 330) > 1) {
+  problems.push("[pursuit handle] " + JSON.stringify({ pursuit, pursuitMoved }));
+}
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2442,4 +2463,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, no errors");

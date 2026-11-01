@@ -6,6 +6,8 @@ window.drawRegistry_regularPursuit = {
     name:         "Pursuit (temp)",
     id:           "regularPursuit",
     version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+    handleNames:  ["center"],   // what each params.points entry is, by index (saved with handle discs)
+    interactive:  true,
     category:     "pursuit",
     firstOrder:   true,
     source:       "internal",
@@ -30,7 +32,8 @@ window.drawRegistry_regularPursuit = {
 	xScale:   1,
 	yScale:   1,
 	color:    "blue",
-	lineWidth: 1
+	lineWidth: 1,
+	points:   []   // [0] the centre handle (v1-finish item 11; was a point picker)
     },
 
   // --- UI metadata (controls) ---
@@ -42,8 +45,9 @@ window.drawRegistry_regularPursuit = {
     rotate:    { widget: "range", min: 0,   max: 360, step: 5,   label: "Rotation:" },
     xScale:    { widget: "range", min: 0.5, max: 2,   step: 0.1, label: "X Scale:" },
     yScale:    { widget: "range", min: 0.5, max: 2,   step: 0.1, label: "Y Scale:" },
-    color:     { widget: "colorPicker",                          label: "Color:" },
-    midpoint:  { widget: "pointPicker",                          label: "Midpoint:" }
+    color:     { widget: "colorPicker",                          label: "Color:" }
+    // The centre is dragged on the canvas (params.points[0]); the old
+    // pointPicker control no longer exists and showed as a text box.
   },
 
   // ==========================================================
@@ -53,6 +57,7 @@ window.drawRegistry_regularPursuit = {
     // Ensure midpoint is a Point object
     const p = this.params.midpoint;
     if (!(p instanceof Point)) this.params.midpoint = new Point(p.x, p.y);
+    if (!this.params.points.length) this.params.points.push({ x: p.x, y: p.y });
 
     this.elements = { element: new CurveStitch(this.params) };
   }, // end init
@@ -66,7 +71,11 @@ window.drawRegistry_regularPursuit = {
       const value = params[key];
       if (value === undefined) continue;
 
-      if (key === "midpoint") {
+      if (key === "points") {
+        // The centre handle was dragged: it is the midpoint.
+        const h = this.params.points[0];
+        if (h) { this.params.midpoint = new Point(h.x, h.y); e.midpoint = new Point(h.x, h.y); }
+      } else if (key === "midpoint") {
         if (value instanceof Point) e.midpoint = value;
         else e.midpoint = new Point(value.x, value.y);
       } else {

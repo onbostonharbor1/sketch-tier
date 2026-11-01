@@ -68,8 +68,8 @@ Circles, a prefix (`"circle"`: `circle1`, `circle2` ...).
 | Radiate | `radialPt`, `start`, `end`, `midpoint` |
 | Circular Parabola (Multi) | `center`, `drift` |
 | Linked Circles | `circle1`, `circle2` ... |
-| Circular Parabola, Cycloid, Chords in Ellipse, Inverse Star, Mystic Rose, Mystic Rose (Ellipse), Regular Polygon | `center` |
-| Parametrics, Pursuit (temp) | none |
+| Circular Parabola, Cycloid, Chords in Ellipse, Inverse Star, Mystic Rose, Mystic Rose (Ellipse), Regular Polygon, Pursuit (temp) | `center` |
+| Parametrics | `center`, `size` |
 
 ## How Version 2 imports a format 1 figure
 
