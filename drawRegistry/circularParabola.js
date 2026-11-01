@@ -6,7 +6,8 @@ import { drawCircularParabola } from "/draw/drawRegular.js";
 window.drawRegistry_circularParabola = {
     name:         "Circular Parabola",
     id:           "circularParabola",
-    version:      1.5,
+    version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+    handleNames: ["center"],   // what each params.points entry is, by index (saved with handle discs)
     category:     "curve_stitch",
     firstOrder:   true,
     source:       "internal",

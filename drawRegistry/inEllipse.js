@@ -16,7 +16,8 @@ import { drawInEllipse }          from "../draw/drawEllipse.js";
 window.drawRegistry_inEllipse = {
   name: "Chords in Ellipse",
   id: "inEllipse",
-  version: 1.6,
+  version: 1,   // whole numbers; raise when params change meaning (saved figures record it)
+  handleNames: ["center"],   // what each params.points entry is, by index (saved with handle discs)
   category: "circles",
   firstOrder: true,
   source: "internal",

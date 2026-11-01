@@ -9,7 +9,7 @@ window.drawRegistry_parametrics = {
 
     name:        "Parametrics",
     id:          "parametrics",
-    version:     0.3,
+    version:     1,   // whole numbers; raise when params change meaning (saved figures record it)
     category:    "Parametrics",
     firstOrder:  true,
     source:      "internal",

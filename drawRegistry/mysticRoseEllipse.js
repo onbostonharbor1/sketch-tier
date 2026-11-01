@@ -15,7 +15,8 @@ import { createNodes }              from '../draw/createNodes.js';
 window.drawRegistry_mysticRoseEllipse = {
     name:         "Mystic Rose (ellipse)",
     id:           "mysticRoseEllipse",
-    version:      1.5,
+    version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+    handleNames: ["center"],   // what each params.points entry is, by index (saved with handle discs)
     category:     "unicorns",
     firstOrder:   true,
     source:       "internal",

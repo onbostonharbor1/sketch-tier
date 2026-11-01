@@ -7,8 +7,8 @@ Branch `claude/v1-finish`, started 1 November 2026 from `claude/batch-1` with th
 `docs/V1_FINISH_PLAN.md`." Work resumes at the first item not marked Done. This file is updated and pushed with every
 finished item, so it is always the true state.
 
-**Models:** items marked **Opus** need judgement; items marked **Sonnet** are routine. When the Opus items are done, work
-stops and asks Barry to switch with `/model` and say "continue".
+**Models:** items marked **Opus** need judgement; items marked **Sonnet** are routine. Barry (1 Nov): do not stop to
+switch models; keep going until paused.
 
 **Rules for this branch:** every item ends with its tests passing (`lint:globals`, `check:imports`, `check:ids`,
 `test:tabs`; `test:node` where Node changes). Every guess on an open question goes in the decisions log below. The figure
@@ -18,7 +18,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 
 | No. | Item | Model | Status |
 |---|---|---|---|
-| 1 | Figure file format made upgradeable: layer `lid`, `object`, `objectVersion`; named handles; layer `role`; `includeInOutput`; `units` and `scale`; `createdBy`; documented in `docs/FIGURE_FORMAT_V1.md`; round-trip test | Opus | Not started |
+| 1 | Figure file format made upgradeable: layer `lid`, `objectVersion`; named handles; layer `role`; `includeInOutput`; `units` and `scale`; `createdBy`; documented in `docs/FIGURE_FORMAT_V1.md`; round-trip test | Opus | Done |
 | 2 | Bug: Draw, Figures and Patterns share one set of object settings | Opus | Not started |
 | 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Not started |
 | 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Not started |
@@ -50,3 +50,5 @@ activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node fol
 | G-5 | 8 | Parametric handles | One handle moves the curve, one scales it |
 | G-6 | 9 | Sweep tool | A grid of drawings over a range of one setting; click one to keep it |
 | G-7 | 7 | Which composites | Inner Star, Inverse Star, Circular Parabola, Mystic Rose |
+| G-8 | 1 | Rename `layer.id` to `layer.object`? | No. `id` stays the registry key (read in five places); V2 reads it as the object name. Points keep layer indices, which are permanent; `lid` is always L + index + 1 |
+| G-9 | 1 | Registry `version` values (1.0, 2.7 ...) | All set to the whole number 1 as the starting point for saved figures |

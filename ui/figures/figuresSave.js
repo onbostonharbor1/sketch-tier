@@ -38,7 +38,7 @@
 import { uiState }                   from "/ui/uiState.js";
 import { nodeDispatch }              from "/ui/nodeLayer.js";
 import { getFiguresRegistry }        from "./figuresState.js";
-import { snapshotOfFigure, nextFigureTabId } from "./figureModel.js";
+import { snapshotOfFigure, nextFigureTabId, upgradeFigureV1, checkFigureFormat } from "./figureModel.js";
 import { rebuildInstances } from "./figureLayers.js";
 import { redrawFigure }     from "./figureDraw.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
@@ -107,6 +107,13 @@ async function sendSave(tabId, category, name, overwrite) {
   const toSave = structuredClone(figure);
   toSave.name     = name;
   toSave.category = category;
+
+  // A file that later versions could not read is worse than no file.
+  const problems = checkFigureFormat(toSave);
+  if (problems.length) {
+    window.alert("The figure was not saved: its data is not in the expected form.\n\n" + problems.slice(0, 8).join("\n"));
+    return false;
+  }
 
   let reply;
   try {
@@ -209,6 +216,7 @@ export async function openSavedFigure(category, fileName) {
     return null;
   }
 
+  upgradeFigureV1(figure);       // fills in any field added to the format since the file was written
   figure.name     = title;
   figure.category = category;
 
@@ -303,6 +311,7 @@ export async function resetFigureTab(tabId) {
     return false;
   }
 
+  upgradeFigureV1(saved);
   saved.name     = figure.name;
   saved.category = figure.category;
   tabState.figure           = saved;

@@ -1436,6 +1436,23 @@ if (!sentSave || sentSave.requestName !== "saveFigure" || sentSave.payload.categ
     || sentSave.payload.overwrite !== false || sentSave.payload.figure.layers.length !== 2 || sentSave.payload.figure.format !== 1) {
   problems.push("[save] request was " + JSON.stringify(sentSave).slice(0, 300));
 }
+// The file format (v1-finish item 1): every field Version 2 needs to import the file.
+{
+  const f = sentSave?.payload?.figure || {};
+  const L = f.layers || [];
+  const ok = f.createdBy === "sketchpad-v1" && f.units === "px" && f.scale === null && !("templates" in f)
+    && L.length === 2 && L[0].lid === "L1" && L[1].lid === "L2"
+    && L.every((l) => l.objectVersion === 1 && l.role === "stitch" && l.includeInOutput === true && l.id === "drawLine");
+  if (!ok) problems.push("[format] saved figure fields: " + JSON.stringify({ createdBy: f.createdBy, units: f.units, scale: f.scale,
+    templates: f.templates, layers: L.map((l) => ({ id: l.id, lid: l.lid, v: l.objectVersion, role: l.role, out: l.includeInOutput })) }));
+  const caught = await page.evaluate(async (fig) => {
+    const { checkFigureFormat } = await import("/ui/figures/figureModel.js");
+    const good = checkFigureFormat(fig).length === 0;
+    const bad = structuredClone(fig); bad.layers[0].role = "bogus"; bad.points[0].layer = 9; bad.format = 2;
+    return { good, badCount: checkFigureFormat(bad).length };
+  }, f);
+  if (!caught.good || caught.badCount !== 3) problems.push("[format] checkFigureFormat: " + JSON.stringify(caught));
+}
 if (thumbsSent.length !== 1 || thumbsSent[0].payload.kind !== "figures" || thumbsSent[0].payload.category !== "Boxes"
     || thumbsSent[0].payload.name !== "Demo" || !/^iVBORw0KGgo/.test(thumbsSent[0].payload.pngBase64 || "")) {
   problems.push("[save] picture request: " + JSON.stringify(thumbsSent).slice(0, 200));
@@ -1478,6 +1495,13 @@ if (!reopened.id || !reopened.active || reopened.layers !== 2 || reopened.instan
     || reopened.welds !== JSON.stringify([{ members: [{ layer: 0, n: 1 }, { layer: 1, n: 2 }] }])) {
   problems.push("[reopen] " + JSON.stringify(reopened));
 }
+
+// Round trip: the reopened figure is the saved file, field for field.
+const roundTrip = await page.evaluate((stored) => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  return JSON.stringify(t.figure) === JSON.stringify(stored) ? "same" : JSON.stringify(t.figure).slice(0, 400);
+}, storedFigure);
+if (roundTrip !== "same") problems.push("[format] reopened figure differs from the saved file: " + roundTrip);
 
 // Opening it again just shows the open one.
 const again = await page.evaluate(async () => {
@@ -2008,6 +2032,7 @@ await page.waitForTimeout(300);
 await dragTo(500, 300, 303, 298);                          // onto layer 0's midpoint handle
 let hd = (await points()).filter(p => p.kind === "handle");
 if (hd.length !== 1 || hd[0].layer !== 0) problems.push("[8 next handle disc] expected one handle disc on layer 0: " + JSON.stringify(await points()));
+if (hd.length === 1 && hd[0].hname !== "midpoint") problems.push("[format] handle disc should be named midpoint: " + JSON.stringify(hd[0]));
 if ((await welds()).length !== 1) problems.push("[8 next handle disc] no weld: " + JSON.stringify(await welds()));
 await dragTo(300, 300, 340, 320);                          // layer 1's end, still active, pulls layer 0 along
 let q0 = await params(0);
@@ -2054,4 +2079,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), no errors");

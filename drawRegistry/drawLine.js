@@ -5,7 +5,8 @@ import { drawALine }                from "/draw/drawUtilities.js";
 window.drawRegistry_line = {
   name:        "Line",
   id:          "drawLine",
-  version:     2.7,
+  version:     1,   // whole numbers; raise when params change meaning (saved figures record it)
+  handleNames: ["pt1", "pt2", "midpoint"],   // what each params.points entry is, by index (saved with handle discs)
   category:    "fundamental",
   firstOrder:  true,
   source:      "internal",

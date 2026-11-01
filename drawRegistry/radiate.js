@@ -16,7 +16,8 @@ import { drawRadiate } from "../draw/drawUnicorns.js";
 window.drawRegistry_radiate = {
   name:         "Radiate",
   id:           "radiate",
-  version:      1.0, // Phase 3 Canvas Interactor Version
+  version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+  handleNames: ["radialPt", "start", "end", "midpoint"],   // what each params.points entry is, by index (saved with handle discs)
   category:     "fundamental",
   firstOrder:   true,
   source:       "internal",

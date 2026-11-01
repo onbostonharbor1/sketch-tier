@@ -17,7 +17,8 @@ import { drawRegularPolygon, regularPolygonParabolas,
 window.drawRegistry_regularPolygon = {
   name:         "Regular Polygon",
   id:           "regularPolygon",
-  version:      1.0, // Phase 3 Canvas Interactor Version
+  version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+  handleNames: ["center"],   // what each params.points entry is, by index (saved with handle discs)
   category:     "curve_stitch",
   firstOrder:   true,
   source:       "internal",

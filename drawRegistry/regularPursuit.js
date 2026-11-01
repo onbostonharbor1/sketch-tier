@@ -5,7 +5,7 @@ import { drawRegularPolygon }       from "../draw/drawRegular.js";
 window.drawRegistry_regularPursuit = {
     name:         "Pursuit (temp)",
     id:           "regularPursuit",
-    version:      0.4,
+    version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
     category:     "pursuit",
     firstOrder:   true,
     source:       "internal",

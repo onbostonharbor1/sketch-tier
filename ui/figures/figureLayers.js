@@ -8,8 +8,10 @@
      Break Apart live in their own files (see "Split" below).
 
    A layer (data, in figure.layers[i]):
-     { kind: "draw", id: "<registry key>", visible: true, color: "#rrggbb",
-       params: {...}, transform: { angle, tx, ty } }
+     { kind: "draw", id: "<registry key>", lid: "L1", objectVersion: 1,
+       role: "stitch", includeInOutput: true, visible: true,
+       color: "#rrggbb", params: {...}, transform: { angle, tx, ty } }
+   (figureModel.js lists every field; docs/FIGURE_FORMAT_V1.md the rules.)
 
    transform moves and turns the whole layer (Phase 7b, figureCentroid.js).
    The object keeps drawing in its own coordinates; drawLine maps them to the
@@ -73,6 +75,7 @@ import { weldHandleDrop }   from "./figureWelds.js";
 import { redrawFigure }     from "./figureDraw.js";
 import { renderLayerPanel } from "./figureLayerPanel.js";
 import { newTransform }     from "/draw/drawTransform.js";
+import { newLayerFields }   from "./figureModel.js";
 
 // Experiment switch: true = the last layer clicked goes on top.
 const MOVE_TO_FRONT_ON_SELECT = true;
@@ -165,6 +168,7 @@ export function insertLayer(tabId, registryKey, { params = null, transform = nul
   const layer = {
     kind:      "draw",
     id:        registryKey,
+    ...newLayerFields(figure.layers.length, entry),   // lid, objectVersion, role, includeInOutput
     visible:   true,
     color:     color,
     params:    instance.params,       // the same object, not a copy (see header)

@@ -6,7 +6,7 @@ import { drawInverseStar }          from "../draw/drawRegular.js";
 window.drawRegistry_boxes= {
     name:         "Boxes (temp)",
     id:           "inverseStar",
-    version:      0.4,
+    version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
     category:     "unicorns",
     firstOrder:   true,
     source:       "internal",

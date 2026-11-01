@@ -82,7 +82,8 @@
      findPoint(figure, x, y, radius)
      addAnchoredPoint(figure, candidate)
      addFreePoint(figure, x, y, transform)
-     addHandlePoint(figure, layer, h, x, y)
+     addHandlePoint(figure, layer, h, x, y, hname)
+     handleNameOf(instance, h)
      moveFreePoint(point, x, y, transform)
      deletePoint(figure, n)
      refreshPoints(tabState)
@@ -249,19 +250,35 @@ export function addFreePoint(figure, x, y, transform = null) {
 
 
 /* ============================================================
-   addHandlePoint(figure, layer, h, x, y)
+   addHandlePoint(figure, layer, h, x, y, hname)
    ------------------------------------------------------------
    A disc that rides on handle number h of the layer's object (see
    "h" in the header). x, y is where that handle is now, in canvas
    space. Returns the point.
    ============================================================ */
-export function addHandlePoint(figure, layer, h, x, y) {
+export function addHandlePoint(figure, layer, h, x, y, hname) {
 
-  const p = { n: figure.nextPoint++, kind: "handle", layer, h, x, y, dx: 0, dy: 0 };
+  const p = { n: figure.nextPoint++, kind: "handle", layer, h, hname: hname || "h" + h, x, y, dx: 0, dy: 0 };
   figure.points.push(p);
   return p;
 
 } // end addHandlePoint
+
+
+/* ============================================================
+   handleNameOf(instance, h)
+   ------------------------------------------------------------
+   The name of handle number h, from the object's handleNames (a
+   list, or a prefix such as "circle" for circle1, circle2 ...).
+   Saved with a handle disc so the file says which handle it rides
+   on by name, not only by position. "h3" if the object names none.
+   ============================================================ */
+export function handleNameOf(instance, h) {
+  const names = instance?.handleNames;
+  if (Array.isArray(names) && names[h]) return names[h];
+  if (typeof names === "string") return names + (h + 1);
+  return "h" + h;
+} // end handleNameOf
 
 
 /* ============================================================

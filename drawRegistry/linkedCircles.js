@@ -18,7 +18,8 @@ import { Point }             from "../classes/classes.js";
 window.drawRegistry_linkedCircles = {
   name:         "Linked Circles",
   id:           "linkedCircles",
-  version:      1.9,
+  version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+  handleNames: "circle",   // a prefix: points[0] is circle1, points[1] circle2 ... (saved with handle discs)
   category:     "unicorns",
   firstOrder:   true,
   source:       "internal",

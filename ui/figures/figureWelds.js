@@ -65,7 +65,7 @@
 
 import { uiState } from "/ui/uiState.js";
 import { applyTransform, inverseTransform } from "/draw/drawTransform.js";
-import { findCandidate, addAnchoredPoint, addHandlePoint, armsOf, armPoint } from "./figurePoints.js";
+import { findCandidate, addAnchoredPoint, addHandlePoint, handleNameOf, armsOf, armPoint } from "./figurePoints.js";
 import { EPS, weldOf, createOrJoinWeld, removeFromWeld } from "./figureWeldModel.js";
 import { snapshotWeldMembers, propagateAfterChange } from "./figureWeldMove.js";
 // figureDraw.js imports figureWeldMarks.js, not this file, so this is
@@ -234,7 +234,7 @@ function discOnHandle(tabState, layerIndex, h) {
     }
   }
 
-  return addHandlePoint(figure, layerIndex, h, at.x, at.y);
+  return addHandlePoint(figure, layerIndex, h, at.x, at.y, handleNameOf(instance, h));
 
 } // end discOnHandle
 

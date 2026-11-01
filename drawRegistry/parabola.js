@@ -14,7 +14,8 @@ import { drawAParab, trimmedRange } from "../draw/drawRegular.js";
 window.drawRegistry_parabola = {
   name:         "Parabola",
   id:           "parabola",
-  version:      2.0,
+  version:      1,   // whole numbers; raise when params change meaning (saved figures record it)
+  handleNames: ["line1_pt1", "line1_pt2", "line1_mid", "line2_pt1", "line2_pt2", "line2_mid"],   // what each params.points entry is, by index (saved with handle discs)
   category:     "fundamental",
   firstOrder:   true,
   source:       "internal",
