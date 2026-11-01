@@ -334,19 +334,19 @@ def makers_figure():
     b += line(30, 150, 170, 40, 1.2, "#999")
     for i in range(9):
         t = i/8; b += dot(30 + 140*t, 150 - 110*t, 2.4)
-    b += text(100, 185, "line:  p(t) = a + (b - a) t", 10)
+    b += text(100, 180, "line", 10, weight="bold") + text(100, 194, "p(t) = a + (b - a) t", 9.5)
     # circle
     cx, cy = 300, 95
     b += f'<circle cx="{cx}" cy="{cy}" r="60" fill="none" stroke="#999"/>'
     for p in _circle_pts(cx, cy, 60, 16): b += dot(*p, 2.4)
-    b += text(cx, 185, "circle:  p(t) = c + r (cos 2pi t, sin 2pi t)", 10)
+    b += text(cx, 180, "circle", 10, weight="bold") + text(cx, 194, "p(t) = c + r (cos 2pi t, sin 2pi t)", 9.5)
     # rose / lissajous
     cx = 600
     fine = [(cx + 80*math.sin(3*2*math.pi*i/800 + math.pi/2), 95 + 60*math.sin(2*2*math.pi*i/800)) for i in range(801)]
     b += '<path d="M' + " L".join(f"{x:.1f},{y:.1f}" for x, y in fine) + '" fill="none" stroke="#999" stroke-width="0.8"/>'
     for p in _resample(fine, 40): b += dot(*p, 2.2)
-    b += text(cx, 185, "parametric:  p(t) = (A sin(3 t + phase), B sin(2 t))", 10)
-    b += text(395, 212, "All three are makers: a rule for p(t), sampled into a path. Only the rule differs.", 10, style="font-style:italic")
+    b += text(cx, 180, "parametric (Lissajous)", 10, weight="bold") + text(cx, 194, "p(t) = (A sin(3t + phase), B sin(2t))", 9.5)
+    b += text(395, 216, "All three are makers: a rule for p(t), sampled into a path. Only the rule differs.", 10, style="font-style:italic")
     return svg(790, 225, b)
 
 def weld_shared():
