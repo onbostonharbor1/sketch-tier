@@ -20,13 +20,13 @@ Do one phase at a time. After each, stop and wait for him to review, play with i
 | 8 | Welds (see "Phase 8 spec" and "Phase 8 as built"). Two bugs found in real use and fixed the same day | Done, merged into `claude1` 2026-10-27 |
 | Batch 1 (branch `claude/batch-1`, from sweep-1) | Barry's answered items done without a hold between them: tab-activation cleanup (unused last-tab write and dead commented code removed; a launch intent now runs inside the switch that asked for it), Cycloid radius recheck (works; test added), **Delete layer** (Figures caption menu; layer keeps its number, marked `deleted`; its discs go; a weld keeps its members on other layers and is dropped when fewer than two remain; asks first, no undo). **Instrumentation** (`ui/instrument.js`): off by default; "Record timings", "Show timings" and "Clear timings" in Utilities > Commands, or `?instrument` on the address to record from start-up. It times tab switches, manifest loads, file requests and Node service calls, and lists the slowest first. Already built before this batch: Utilities redisplay (restore redraws the last result) and the hit radius (Figures caption menu item, global in `uiState.figures.hitRadius`) | Built; for Barry's review |
 | 8, next pass | A handle dropped on another handle welds (see "Phase 8, next pass" and "as built") | Built on `claude/phase-8-next-on-sweep`, merged into `claude/batch-1` |
-| 8b | Magic points: more candidate kinds (midpoints, tops of loops, cusps), needed as weld targets and for parametric objects | |
-| 9 | Print aids: scale bar; minimum nail-spacing check (needs nail size and highlight-vs-list answers from Barry) | |
+| 8b | Magic points: more candidate kinds (midpoints, tops of loops, cusps), needed as weld targets and for parametric objects | Built on `claude/v1-finish` (middles, crossings, lobe tips, cusps; Parametrics got infrastructure) |
+| 9 | Print aids: scale bar; minimum nail-spacing check (needs nail size and highlight-vs-list answers from Barry) | Built on `claude/v1-finish` with guesses G-1 to G-3, G-13 to G-16: print size, nail size, spacing highlight and count, true-size template with calibration line and tiling |
 | 10 | Save and recovery (Save As, category and manifest creation, reload) | Built on `claude/batch-1` (see "Phase 10 as built") |
 | 11 | Figure follow-ups  | |
-| 12 | Thumbnails (the Insert list becomes icons with a larger preview on mouseover) | |
-| 13 | Sweep tool | |
-| 14 | Filesystem boundary refactor (C3) | |
+| 12 | Thumbnails (the Insert list becomes icons with a larger preview on mouseover) | Built on `claude/v1-finish` (Insert... panel; the list stays) |
+| 13 | Sweep tool | Built on `claude/v1-finish` as guessed (G-6): Draw > Sweep a setting, a grid of pictures over one setting |
+| 14 | Filesystem boundary refactor (C3) | Not doing in V1: Version 2 replaces it |
 | 15 | Investigate redoing the older tabs' command and caption code with `ui/figures/figuresCommands.js` as the pattern (Barry, 2026-10-27: it reads cleaner than the others). Investigate and report first; rebuild only after he decides | |
 
 Barry's "Deferred" and "Dropped" lists belong here too. Paste them in from his original list; they are not

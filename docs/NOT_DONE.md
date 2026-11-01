@@ -4,6 +4,27 @@ Status as of `claude/batch-1` (31 October 2026). Each item has a number so it ca
 the code is on `claude/batch-1` and waiting for your review. Sources: `PHASES.md`, `docs/WHAT_WAS_DONE_batch-1.md`,
 the two checklists, and `docs/Remaining-Phases.pdf`.
 
+## Status after `claude/v1-finish` (1 November 2026)
+
+Most of sections 1 to 4 was done on branch `claude/v1-finish`; its plan and guesses are in `docs/V1_FINISH_PLAN.md`, its
+hand checks in `docs/CHECKLIST_v1-finish.md`. In short:
+
+| Item here | Now |
+|---|---|
+| 1.1 8b magic points | Built (item 4) |
+| 1.2 Phase 9 print aids | Built (item 5) |
+| 1.3 Phase 10, and 2.10 "saving welds not built" | **Correction:** welds were already saved and reopened on batch-1 (the B5 test checks it); this list was wrong. Undo is still not built (Version 2) |
+| 1.5 Phase 12 Insert as icons | Built (item 10) |
+| 1.6 Phase 13 Sweep | Built as guessed (item 9) |
+| 1.7, 1.8 Phases 14, 15 | Not doing in V1 (Version 2) |
+| 2.1 to 2.3 templates, X, scaffold | Built (item 6) |
+| 2.4 other composites | Inverse Star built; the rest not possible as Parabolas (item 7, G-7) |
+| 2.7 parametric draggable points | Built (item 8) |
+| 2.13 weld group marker | Not done; a weld group prints as one nail (item 5) |
+| 4.1 shared settings bug | Fixed (item 2) |
+| 4.2 script state leak | Fixed (item 3); `arcsAndInner` (4.8) was the same leak and now runs |
+| 4.5 to 4.7, 3.2, 3.4, 3.6, 4.4 | Not doing in V1 (Version 2) |
+
 ## 1. Phase table (PHASES.md)
 
 | No. | Phase | Not done | Notes |

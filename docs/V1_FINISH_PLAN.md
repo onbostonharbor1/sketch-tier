@@ -30,14 +30,14 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 10 | 12 Insert list as icons with larger preview on hover | Sonnet | Done |
 | 11 | Pursuit (temp): leftover point picker becomes a handle | Sonnet | Done |
 | 12 | Gallery-script facility survey for the V2 legacy adapter (into `V2_IDEAS.md`) | Sonnet | Done |
-| 13 | Checklist for Barry (`docs/CHECKLIST_v1-finish.md`), PHASES.md and NOT_DONE.md updated | Sonnet | Not started |
+| 13 | Checklist for Barry (`docs/CHECKLIST_v1-finish.md`), PHASES.md and NOT_DONE.md updated | Sonnet | Done |
 
 Skipped on purpose (V2 replaces them): 14 file boundary, 15 commands pattern, one restore shape, START case in tab
 activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node follow-ups.
 
 ## In progress
 
-(nothing yet)
+Nothing. All 13 items are done; the branch waits for Barry's review (`docs/CHECKLIST_v1-finish.md`).
 
 ## Decisions log (guesses Barry may reverse)
 
