@@ -290,6 +290,39 @@ function regularPolygonParabolas(thing) {
 } // end regularPolygonParabolas
 
 
+/* ============================================================
+   inverseStarParabolas(thing)
+   ------------------------------------------------------------
+   The parabolas drawInverseStar draws, as data instead of pixels (Break
+   apart, v1-finish item 7), in the same shape as
+   regularPolygonParabolas(). drawInverseStar stitches each spoke (centre
+   to node i) twice: once with the outer edge that starts at node i, and
+   once with the edge that ends there, run backwards. So there are two
+   parabolas per node. Same nodes, lines and arms as drawInverseStar;
+   only the drawing is left out.
+   ============================================================ */
+function inverseStarParabolas(thing) {
+  const nodes  = createNodes(thing);
+  const spokes = createArms(thing, createLinesFromNodesMiddle(nodes, thing.midpoint));
+  const edges  = createArms(thing, createLinesFromNodesOuter(nodes));
+  // The same edges, each run from its far end, then shifted by one so
+  // spoke i meets the edge that ends at node i (as drawInverseStar does).
+  const backLines = createLinesFromNodesOuter(nodes).map((l) => new Line(l.end, l.start));
+  let back = createArms(thing, backLines);
+  back = [back[back.length - 1], ...back.slice(0, -1)];
+
+  const parts = [];
+  const add = (a, b) => {
+    // createParabs puts the shorter set of arms first; keep that order.
+    if (a.length > b.length) [a, b] = [b, a];
+    parts.push({ line1: [a[0], a[a.length - 1]], line2: [b[0], b[b.length - 1]], numSteps: a.length - 1 });
+  };
+  for (let i = 0; i < spokes.length; i++) add(spokes[i], edges[i]);
+  for (let i = 0; i < spokes.length; i++) add(spokes[i], back[i]);
+  return parts;
+} // end inverseStarParabolas
+
+
 function drawRegularPolygon(thing) {
   const nodes = createNodes(thing);
   const lines = createLinesFromNodesOuter(nodes);
@@ -352,6 +385,7 @@ export {
     drawParab,
     drawRegularPolygon,
     regularPolygonParabolas,
+  inverseStarParabolas,
     drawRegularPolygonCorner,
     drawRegularPolygonTouch,
     createLinesFromNodesMiddle,

@@ -2290,6 +2290,32 @@ const scaffold = await page.evaluate(async () => {
 });
 if (scaffold.printed.length !== 0 || scaffold.problemsFound.length) problems.push("[templates] scaffold: " + JSON.stringify(scaffold));
 
+/* v1-finish item 7: Break apart for Inverse Star, picture unchanged. */
+for (const setup of [{ name: "default", shorten: 0, nodes: 5 }, { name: "shortened, 7 nodes", shorten: 3, nodes: 7 }]) {
+  stage = "break apart inverse star " + setup.name;
+  await newFigure();
+  await page.selectOption("#figureInsertSelect", "inverseStar");
+  await page.waitForTimeout(300);
+  await page.evaluate(([shorten, nodes]) => {
+    const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+    const p = t.instances[0].params;
+    p.shorten = shorten; p.numNodes = nodes;
+    t.instances[0].update(p);
+  }, [setup.shorten, setup.nodes]);
+  const before = await canvasShot();
+  await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click();
+  await page.waitForTimeout(400);
+  await page.locator(".caption-menu-item", { hasText: "Break apart" }).click();
+  await page.waitForTimeout(600);
+  const ls = await layerSummary();
+  const want = "inverseStar," + Array(2 * setup.nodes).fill("parabola").join();
+  if (ls.ids !== want) problems.push(`[break apart inverse star ${setup.name}] layers: ${ls.ids}`);
+  const after = await canvasShot();
+  if (!before.some((v) => v !== 0)) problems.push(`[break apart inverse star ${setup.name}] drew nothing`);
+  const d = diffCount(before, after);
+  if (d > 0) problems.push(`[break apart inverse star ${setup.name}] the picture changed: ${d} channel values differ`);
+}
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2300,4 +2326,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, no errors");

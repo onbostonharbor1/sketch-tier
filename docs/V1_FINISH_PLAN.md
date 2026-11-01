@@ -24,7 +24,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Done |
 | 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Done |
 | 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Done |
-| 7 | Break apart for the other composite objects | Opus | Not started |
+| 7 | Break apart for the other composite objects | Opus | Done (Inverse Star; see G-7) |
 | 8 | Parametric draggable points | Opus | Not started |
 | 9 | 13 Sweep tool (guess: parameter study grid) | Opus | Not started |
 | 10 | 12 Insert list as icons with larger preview on hover | Sonnet | Not started |
@@ -49,7 +49,7 @@ activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node fol
 | G-4 | 6 | Template X | Hides the layer; inserting the same template again shows the hidden one |
 | G-5 | 8 | Parametric handles | One handle moves the curve, one scales it |
 | G-6 | 9 | Sweep tool | A grid of drawings over a range of one setting; click one to keep it |
-| G-7 | 7 | Which composites | Inner Star, Inverse Star, Circular Parabola, Mystic Rose |
+| G-7 | 7 | Which composites | Revised after reading the code: Inverse Star only (two Parabolas per node, picture identical). Circular Parabola stitches spokes to arcs of the circle, which no straight-armed Parabola can reproduce; Mystic Rose at 20 nodes is 190 single chords, too many layers; Inner Star has a draw function but no registry object. V2's makers and connectors cover all three |
 | G-8 | 1 | Rename `layer.id` to `layer.object`? | No. `id` stays the registry key (read in five places); V2 reads it as the object name. Points keep layer indices, which are permanent; `lid` is always L + index + 1 |
 | G-9 | 1 | Registry `version` values (1.0, 2.7 ...) | All set to the whole number 1 as the starting point for saved figures |
 | G-10 | 4 | A curve's crossings with itself | Not offered (thousands on a dense curve; deferred in October as I2). Crossings between different arms and layers are |

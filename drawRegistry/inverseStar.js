@@ -2,7 +2,7 @@
 import { Point }          from "../classes/classes.js";
 import { CurveStitch }     from "../classes/curveStitchClass.js";
 import { createNodes }     from "../draw/createNodes.js";
-import { drawInverseStar, createLinesFromNodesMiddle,
+import { drawInverseStar, inverseStarParabolas, createLinesFromNodesMiddle,
          createLinesFromNodesOuter, trimmedRange } from "../draw/drawRegular.js";
 
 window.drawRegistry_inverseStar = {
@@ -127,5 +127,30 @@ window.drawRegistry_inverseStar = {
     center() {
         const m = this.elements.thing.midpoint;
         return { x: m.x, y: m.y };
+    },
+    /* ==========================================================
+       decompose()  (Figures, Break apart; v1-finish item 7)
+       ----------------------------------------------------------
+       The star as separate Parabolas, two per node (each spoke with
+       the outer edge on either side), with the same stitches, color
+       and line width. Shorten is already built into the points and
+       step count, so the pieces start with none.
+       ========================================================== */
+    decompose() {
+        const t = this.elements.thing;
+        return inverseStarParabolas(t).map((part) => ({
+            key: "parabola",
+            params: {
+                line1_pt1: { x: part.line1[0].x, y: part.line1[0].y },
+                line1_pt2: { x: part.line1[1].x, y: part.line1[1].y },
+                line2_pt1: { x: part.line2[0].x, y: part.line2[0].y },
+                line2_pt2: { x: part.line2[1].x, y: part.line2[1].y },
+                numSteps:  part.numSteps,
+                truncate:  0,
+                shorten:   0,
+                color:     t.color,
+                lineWidth: t.lineWidth
+            }
+        }));
     }
 };
