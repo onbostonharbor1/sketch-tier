@@ -33,6 +33,7 @@
    ============================================================ */
 
 import { menuManager }                from "/ui/menuManager.js";
+import { openSweepPanel } from "/ui/draw/drawSweep.js";
 import { makeDrawInstance, registryKeyOf } from "/ui/draw/drawInstance.js";
 import { setCaptionBar }              from "/ui/caption.js";
 import { makeHelpItem, makeNotesItem } from "/ui/menuCmds.js";
@@ -127,6 +128,12 @@ export async function getDrawCaptionMenuItems(entry) {
       label:    "Reset Parameters",
       disabled: false,
       onClick:  () => resetActiveDrawObject()
+    },
+    {
+      label:    "Sweep a setting...",
+      disabled: false,
+      tooltip:  "Pictures of the object across a range of one setting; click one to use it.",
+      onClick:  () => openSweepPanel()
     }
   ];
 

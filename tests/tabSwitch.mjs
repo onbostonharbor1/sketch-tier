@@ -2370,6 +2370,46 @@ if (dp0.loops !== 60 || dp0.pts.length !== 2 || Math.abs(dp1.pts[0][0] - dp0.pts
   problems.push("[draw handles after a slider] " + JSON.stringify({ dp0, dp1 }));
 }
 
+/* v1-finish item 9: Sweep a setting (Draw). Parametrics is still open from the stage above. */
+stage = "sweep";
+const sweep = await page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  const m = await import("/ui/draw/drawSweep.js");
+  const info = uiState.draw.tabs[uiState.draw.activeSubtab];
+  const settings = m.sweepableSettings(info);
+  const loops = settings.find((s) => s.key === "complexity");
+  const values = m.sweepValues(loops, 3, 200, 9);
+  const stepped = m.sweepValues({ min: 64, max: 300, step: 4 }, 64, 300, 6);   // a slider with step 4 from 64
+  const before = JSON.stringify(info.parameters);
+  const pics = m.sweepPictures(info, "complexity", values, 60);
+  return { keys: settings.map((s) => s.key), values, stepped, pics: pics.length, distinct: new Set(pics.map((p) => p.src)).size,
+           unchanged: JSON.stringify(info.parameters) === before, shared: window.drawRegistry.parametrics.params.complexity };
+});
+if (!sweep.keys.includes("complexity") || sweep.values.length !== 9 || sweep.values[0] !== 3 || sweep.values[8] !== 200
+    || sweep.pics !== 9 || sweep.distinct < 8 || !sweep.unchanged || sweep.shared !== 75
+    || JSON.stringify(sweep.stepped) !== "[64,112,160,204,252,300]") {
+  problems.push("[sweep] " + JSON.stringify(sweep));
+}
+// The panel: Sweep, then click the third picture.
+await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click();
+await page.waitForTimeout(400);
+await page.locator(".caption-menu-item", { hasText: "Sweep a setting" }).click();
+await page.waitForTimeout(400);
+await page.selectOption("#sweepSetting", "complexity");
+await page.fill("#sweepCount", "5");
+await page.click("#sweepGo");
+await page.waitForTimeout(800);
+const cells = await page.locator(".sweep-cell").count();
+await page.locator(".sweep-cell").nth(2).click();
+await page.waitForTimeout(400);
+const applied = await page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  return uiState.draw.tabs[uiState.draw.activeSubtab].parameters.complexity;
+});
+if (cells !== 5 || applied !== 102) problems.push("[sweep] panel: cells=" + cells + " applied=" + applied);
+await page.keyboard.press("Escape");
+await page.waitForTimeout(300);
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2380,4 +2420,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, no errors");
