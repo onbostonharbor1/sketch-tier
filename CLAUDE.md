@@ -13,6 +13,10 @@ Phase order and status are in PHASES.md. Read it before starting work.
    Circular Parabola (Multi), whose second handle separates and joins four copies, and Linked Circles, whose link
    styles (pairwise, ring, all-to-all) make tubes and rings from a few circles, are examples he keeps around
    because they are interesting to play with, not because a template needs them.
+   Making exploration cheap is a major function, not a side effect (Barry 2026-11-01). Best example:
+   `gallery/Scripts/Curve Stitch/manyRowsColumns.js`, where copies are added with a slider and shared points are
+   dragged, so one drag reshapes its neighbours. It led him to designs he would not have thought of. His aim is
+   original work rather than formulaic craft, and Sketchpad is his assistant for that.
 
 Do not treat the second purpose as clutter or as a means to the first. When a decision trades one against the other
 (trimming a control range, dropping an object that nails cannot use, forcing every object through one drawing
