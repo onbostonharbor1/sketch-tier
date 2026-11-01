@@ -24,6 +24,7 @@
    ============================================================ */
 
 import { uiState }                    from "/ui/uiState.js";
+import { registryKeyOf } from "/ui/draw/drawInstance.js";
 import { clearDivs } from "/ui/uiUtilities.js";
 import { setCommandsButtonLabel } from "/ui/commandsButton.js";
 import { drawActiveTab, setDrawSketchpad }   from "/ui/draw/drawRunner.js";
@@ -200,9 +201,7 @@ export function saveDrawState() {
     let savedParams = {};
 
     if (info.drawRegistry) {
-      key = Object.keys(window.drawRegistry).find(
-        (k) => window.drawRegistry[k] === info.drawRegistry
-      );
+      key = registryKeyOf(info.drawRegistry);
 
       const allParams = info.parameters || {};
       const controls  = info.drawRegistry.controls || {};

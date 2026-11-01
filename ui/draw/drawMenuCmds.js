@@ -33,6 +33,7 @@
    ============================================================ */
 
 import { menuManager }                from "/ui/menuManager.js";
+import { makeDrawInstance, registryKeyOf } from "/ui/draw/drawInstance.js";
 import { setCaptionBar }              from "/ui/caption.js";
 import { makeHelpItem, makeNotesItem } from "/ui/menuCmds.js";
 import { createGalleryPatternPng, createPatternScript } from "/ui/draw/drawExport.js";
@@ -102,9 +103,7 @@ export async function getDrawCaptionMenuItems(entry) {
     category: entry.category || "uncategorized"
   };
 
-  const registryKey = Object.keys(window.drawRegistry).find(
-    (k) => window.drawRegistry[k] === entry
-  );
+  const registryKey = registryKeyOf(entry);
 
   const items = [
     await makeHelpItem("draw", null),
@@ -292,9 +291,7 @@ export async function resetActiveDrawObject() {
   if (!info || info.type !== "object") return;
 
   const oldEntry = info.drawRegistry;
-  const key = Object.keys(window.drawRegistry).find(
-    (k) => window.drawRegistry[k] === oldEntry
-  );
+  const key = registryKeyOf(oldEntry);
   if (!key) throw new Error("Reset: registry key not found");
 
   const modulePath = `/drawRegistry/${key}.js`;
@@ -310,10 +307,11 @@ export async function resetActiveDrawObject() {
   if (!newEntry) throw new Error("Reset: module reimport did not recreate entry");
 
   window.drawRegistry[key] = newEntry;
-  info.drawRegistry  = newEntry;
-  info.parameters    = newEntry.params;
+  const fresh = makeDrawInstance(newEntry);   // a private copy of the fresh defaults
+  info.drawRegistry  = fresh;
+  info.parameters    = fresh.params;
 
-  newEntry.init();
+  fresh.init();
   info.dirty = false;
 
   const { markTabClean } = await import("/ui/draw/drawNav.js");

@@ -43,9 +43,13 @@ export function runPattern() {
   };
 
   // Apply params + redraw deterministically
-  entry.params = s;
-  entry.init();
-  entry.update(entry.params);
-  entry.draw();
+  // Draw with a private copy, so the shared registry object keeps its own
+  // settings (Object.create falls back on entry for init, update and draw).
+  const inst = Object.create(entry);
+  inst.params = s;
+  inst.elements = null;
+  inst.init();
+  inst.update(inst.params);
+  inst.draw();
 
 } // end runPattern

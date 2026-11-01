@@ -37,6 +37,7 @@
    ============================================================ */
 
 import { clearDivs } from "/ui/uiUtilities.js";
+import { isRegistryEntry, makeDrawInstance } from "/ui/draw/drawInstance.js";
 import { showOffcanvas, hideOffcanvas } from "/ui/offcanvas.js";
 import { renderThumbnailGrid } from "/ui/thumbnails.js";
 import { getIDsWithSecondaries, listSecondaries, loadSecondary } from "/ui/draw/secondaryObjects.js";
@@ -140,7 +141,9 @@ export function addDrawSubtab(item) {
 
   } else {
 
-    const entry = item.entry;
+    // A private copy of a shared registry object (drawInstance.js); a tab's
+    // own copy, handed back when the subtabs are rebuilt, is used as it is.
+    const entry = isRegistryEntry(item.entry) ? makeDrawInstance(item.entry) : item.entry;
     entry.init();
 
     if (entry.interactive && entry.params.points) {
@@ -371,8 +374,10 @@ export async function loadSecondaryObjectInTab(primaryId, item, list, index) {
   const primaryEntry = window.drawRegistry[primaryId];
   if (!primaryEntry) throw new Error("loadSecondaryObjectInTab: primary not found: " + primaryId);
 
-  const mergedEntry        = Object.assign({}, primaryEntry);
-  mergedEntry.params       = Object.assign({}, primaryEntry.params, content.params);
+  // A private copy whose settings are the primary's defaults with the
+  // saved variation's values on top (both deep-copied).
+  const mergedEntry        = makeDrawInstance(primaryEntry,
+                               Object.assign(structuredClone(primaryEntry.params), structuredClone(content.params)));
   mergedEntry.name         = content.name;
 
   addDrawSubtab({ name: content.name, entry: mergedEntry });

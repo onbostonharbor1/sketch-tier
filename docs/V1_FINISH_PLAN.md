@@ -19,7 +19,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | No. | Item | Model | Status |
 |---|---|---|---|
 | 1 | Figure file format made upgradeable: layer `lid`, `objectVersion`; named handles; layer `role`; `includeInOutput`; `units` and `scale`; `createdBy`; documented in `docs/FIGURE_FORMAT_V1.md`; round-trip test | Opus | Done |
-| 2 | Bug: Draw, Figures and Patterns share one set of object settings | Opus | Not started |
+| 2 | Bug: Draw, Figures and Patterns share one set of object settings | Opus | Done |
 | 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Not started |
 | 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Not started |
 | 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Not started |

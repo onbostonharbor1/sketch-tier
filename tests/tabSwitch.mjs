@@ -1953,6 +1953,28 @@ const layerShown = await page.evaluate(() => { const l = document.getElementById
 if (layerShown) problems.push("[draw handle drag] interaction layer still shown after leaving Draw");
 
 /* ---- Launch intent: Home hands a Draw object to the Draw tab (setUI awaits the second switch) ---- */
+/* v1-finish item 2: Draw works on a private copy; the shared registry object
+   (which Figures copies its defaults from) keeps its own settings, and a
+   pattern made from Draw no longer overwrites them. */
+stage = "settings stay private";
+const privateSettings = await page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  const { registryKeyOf } = await import("/ui/draw/drawInstance.js");
+  const info  = uiState.draw.tabs[uiState.draw.activeSubtab];
+  const reg   = window.drawRegistry.cycloid;
+  const before = JSON.stringify(reg.params);
+  const out = { tabRadius: info.parameters.radius, regRadius: reg.params.radius, sameObject: info.drawRegistry === reg,
+                key: registryKeyOf(info.drawRegistry), tabColor: info.parameters.color, regColor: reg.params.color };
+  const pattern = await import("/patterns/circles/cycloid0209_152200.js");
+  pattern.runPattern();
+  out.unchangedByPattern = JSON.stringify(reg.params) === before;
+  return out;
+});
+if (privateSettings.sameObject || privateSettings.key !== "cycloid" || privateSettings.tabRadius !== 350
+    || privateSettings.regRadius !== 250 || privateSettings.regColor === privateSettings.tabColor || !privateSettings.unchangedByPattern) {
+  problems.push("[settings stay private] " + JSON.stringify(privateSettings));
+}
+
 stage = "launch intent";
 const launched = await page.evaluate(async () => {
   const { uiState } = await import("/ui/uiState.js");
@@ -2079,4 +2101,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), no errors");
