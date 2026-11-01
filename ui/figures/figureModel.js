@@ -31,7 +31,7 @@
                     discs by number).
      points      -- every disc of every layer, in one flat array.
                     Three shapes (figurePoints.js has the details):
-                      { n, kind: "anchored", layer, arm, t, x, y, dx, dy }
+                      { n, kind: "anchored", layer, arm, t, x, y, dx, dy, feature? }
                       { n, kind: "free",     layer, x, y, dx, dy, ox, oy }
                       { n, kind: "handle",   layer, h, hname, x, y, dx, dy }
                     An anchored disc sits at fraction t along an
@@ -221,6 +221,7 @@ export function checkFigureFormat(figure) {
     need(POINT_KINDS.includes(p.kind), at + "kind is not anchored, free or handle");
     need(Number.isInteger(p.layer) && p.layer >= 0 && p.layer < figure.layers.length, at + "layer does not exist");
     if (p.kind === "anchored") need(typeof p.arm === "string" && typeof p.t === "number", at + "anchored without arm and t");
+    if (p.feature !== undefined) need(typeof p.feature === "string" && p.feature, at + "feature is not a name");
     if (p.kind === "handle")   need(Number.isInteger(p.h) && typeof p.hname === "string", at + "handle without h and hname");
   }
   for (const w of (figure.welds || [])) {

@@ -36,6 +36,7 @@ import { newBounds }              from "/draw/drawTransform.js";
 import { refreshPoints, drawFigurePoints } from "./figurePoints.js";
 import { drawCentroid }           from "./figureCentroid.js";
 import { drawWeldMarks }          from "./figureWeldMarks.js";
+import { drawMagicMarks }         from "./figureMagic.js";
 
 // Alpha for layers that are not the active one.
 const DIM_ALPHA = 0.2;
@@ -112,6 +113,7 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   // rules as the layers. Anchored ones follow their layers, so refresh first.
   refreshPoints(tabState);
   drawFigurePoints(tabState, { showAll, dimming });
+  drawMagicMarks(tabState);           // points mode only: where the magic points are
   drawWeldMarks(tabState);
 
   // The active layer's centroid, and its box and rotation handle when selected.

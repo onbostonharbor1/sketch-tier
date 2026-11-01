@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { Parametric }     from "/classes/parametric.js";
-import { drawParametric } from "/draw/drawParametrics.js";
+import { drawParametric, autoFitParametricToCanvas } from "/draw/drawParametrics.js";
 
 window.drawRegistry_parametrics = {
 
@@ -81,6 +81,26 @@ window.drawRegistry_parametrics = {
     draw() {
         if (!this.elements || !this.elements.curve) return;
         drawParametric(this.elements.curve);
+    },
+    /**
+     * Infrastructure for Figures points mode (Phase 8b): the curve itself, as
+     * one arm made of points, so discs can sit on it and magic points (lobe
+     * tips, cusps, crossings) can be found. The curve is sampled thousands of
+     * times for drawing; the arm keeps at most 720 of those samples, evenly
+     * spread, which is plenty for nails and keeps crossing searches quick.
+     */
+    infrastructure() {
+        const curve = this.elements && this.elements.curve;
+        if (!curve || !curve.pts || curve.pts.length < 2) return [];
+        try { autoFitParametricToCanvas(curve); }    // the same fit drawing uses
+        catch (err) { return []; }                   // no canvas yet: no infrastructure to offer
+        const every  = Math.max(1, Math.ceil(curve.pts.length / 720));
+        const points = [];
+        for (let i = 0; i < curve.pts.length; i += every) {
+            const t = curve.pts[i];
+            points.push({ x: curve.scale * curve.funcX(t) + curve.mid.x, y: curve.scale * curve.funcY(t) + curve.mid.y });
+        }
+        return [{ id: "curve", points, steps: points.length - 1, from: 0, to: points.length - 1 }];
     }
 };
 

@@ -49,7 +49,7 @@ A layer's index in `layers` is permanent (layers are never removed), so points a
 
 | Kind | Fields | Meaning |
 |---|---|---|
-| `anchored` | `n, layer, arm, t, x, y, dx, dy` | At fraction `t` along infrastructure arm `arm` of the layer's object. |
+| `anchored` | `n, layer, arm, t, x, y, dx, dy`, optional `feature` | At fraction `t` along infrastructure arm `arm` of the layer's object. A disc placed on a magic point also records `feature`, its name (`"mid line"`, `"cross L2.arm1 #1"`, `"tip curve #3"`, `"cusp curve #1"`), and follows that feature when the object changes. |
 | `free` | `n, layer, x, y, dx, dy, ox, oy` | Placed by hand; `ox, oy` is its position in the layer's object space. |
 | `handle` | `n, layer, h, hname, x, y, dx, dy` | Rides on handle number `h` of the layer's object; `hname` is that handle's name. |
 
@@ -76,7 +76,8 @@ Circles, a prefix (`"circle"`: `circle1`, `circle2` ...).
   its settings pass through that generator's "from Version 1" mapping, keyed by `objectVersion`.
 - Each weld group whose members are free or handle discs becomes one shared point. A group containing an anchored disc
   becomes an attachment to that disc's arm at `t`.
-- Discs that are not welded become point-table entries: free ones by position, anchored ones as attachments.
+- Discs that are not welded become point-table entries: free ones by position, anchored ones as attachments. An anchored
+  disc with a `feature` becomes an attachment by feature (V2's finders use the same names).
 - `scale` carries across, so a figure calibrated for printing in Version 1 stays calibrated.
 
 ## Saved Draw settings

@@ -8,7 +8,7 @@
      figurePointer.js) and no layer drawing (figureDraw.js).
 
    Point record, in figure.points:
-     { n, kind: "anchored", layer, arm, t, x, y, dx, dy }
+     { n, kind: "anchored", layer, arm, t, x, y, dx, dy, feature? }
      { n, kind: "free",     layer,          x, y, dx, dy, ox, oy }
      { n, kind: "handle",   layer, h,       x, y, dx, dy }
 
@@ -19,6 +19,10 @@
               free point belongs to the layer that was active when it
               was placed. Only the active layer's points can be selected,
               added or deleted.
+     feature  an anchored point on a magic point only (Phase 8b): its
+              name, such as "mid line" or "cross L2.arm1 #1"
+              (figureMagic.js). The point follows the feature, not
+              just the fraction t.
      arm, t   an anchored point sits on an infrastructure line of its
               layer (arm id) at fraction t of its length. It always
               keeps exactly that fraction, so it follows its object
@@ -91,6 +95,7 @@
    ============================================================ */
 
 import { applyTransform, inverseTransform } from "/draw/drawTransform.js";
+import { magicCandidates, findFeature } from "./figureMagic.js";
 import { removeFromWeld } from "./figureWeldModel.js";
 
 const MARKER_RADIUS = 9;   // drawn size of a numbered point
@@ -127,12 +132,19 @@ export function armsOf(instance) {
 // is b, t = 0.5 is halfway. Math.round in the array case guards against
 // t * steps coming out as 6.999999 instead of 7.
 export function armPoint(arm, t, transform) {
-  const pt = arm.points
-    ? arm.points[Math.round(t * arm.steps)]
-    : {
-        x: arm.a.x + (arm.b.x - arm.a.x) * t,
-        y: arm.a.y + (arm.b.y - arm.a.y) * t
-      };
+  let pt;
+  if (arm.points) {
+    // A t between two nodes (a crossing, say: figureMagic.js) lies on the
+    // straight run between them; a t on a node gives that node exactly.
+    const f  = t * arm.steps;
+    const i0 = Math.min(Math.max(Math.floor(f + 1e-9), 0), arm.points.length - 1);
+    const fr = f - i0;
+    const a  = arm.points[i0];
+    const b  = arm.points[Math.min(i0 + 1, arm.points.length - 1)];
+    pt = fr < 1e-9 ? a : { x: a.x + (b.x - a.x) * fr, y: a.y + (b.y - a.y) * fr };
+  } else {
+    pt = { x: arm.a.x + (arm.b.x - arm.a.x) * t, y: arm.a.y + (arm.b.y - arm.a.y) * t };
+  }
   return applyTransform(transform, pt);
 } // end armPoint
 
@@ -164,6 +176,21 @@ export function findCandidate(tabState, x, y, radius) {
 
   let best     = null;
   let bestDist = radius;      // anything farther than radius never qualifies
+
+  // A magic point (Phase 8b, figureMagic.js) within reach wins over a
+  // plain step point, so the disc gets its name ("mid line", "cross L2.arm1 #1").
+  // Where two magic points sit together (a line's middle that is also a
+  // crossing), the more telling one wins: crossing, cusp, tip, middle. The
+  // small bonus decides a tie without beating a candidate clearly closer.
+  const BONUS = { cross: 0.6, cusp: 0.4, tip: 0.2, mid: 0 };
+  let magicScore = Infinity;
+  for (const c of magicCandidates(tabState, layer)) {
+    const d = Math.hypot(c.x - x, c.y - y);
+    if (d >= radius) continue;
+    const score = d - (BONUS[c.feature.split(" ")[0]] || 0);
+    if (score < magicScore) { magicScore = score; best = c; }
+  }
+  if (best) return best;
 
   for (const arm of armsOf(instances[layer])) {
     for (let i = arm.from; i <= arm.to; i++) {
@@ -227,6 +254,7 @@ export function addAnchoredPoint(figure, c) {
     layer: c.layer, arm: c.arm, t: c.t,
     x: c.x, y: c.y, dx: 0, dy: 0
   };
+  if (c.feature) p.feature = c.feature;      // a magic point keeps its name
   figure.points.push(p);
   return p;
 
@@ -370,6 +398,13 @@ export function refreshPoints(tabState) {
     // An anchored disc: its arm, as the object is shaped right now.
     const arm = armsOf(instances[p.layer]).find((a) => a.id === p.arm);
     if (!arm) { gone.push(p.n); continue; }
+
+    // A disc on a named feature goes wherever that feature is now. If the
+    // feature has gone (the crossing layer moved away), it keeps its t.
+    if (p.feature) {
+      const t = findFeature(tabState, p.layer, p.arm, p.feature);
+      if (t !== null) p.t = t;
+    }
 
     const i = Math.round(p.t * arm.steps);
     if (i < arm.from || i > arm.to) { gone.push(p.n); continue; }

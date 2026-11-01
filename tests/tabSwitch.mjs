@@ -2091,6 +2091,57 @@ await page.waitForTimeout(300);
 const tr = await page.evaluate(() => ({ ...uiState.figures.tabs[uiState.figures.activeSubtab].figure.layers[0].transform }));
 if (tr.tx !== 0 || tr.ty !== 0 || tr.angle !== 0) problems.push("[8 next centroid] a right-press moved the layer: " + JSON.stringify(tr));
 
+/* v1-finish item 4: magic points (Phase 8b). */
+stage = "8b magic points";
+await newFigure();
+await insertExact("drawLine", { pt1: { x: 100, y: 100 }, pt2: { x: 300, y: 300 } });   // L1
+await insertExact("drawLine", { pt1: { x: 100, y: 300 }, pt2: { x: 300, y: 100 } });   // L2, active
+await page.check("#figureModeCheck");
+await page.waitForTimeout(300);
+const magic = await page.evaluate(async () => {
+  const { magicCandidates } = await import("/ui/figures/figureMagic.js");
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  return magicCandidates(t, 1).map((c) => [c.feature, Math.round(c.x), Math.round(c.y)]);
+});
+const hasMid   = magic.some(([f, x, y]) => f === "mid line" && x === 200 && y === 200);
+const hasCross = magic.some(([f, x, y]) => f === "cross L1.line #1" && x === 200 && y === 200);
+if (!hasMid || !hasCross) problems.push("[8b magic] candidates on L2: " + JSON.stringify(magic));
+await clickAt(203, 198);
+const onCross = (await points()).find((p) => p.feature === "cross L1.line #1");
+if (!onCross || onCross.layer !== 1 || Math.abs(onCross.x - 200) > 0.5 || Math.abs(onCross.y - 200) > 0.5) {
+  problems.push("[8b magic] disc on the crossing: " + JSON.stringify(await points()));
+}
+// Move L1's start: the crossing moves along L2, and the disc goes with it.
+await page.evaluate(async () => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  t.instances[0].params.points[0] = { x: 100, y: 140 };
+  const { redrawFigure } = await import("/ui/figures/figureDraw.js");
+  redrawFigure(uiState.figures.activeSubtab);
+});
+const crossMoved = (await points()).find((p) => p.feature === "cross L1.line #1");
+// L1 now runs (100,140)-(300,300); it meets L2 (y = 400 - x) at x = 340 / 1.8.
+if (!crossMoved || Math.abs(crossMoved.x - 340 / 1.8) > 0.5 || Math.abs(crossMoved.y - (400 - 340 / 1.8)) > 0.5) {
+  problems.push("[8b magic] disc did not follow the crossing: " + JSON.stringify(crossMoved));
+}
+// Parametrics now has infrastructure, and its curve has tips or cusps.
+const para = await page.evaluate(async () => {
+  const id = uiState.figures.activeSubtab;
+  const t = uiState.figures.tabs[id];
+  const { insertLayer } = await import("/ui/figures/figureLayers.js");
+  const { magicCandidates } = await import("/ui/figures/figureMagic.js");
+  insertLayer(id, "parametrics");
+  const i = t.figure.layers.length - 1;
+  const arms = t.instances[i].infrastructure();
+  const kinds = magicCandidates(t, i).map((c) => c.feature.split(" ")[0]);
+  return { arms: arms.length, armPoints: arms[0]?.points.length, tips: kinds.filter((k) => k === "tip").length,
+           cusps: kinds.filter((k) => k === "cusp").length };
+});
+if (para.arms !== 1 || !(para.armPoints > 50 && para.armPoints <= 721) || para.tips + para.cusps === 0) {
+  problems.push("[8b magic] parametrics: " + JSON.stringify(para));
+}
+await page.uncheck("#figureModeCheck");
+await page.waitForTimeout(200);
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2101,4 +2152,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, no errors");

@@ -21,7 +21,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 1 | Figure file format made upgradeable: layer `lid`, `objectVersion`; named handles; layer `role`; `includeInOutput`; `units` and `scale`; `createdBy`; documented in `docs/FIGURE_FORMAT_V1.md`; round-trip test | Opus | Done |
 | 2 | Bug: Draw, Figures and Patterns share one set of object settings | Opus | Done |
 | 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Done |
-| 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Not started |
+| 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Done |
 | 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Not started |
 | 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Not started |
 | 7 | Break apart for the other composite objects | Opus | Not started |
@@ -52,3 +52,6 @@ activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node fol
 | G-7 | 7 | Which composites | Inner Star, Inverse Star, Circular Parabola, Mystic Rose |
 | G-8 | 1 | Rename `layer.id` to `layer.object`? | No. `id` stays the registry key (read in five places); V2 reads it as the object name. Points keep layer indices, which are permanent; `lid` is always L + index + 1 |
 | G-9 | 1 | Registry `version` values (1.0, 2.7 ...) | All set to the whole number 1 as the starting point for saved figures |
+| G-10 | 4 | A curve's crossings with itself | Not offered (thousands on a dense curve; deferred in October as I2). Crossings between different arms and layers are |
+| G-11 | 4 | Two magic points on one spot | The more telling wins: crossing, cusp, tip, middle |
+| G-12 | 4 | Lobe tip | A point farther from the curve's centre than its neighbours by at least 1.5 px within 3 points either side |
