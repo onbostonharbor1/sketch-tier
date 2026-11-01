@@ -25,6 +25,7 @@
      category    -- null until Save As picks one
      units       -- "px": coordinates are canvas pixels
      scale       -- millimetres per pixel, or null until set (print aids)
+     nail        -- { diameter, clearance } in millimetres (print aids)
      nextPoint   -- the next point number to hand out. Numbers are
                     never reused, even after a point is deleted, so
                     a number names one disc for good (welds refer to
@@ -85,6 +86,7 @@ export function createEmptyFigure(name) {
     category:    null,
     units:       "px",
     scale:       null,  // millimetres per pixel, once set for printing
+    nail:        { diameter: 2, clearance: 3 },   // millimetres, for the spacing check
     nextPoint:   1,
     points:      [],
     layers:      [],
@@ -167,6 +169,7 @@ export function upgradeFigureV1(figure) {
   if (figure.createdBy === undefined) figure.createdBy = "sketchpad-v1";
   if (figure.units     === undefined) figure.units     = "px";
   if (figure.scale     === undefined) figure.scale     = null;
+  if (figure.nail      === undefined) figure.nail      = { diameter: 2, clearance: 3 };
   delete figure.templates;     // an early placeholder; templates are layers with a role
   figure.layers.forEach((layer, i) => {
     if (layer.lid             === undefined) layer.lid             = "L" + (i + 1);
@@ -196,6 +199,7 @@ export function checkFigureFormat(figure) {
   need(figure.units === "px", "units is not \"px\"");
   need(figure.scale === null || (typeof figure.scale === "number" && figure.scale > 0), "scale is not empty or a positive number");
   need(Number.isInteger(figure.nextPoint) && figure.nextPoint >= 1, "nextPoint is not a whole number");
+  need(figure.nail && figure.nail.diameter > 0 && figure.nail.clearance >= 0, "nail is not { diameter, clearance } in millimetres");
   if (!Array.isArray(figure.layers) || !Array.isArray(figure.points) || !Array.isArray(figure.drawOrder)) {
     problems.push("layers, points or drawOrder is not a list");
     return problems;                 // nothing below can be checked without them

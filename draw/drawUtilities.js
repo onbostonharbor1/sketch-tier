@@ -416,6 +416,9 @@ function drawLine(arg1, arg2, arg3 = "blue", arg4 = 1) {
     pt1 = mapPoint(pt1);
     pt2 = mapPoint(pt2);
 
+    // Print aids (Phase 9): a figure layer being drawn notes its stitch ends.
+    if (drawState.collect) drawState.collect.push({ x: pt1.x, y: pt1.y }, { x: pt2.x, y: pt2.y });
+
     // ------------------------------------------------------------
     // Final mode (drawState.final): draw just the points, no line.
     // Registry draw code must reach the canvas through drawLine so

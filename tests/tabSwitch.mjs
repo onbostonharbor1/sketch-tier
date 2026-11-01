@@ -2142,6 +2142,88 @@ if (para.arms !== 1 || !(para.armPoints > 50 && para.armPoints <= 721) || para.t
 await page.uncheck("#figureModeCheck");
 await page.waitForTimeout(200);
 
+/* v1-finish item 5: print aids (Phase 9). */
+stage = "9 print aids";
+const printDialogs = [];
+let printAnswers = [];
+const onPrintDialog = async (d) => { printDialogs.push(d.message().split("\n")[0]); const a = printAnswers.shift(); if (a === undefined) await d.dismiss(); else await d.accept(a); };
+page.on("dialog", onPrintDialog);
+await newFigure();
+await insertExact("drawLine", { pt1: { x: 100, y: 100 }, pt2: { x: 300, y: 300 } });   // L1
+await insertExact("drawLine", { pt1: { x: 300, y: 300 }, pt2: { x: 500, y: 100 } });   // L2
+await page.evaluate(() => {
+  const f = uiState.figures.tabs[uiState.figures.activeSubtab].figure;
+  const free = (n, layer, x, y) => ({ n, kind: "free", layer, x, y, dx: 0, dy: 0, ox: x, oy: y });
+  f.points.push(free(1, 0, 100, 100), free(2, 0, 300, 300), free(3, 1, 300, 300), free(4, 1, 100, 100));
+  f.nextPoint = 5;
+  f.welds = [{ members: [{ layer: 0, n: 2 }, { layer: 1, n: 3 }] }];
+});
+const nailInfo = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const r = m.nailsOf(uiState.figures.tabs[uiState.figures.activeSubtab]);
+  return { source: r.source, labels: r.nails.map((n) => n.label).sort(), coincident: r.coincident };
+});
+if (nailInfo.source !== "discs" || JSON.stringify(nailInfo.labels) !== JSON.stringify(["1+4", "2+3"]) || nailInfo.coincident !== 1) {
+  problems.push("[9 print] nails: " + JSON.stringify(nailInfo));
+}
+printAnswers = ["100"];                                     // the nails span 200 px: 100 mm makes 0.5 mm per px
+const sized = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const id = uiState.figures.activeSubtab;
+  return { changed: m.setPrintSize(id), scale: uiState.figures.tabs[id].figure.scale };
+});
+if (!sized.changed || Math.abs(sized.scale - 0.5) > 1e-9) problems.push("[9 print] print size: " + JSON.stringify(sized) + " dialogs: " + printDialogs.join(" | "));
+const spacing = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  const before = m.spacingProblems(t).pairs.length;
+  t.figure.points.push({ n: 5, kind: "free", layer: 0, x: 104, y: 100, dx: 0, dy: 0, ox: 104, oy: 100 });   // 2 mm from nail 1+4
+  t.figure.nextPoint = 6;
+  const after = m.spacingProblems(t);
+  return { before, after: after.pairs.length, mm: after.pairs[0] && Math.round(after.pairs[0][2] * 10) / 10 };
+});
+if (spacing.before !== 0 || spacing.after !== 1 || spacing.mm !== 2) problems.push("[9 print] spacing: " + JSON.stringify(spacing));
+const pagesInfo = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  const small = m.templatePages(t);
+  const calib = /class="calibration" x1="0" y1="50" x2="100"/.test(small.pages[0]);
+  const circles = small.pages.slice(1).join("").split('class="nail"').length - 1;
+  t.figure.scale = 2;                                          // 200 px wide at 2 mm per px: about 410 mm, 3 sheets across
+  const big = m.templatePages(t);
+  t.figure.scale = 0.5;
+  return { pages: small.pages.length, calib, circles, nails: small.nails, bigCols: big.sheets.cols, bigPages: big.pages.length,
+           bigRows: big.sheets.rows, mmWide: /width="195.9mm"/.test(small.pages[1]) };
+});
+if (pagesInfo.pages !== 2 || !pagesInfo.calib || pagesInfo.circles !== pagesInfo.nails || pagesInfo.nails !== 3 || !pagesInfo.mmWide
+    || pagesInfo.bigCols !== 3 || pagesInfo.bigRows !== 2 || pagesInfo.bigPages !== 7) {
+  problems.push("[9 print] pages: " + JSON.stringify(pagesInfo));
+}
+const leftOut = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  t.figure.layers[1].includeInOutput = false;
+  const labels = m.nailsOf(t).nails.map((n) => n.label).sort();
+  t.figure.layers[1].includeInOutput = true;
+  return labels;
+});
+if (JSON.stringify(leftOut) !== JSON.stringify(["1", "2", "5"])) problems.push("[9 print] layer left out: " + JSON.stringify(leftOut));
+const popupPromise = page.waitForEvent("popup", { timeout: 5000 }).catch(() => null);
+await page.evaluate(async () => (await import("/ui/figures/figurePrint.js")).printTemplate(uiState.figures.activeSubtab));
+const popup = await popupPromise;
+const popupSvgs = popup ? await popup.evaluate(() => document.querySelectorAll("svg").length) : 0;
+if (popupSvgs !== 2) problems.push("[9 print] print window sheets: " + popupSvgs);
+if (popup) await popup.close();
+await newFigure();
+await insertExact("parabola", { line1_pt1: { x: 100, y: 100 }, line1_pt2: { x: 100, y: 300 }, line2_pt1: { x: 100, y: 300 }, line2_pt2: { x: 300, y: 300 } });
+const ends = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const r = m.nailsOf(uiState.figures.tabs[uiState.figures.activeSubtab]);
+  return { source: r.source, count: r.nails.length };
+});
+if (ends.source !== "stitch ends" || ends.count < 10) problems.push("[9 print] stitch-end nails: " + JSON.stringify(ends));
+page.off("dialog", onPrintDialog);
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2152,4 +2234,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, no errors");

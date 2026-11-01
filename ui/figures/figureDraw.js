@@ -37,6 +37,7 @@ import { refreshPoints, drawFigurePoints } from "./figurePoints.js";
 import { drawCentroid }           from "./figureCentroid.js";
 import { drawWeldMarks }          from "./figureWeldMarks.js";
 import { drawMagicMarks }         from "./figureMagic.js";
+import { drawSpacingMarks }       from "./figurePrint.js";
 
 // Alpha for layers that are not the active one.
 const DIM_ALPHA = 0.2;
@@ -93,6 +94,7 @@ export function redrawFigure(tabId, { dim = true } = {}) {
     // notes its extent in drawState.bounds. Both are null again afterwards.
     drawState.transform = figure.layers[i].transform || null;
     drawState.bounds    = newBounds();
+    drawState.collect   = [];                 // stitch ends, for printing (figurePrint.js)
     // update() first: it brings the object's internal geometry in line
     // with its params (a slider or a handle may have changed them).
     try {
@@ -102,8 +104,10 @@ export function redrawFigure(tabId, { dim = true } = {}) {
       console.error(`Figure layer ${i + 1} (${figure.layers[i].id}) failed to draw:`, err);
     }
     inst.bounds         = drawState.bounds;    // kept for figureCentroid.js
+    inst.stitchEnds     = drawState.collect;   // kept for figurePrint.js
     drawState.transform = null;
     drawState.bounds    = null;
+    drawState.collect   = null;
     ctx.restore();
   }
 
@@ -114,6 +118,7 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   refreshPoints(tabState);
   drawFigurePoints(tabState, { showAll, dimming });
   drawMagicMarks(tabState);           // points mode only: where the magic points are
+  drawSpacingMarks(tabState);         // "Show nail spacing" on: pairs too close, in red
   drawWeldMarks(tabState);
 
   // The active layer's centroid, and its box and rotation handle when selected.

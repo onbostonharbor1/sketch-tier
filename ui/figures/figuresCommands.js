@@ -34,6 +34,8 @@
    ============================================================ */
 
 import { setCaptionBar }            from "/ui/caption.js";
+import { setPrintSize, setNailSize, spacingProblems, printTemplate } from "./figurePrint.js";
+import { renderLayerPanel } from "./figureLayerPanel.js";
 import { menuManager }              from "/ui/menuManager.js";
 import { makeHelpItem, makeNotesItem } from "/ui/menuCmds.js";
 import { setCommandsButtonLabel, setCommandsButtonHandler } from "/ui/commandsButton.js";
@@ -265,6 +267,59 @@ export async function getFiguresCaptionMenuItems(title) {
     onClick:  () => resetFigureTab(uiState.figures.activeSubtab)
   };
 
+  // Print aids (Phase 9, figurePrint.js).
+  const fig0 = ts0 && ts0.figure;
+  const act0 = fig0 && fig0.activeLayer >= 0 ? fig0.layers[fig0.activeLayer] : null;
+  const scaleText = fig0 && fig0.scale ? " (" + (fig0.scale * 100).toFixed(1) + " mm per 100 px)" : " (not set)";
+  const printSizeItem = {
+    label:    "Print size..." + (fig0 ? scaleText : ""),
+    disabled: !fig0,
+    tooltip:  "How wide the template prints, in millimetres. Sets the figure's scale.",
+    onClick:  () => setPrintSize(uiState.figures.activeSubtab)
+  };
+  const nailSizeItem = {
+    label:    "Nail size..." + (fig0 && fig0.nail ? " (" + fig0.nail.diameter + " mm, " + fig0.nail.clearance + " mm apart)" : ""),
+    disabled: !fig0,
+    tooltip:  "Nail diameter and the clearance wanted between nails, in millimetres.",
+    onClick:  () => setNailSize(uiState.figures.activeSubtab)
+  };
+  const spacingItem = {
+    label:    (ts0 && ts0.showSpacing ? "Hide" : "Show") + " nail spacing problems",
+    disabled: !fig0,
+    tooltip:  "Rings in red every pair of nails closer than the nail diameter plus clearance.",
+    onClick:  () => {
+      const id = uiState.figures.activeSubtab;
+      const ts = activeTab();
+      if (!ts) return;
+      ts.showSpacing = !ts.showSpacing;
+      if (ts.showSpacing) {
+        const r = spacingProblems(ts);
+        window.alert(r.message);
+        if (!r.ok) ts.showSpacing = false;
+      }
+      redrawFigure(id);
+    }
+  };
+  const outputItem = {
+    label:    act0 && act0.includeInOutput === false ? "Include layer in print" : "Leave layer out of print",
+    disabled: !act0,
+    tooltip:  "Whether the active layer's nails are printed. Hidden layers still print unless left out.",
+    onClick:  () => {
+      const ts = activeTab();
+      const l = ts?.figure?.layers[ts.figure.activeLayer];
+      if (!l) return;
+      l.includeInOutput = l.includeInOutput === false;
+      renderLayerPanel(uiState.figures.activeSubtab);
+      redrawFigure(uiState.figures.activeSubtab);
+    }
+  };
+  const printItem = {
+    label:    "Print template...",
+    disabled: !(fig0 && fig0.scale),
+    tooltip:  "Opens the template at true size, one sheet per page, with a calibration line. Needs the print size set.",
+    onClick:  () => printTemplate(uiState.figures.activeSubtab)
+  };
+
   return [
     await makeHelpItem("figures", null),
     await makeNotesItem(null, title),
@@ -278,6 +333,11 @@ export async function getFiguresCaptionMenuItems(title) {
     copyItem,
     archiveItem,
     resetItem,
+    printSizeItem,
+    nailSizeItem,
+    spacingItem,
+    outputItem,
+    printItem,
     later("Show Script")
   ];
 

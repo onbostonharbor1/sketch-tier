@@ -22,7 +22,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 2 | Bug: Draw, Figures and Patterns share one set of object settings | Opus | Done |
 | 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Done |
 | 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Done |
-| 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Not started |
+| 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Done |
 | 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Not started |
 | 7 | Break apart for the other composite objects | Opus | Not started |
 | 8 | Parametric draggable points | Opus | Not started |
@@ -54,4 +54,8 @@ activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node fol
 | G-9 | 1 | Registry `version` values (1.0, 2.7 ...) | All set to the whole number 1 as the starting point for saved figures |
 | G-10 | 4 | A curve's crossings with itself | Not offered (thousands on a dense curve; deferred in October as I2). Crossings between different arms and layers are |
 | G-11 | 4 | Two magic points on one spot | The more telling wins: crossing, cusp, tip, middle |
+| G-13 | 5 | What is a nail | Every disc on a printing layer; a figure with no discs prints its stitch ends (what Final mode shows) |
+| G-14 | 5 | How print size is set | One number: the printed width from leftmost to rightmost nail, in mm |
+| G-15 | 5 | Paper | US Letter, 10 mm margins, sheets tiled with 10 mm overlap and + alignment marks |
+| G-16 | 5 | Disc numbers on the print | Printed small beside each nail ("11+12" for nails that merge) |
 | G-12 | 4 | Lobe tip | A point farther from the curve's centre than its neighbours by at least 1.5 px within 3 points either side |

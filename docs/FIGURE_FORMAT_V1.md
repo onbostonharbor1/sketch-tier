@@ -19,6 +19,7 @@ Save refuses to write a figure that fails the check, so every file on disk is we
 | `name`, `category` | The file's name and folder. The name is the file name without `.json`. |
 | `units` | `"px"`: every coordinate is in canvas pixels. |
 | `scale` | Millimetres per pixel, or `null` until set for printing. |
+| `nail` | `{ diameter, clearance }` in millimetres, for the nail spacing check. Default 2 and 3. |
 | `nextPoint` | The next point number to hand out. Point numbers are never reused. |
 | `points` | Every disc on every layer (below). |
 | `layers` | Every layer, deleted ones included (below). |

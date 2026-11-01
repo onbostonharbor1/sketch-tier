@@ -25,7 +25,11 @@ export let drawState = {
   // Layer transform (Figures, Phase 7b; see draw/drawTransform.js). Both are
   // null except while a figure layer is drawing.
   transform: null,   // { angle, tx, ty } turning object space into canvas space
-  bounds: null       // { minX, minY, maxX, maxY } of what was drawn, object space
+  bounds: null,      // { minX, minY, maxX, maxY } of what was drawn, object space
+  // Print aids (Figures, Phase 9): while a figure layer draws, the canvas
+  // position of every stitch end is pushed here, so a figure without discs
+  // can still be printed as nails. Null except while a figure layer draws.
+  collect: null
 };
 
 // The starting values of every field above, kept so each script run can

@@ -99,6 +99,10 @@ export function renderLayerPanel(tabId) {
         num.style.textDecoration = "line-through";
         row.title += " (hidden)";
       }
+      if (layer.includeInOutput === false) {
+        num.style.outline = "1px dashed #000";        // a dashed box: not printed
+        row.title += " (not printed)";
+      }
 
       row.onclick = () => selectLayer(tabId, i);
       row.appendChild(num);
