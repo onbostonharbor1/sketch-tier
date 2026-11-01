@@ -47,11 +47,10 @@
    partners as a plain shift of each disc, which is exact for the discs
    themselves but means a welded partner is shifted, not turned.
 
-   Known gap (2026-10-27): the mousedown handler does not check which
-   button was pressed, so a right-press on the diamond starts a move,
-   the same bug that was fixed in interactor.js and figurePointer.js.
-   It only matters in lines mode (the diamond is hidden in points mode,
-   where right-click welds). One-line fix, listed in PHASES.md.
+   Mouse button: only the left button starts a move or turn (fixed
+   2026-10-31, Phase 8 next pass; a right-press on the diamond used to
+   start a move, the same bug fixed earlier in interactor.js and
+   figurePointer.js).
 
    A worked example of a turn: the diamond is at (300, 300), the press
    on the rotation handle at (300, 250), straight above it, so
@@ -271,6 +270,9 @@ export function activateCentroid(tabId, redraw) {
   // selected), then the diamond, then anywhere else on the canvas,
   // which deselects.
   window.addEventListener("mousedown", (e) => {
+    // Left button only, like the interactor and the points-mode handlers:
+    // a right-press on the diamond must not start a move.
+    if (e.button !== 0) return;
     if (!live()) return;
     const ts = tabState();
     const m  = coords(e);

@@ -82,9 +82,9 @@ import { resetCanvas, drawState }    from "/draw/drawState.js";
 import { buildParameterControls }   from "/ui/parameterControls.js";
 import { syncLayerToCanvas as syncOverlayToCanvas } from "/ui/canvasLayerManager.js";
 import { refreshPoints, drawFigurePoints, deletePoint } from "./figurePoints.js";
-import { activatePointsInput, deactivatePointsInput } from "./figurePointer.js";
+import { activatePointsInput, deactivatePointsInput, showWeldNotice } from "./figurePointer.js";
 import { activateCentroid, centroidHit, drawCentroid } from "./figureCentroid.js";
-import { snapshotWeldMembers, propagateAfterChange, drawWeldMarks } from "./figureWelds.js";
+import { snapshotWeldMembers, propagateAfterChange, drawWeldMarks, weldHandleDrop } from "./figureWelds.js";
 import { newTransform, newBounds } from "/draw/drawTransform.js";
 import { armInteractor, disarmInteractor } from "/ui/interactor.js";
 
@@ -229,6 +229,11 @@ function wireInstance(tabId, instance, layer, index) {
   };
   instance.afterMove = () => {
     propagateAfterChange(tabId, index, weldSnapshot);
+  };
+  // Phase 8 next pass: a handle dropped on another handle welds there.
+  instance.onRelease = (h) => {
+    const result = weldHandleDrop(tabId, index, h);
+    if (result) showWeldNotice(result.message);
   };
 
 } // end wireInstance
