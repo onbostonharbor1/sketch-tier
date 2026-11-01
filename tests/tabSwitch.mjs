@@ -2410,6 +2410,28 @@ if (cells !== 5 || applied !== 102) problems.push("[sweep] panel: cells=" + cell
 await page.keyboard.press("Escape");
 await page.waitForTimeout(300);
 
+/* v1-finish item 10: Insert by picture (Phase 12). */
+stage = "insert by picture";
+await page.click("#figures-tab");
+await page.waitForTimeout(700);
+await newFigure();
+await page.click("#figureInsertPictures");
+await page.waitForTimeout(500);
+const insertCells = await page.evaluate(() => [...document.querySelectorAll(".insert-cell")].map((c) => c.dataset.key));
+await page.locator('.insert-cell[data-key="mysticRose"]').hover();
+await page.waitForTimeout(200);
+const previewText = await page.evaluate(() => document.getElementById("insertPreview")?.textContent || "");
+await page.locator('.insert-cell[data-key="mysticRose"]').click();
+await page.waitForTimeout(500);
+const afterPick = await page.evaluate(() => {
+  const f = uiState.figures.tabs[uiState.figures.activeSubtab].figure;
+  return { layers: f.layers.map((l) => l.id), panelOpen: document.getElementById("offcanvasPanel")?.classList.contains("show") };
+});
+if (insertCells.length < 14 || insertCells.some((k) => k.startsWith("guide")) || !/Mystic Rose/.test(previewText)
+    || JSON.stringify(afterPick.layers) !== '["mysticRose"]' || afterPick.panelOpen) {
+  problems.push("[insert by picture] " + JSON.stringify({ cells: insertCells.length, previewText, afterPick }));
+}
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2420,4 +2442,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, no errors");

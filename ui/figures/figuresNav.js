@@ -277,6 +277,7 @@ export function updateFigureButtons() {
   show("createFigureButton", !live);
   show("figureBr1",          !live);
   show("figureInsertSelect", live);
+  show("figureInsertPictures", live);
   show("figureBr2",          live);
   show("figurePreviewLabel",  live);
   show("figureBrPreview",     live);
@@ -319,7 +320,7 @@ export function updateFigureButtons() {
 
   // Points mode places discs on the active layer only, so the tools that
   // add layers are grayed out and inactive until it is turned off.
-  for (const id of ["figureInsert_drawLine", "figureInsert_parabola", "figureInsertSelect"]) {
+  for (const id of ["figureInsert_drawLine", "figureInsert_parabola", "figureInsertSelect", "figureInsertPictures"]) {
     const el = document.getElementById(id);
     if (el) el.disabled = pointsMode;
   }

@@ -27,7 +27,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 7 | Break apart for the other composite objects | Opus | Done (Inverse Star; see G-7) |
 | 8 | Parametric draggable points | Opus | Done |
 | 9 | 13 Sweep tool (guess: parameter study grid) | Opus | Done |
-| 10 | 12 Insert list as icons with larger preview on hover | Sonnet | Not started |
+| 10 | 12 Insert list as icons with larger preview on hover | Sonnet | Done |
 | 11 | Pursuit (temp): leftover point picker becomes a handle | Sonnet | Not started |
 | 12 | Gallery-script facility survey for the V2 legacy adapter (into `V2_IDEAS.md`) | Sonnet | Not started |
 | 13 | Checklist for Barry (`docs/CHECKLIST_v1-finish.md`), PHASES.md and NOT_DONE.md updated | Sonnet | Not started |

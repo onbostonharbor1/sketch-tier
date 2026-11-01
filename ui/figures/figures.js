@@ -76,6 +76,7 @@
    ============================================================ */
 
 import { setCommandsButtonLabel } from "/ui/commandsButton.js";
+import { openInsertPanel } from "./figureInsertPanel.js";
 import { manifest }                  from "/ui/manifest.js";
 import {
   setFiguresCaption,
@@ -301,6 +302,16 @@ function setFiguresAction() {
   sel.className = "cmdButton tab-extra";
   sel.title     = "Insert any registry object as a new layer";
   buttonDiv.appendChild(sel);
+
+  // Insert by picture (Phase 12): a panel of every object's thumbnail.
+  const pics = document.createElement("button");
+  pics.id          = "figureInsertPictures";
+  pics.className   = "cmdButton tab-extra";
+  pics.type        = "button";
+  pics.textContent = "Insert...";
+  pics.title       = "Choose an object to insert from pictures";
+  pics.onclick     = () => openInsertPanel(uiState.figures.activeSubtab);
+  buttonDiv.appendChild(pics);
 
 } // end setFiguresAction
 
