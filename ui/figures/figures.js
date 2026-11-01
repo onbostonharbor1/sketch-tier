@@ -20,26 +20,43 @@
      * Shared module-level state variables   -> figures/figuresState.js
      * The figure data model                 -> figures/figureModel.js
      * Commands button and caption bar       -> figures/figuresCommands.js
-     * Layers: insert, draw, select, hide    -> figures/figureLayers.js
+     * Layers: insert, select, delete, hide  -> figures/figureLayers.js
+     * Drawing the figure                    -> figures/figureDraw.js
+     * Layer strip, controls, arming         -> figures/figureLayerPanel.js
+     * Break apart                           -> figures/figureBreakApart.js
      * Discs (numbered points)               -> figures/figurePoints.js
      * Mouse and keys in points mode         -> figures/figurePointer.js
      * Moving and turning a whole layer      -> figures/figureCentroid.js
-     * Welds                                 -> figures/figureWelds.js
+     * Welds: making them (clicks, drops)    -> figures/figureWelds.js
+     * Welds: the data                       -> figures/figureWeldModel.js
+     * Welds: partners following a move      -> figures/figureWeldMove.js
+     * Welds: the plus marks                 -> figures/figureWeldMarks.js
      * The layer transform (the math)        -> draw/drawTransform.js
 
    How the files depend on each other (an arrow means "imports"):
 
-     figures.js      -> figuresCommands, figuresState, figuresNav, figuresDisplay
-     figuresNav      -> figuresState, figuresCommands, figureLayers,
-                        figurePointer, figureCentroid, figureModel
-     figuresCommands -> figureLayers, figurePoints
-     figuresDisplay  -> figuresState
-     figureLayers    -> figurePoints, figurePointer, figureCentroid, figureWelds
-     figurePointer   -> figurePoints, figureWelds
-     figureCentroid  -> figureWelds
-     figureWelds    <-> figureLayers, figurePoints   (each pair imports the
-                                                      other; safe, see
-                                                      figureWelds.js)
+     figures.js       -> figuresCommands, figuresState, figuresNav, figuresDisplay
+     figuresNav       -> figuresState, figuresCommands, figureLayers, figureDraw,
+                         figureLayerPanel, figurePointer, figureCentroid, figureModel
+     figuresCommands  -> figureLayers, figureDraw, figureBreakApart, figurePoints,
+                         figureModel, figuresSave
+     figuresDisplay   -> figuresState, figuresSave
+     figuresSave      -> figureLayers, figureDraw, figureModel, figuresState
+     figureLayers     -> figureDraw, figureLayerPanel, figurePoints, figurePointer,
+                         figureCentroid, figureWelds, figureWeldMove
+     figureLayerPanel -> figureLayers, figureDraw, figurePointer, figureCentroid
+     figureBreakApart -> figureLayers
+     figureDraw       -> figurePoints, figureCentroid, figureWeldMarks
+     figurePointer    -> figurePoints, figureWelds
+     figureCentroid   -> figureWeldMove
+     figurePoints     -> figureWeldModel
+     figureWelds      -> figureDraw, figurePoints, figureWeldModel, figureWeldMove
+     figureWeldMove   -> figureDraw, figurePoints, figureWeldModel
+     figureWeldMarks  -> figureWeldModel
+     Some of these go round in a loop (figureLayers and figureLayerPanel
+     import each other; figureDraw -> figureCentroid -> figureWeldMove ->
+     figureDraw). That is safe here: each imported function is only
+     called inside a function body, after every module has loaded.
      figureModel, figuresState: no imports at all.
 
    Where the figure's state lives:

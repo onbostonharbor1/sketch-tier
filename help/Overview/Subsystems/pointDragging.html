@@ -82,7 +82,7 @@ sideways on screen even on a layer that has been turned. The math is in
     and moves every anchored disc to its fraction along its arm.</li>
   <li><code>afterMove()</code> compares with the snapshot. Each welded disc that moved passes the same move to
     its partners on other layers: one handle, both ends of an arm, or the whole layer, depending on where
-    the partner sits (<code>figureWelds.js</code>).</li>
+    the partner sits (<code>figureWeldMove.js</code>).</li>
   </ol></li>
 <li>Release ends the drag.</li>
 </ol>
@@ -99,8 +99,8 @@ the line; dragging an end reshapes it.</p>
 <tr><th>Question</th><th>File</th></tr>
 <tr><td>Why didn't the handle move?</td><td><code>interactor.js</code> (armed? <code>params.points</code>? <code>yieldTo</code>?)</td></tr>
 <tr><td>Why did a disc appear instead?</td><td><code>figurePointer.js</code> (the click rules above)</td></tr>
-<tr><td>Why did the whole layer move?</td><td><code>figureCentroid.js</code>, or a weld fallback in <code>figureWelds.js</code></td></tr>
-<tr><td>Why didn't the partner follow?</td><td><code>figureWelds.js</code> (is there really a weld? <code>figure.welds</code>)</td></tr>
+<tr><td>Why did the whole layer move?</td><td><code>figureCentroid.js</code>, or a weld fallback in <code>figureWeldMove.js</code></td></tr>
+<tr><td>Why didn't the partner follow?</td><td><code>figureWeldMove.js</code> (is there really a weld? <code>figure.welds</code>)</td></tr>
 </table>
 
 </body>

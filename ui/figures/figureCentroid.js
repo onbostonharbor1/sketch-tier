@@ -43,7 +43,7 @@
 
    Welds (Phase 8): moving or turning a layer moves its welded discs, so
    setTransform() below takes a snapshot of them first and lets their
-   partners follow afterwards (figureWelds.js). A turn is handed to the
+   partners follow afterwards (figureWeldMove.js). A turn is handed to the
    partners as a plain shift of each disc, which is exact for the discs
    themselves but means a welded partner is shifted, not turned.
 
@@ -76,7 +76,7 @@ import {
   translateTransform,
   rotateTransformAbout
 } from "/draw/drawTransform.js";
-import { snapshotWeldMembers, propagateAfterChange } from "./figureWelds.js";
+import { snapshotWeldMembers, propagateAfterChange } from "./figureWeldMove.js";
 
 const BOX_PAD     = 6;     // box margin around the bounds, canvas pixels
 const STEM        = 26;    // from the box's top edge up to the rotation handle

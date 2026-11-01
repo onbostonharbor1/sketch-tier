@@ -1,9 +1,11 @@
 /* figureLayers.js
    ============================================================
-   Figures Tab -- Layers: Insert, Draw, Select, Show/Hide
+   Figures Tab -- Layers: Insert, Rebuild, Select, Delete, Show/Hide
    ============================================================
    Role:
-     Turns the layer data in a figure into pictures and controls.
+     Keeps the layer data in a figure, and the live object behind
+     each layer. Drawing the figure, the layer strip and controls, and
+     Break Apart live in their own files (see "Split" below).
 
    A layer (data, in figure.layers[i]):
      { kind: "draw", id: "<registry key>", visible: true, color: "#rrggbb",
@@ -41,59 +43,42 @@
    on top. Example, layers 1,2,3 inserted: order 3 2 1; click 1 gives
    1 3 2; click 2 gives 2 1 3.
 
-   Drawing: visible layers bottom to top, i.e. drawOrder backwards.
-   Every layer except the active one is dimmed (DIM_ALPHA) while
-   editing, and so are its discs (DISC_DIM_ALPHA in figurePoints.js).
-   Dimming is skipped, and hidden layers are drawn, when
-   drawState.final is set or the tab is in preview (Show All), or
-   when redrawFigure is called with { dim: false }. Points mode obeys
-   the same rules; it only changes what each layer draws (just its
-   points) and what a click does.
-
-   Controls: the active layer's controls are built with the same
-   buildParameterControls() the Draw tab uses.
-
-   What is on screen, in front-to-back order (each its own canvas,
-   stacked; see canvasLayerManager.js):
-     interaction  the active object's handles (interactor.js), and in
-                  points mode the mouse input (figurePointer.js)
-     bbox         the centroid diamond, box and rotation handle
-                  (figureCentroid.js)
-     main canvas  the layers, then the discs, then the weld marks
-                  (redrawFigure below)
+   Split (2026-11-01): this file used to hold the drawing, the layer
+   panel and Break Apart as well. They moved, unchanged:
+     figureDraw.js        redrawFigure() and the dimming rule
+     figureLayerPanel.js  renderLayerPanel(): the number strip, the
+                          active layer's controls, arming the mouse
+     figureBreakApart.js  canBreakApart(), breakApartLayer()
 
    Architectural rules:
      * Does NOT build subtabs or switch them. That is figuresNav.js.
-     * Never renumbers or deletes layers (not in this phase).
+     * Never renumbers layers. A deleted layer keeps its number
+       (deleteLayer marks it deleted).
 
    Exports:
+     LAYER_COLORS
      listInsertableObjects()
      insertLayer(tabId, registryKey, { params, transform })
-     canBreakApart(tabId)
-     breakApartLayer(tabId)
-     redrawFigure(tabId)
-     renderLayerPanel(tabId)  (layer numbers in the sidebar, heading and
-                               controls in the action panel)
+     rebuildInstances(tabId)
      selectLayer(tabId, index)
+     deleteLayer(tabId)
      setLayerVisible(tabId, index, visible)
    ============================================================ */
 
-import { resetCanvas, drawState }    from "/draw/drawState.js";
-import { buildParameterControls }   from "/ui/parameterControls.js";
-import { syncLayerToCanvas as syncOverlayToCanvas } from "/ui/canvasLayerManager.js";
-import { refreshPoints, drawFigurePoints, deletePoint } from "./figurePoints.js";
-import { activatePointsInput, deactivatePointsInput, showWeldNotice } from "./figurePointer.js";
-import { activateCentroid, centroidHit, drawCentroid } from "./figureCentroid.js";
-import { snapshotWeldMembers, propagateAfterChange, drawWeldMarks, weldHandleDrop } from "./figureWelds.js";
-import { newTransform, newBounds } from "/draw/drawTransform.js";
-import { armInteractor, disarmInteractor } from "/ui/interactor.js";
+import { deletePoint }      from "./figurePoints.js";
+import { showWeldNotice }   from "./figurePointer.js";
+import { centroidHit }      from "./figureCentroid.js";
+import { snapshotWeldMembers, propagateAfterChange } from "./figureWeldMove.js";
+import { weldHandleDrop }   from "./figureWelds.js";
+import { redrawFigure }     from "./figureDraw.js";
+import { renderLayerPanel } from "./figureLayerPanel.js";
+import { newTransform }     from "/draw/drawTransform.js";
 
 // Experiment switch: true = the last layer clicked goes on top.
 const MOVE_TO_FRONT_ON_SELECT = true;
-// Alpha for layers that are not the active one.
-const DIM_ALPHA   = 0.2;
 // Identity colors handed out to layers in turn (dark enough for white text).
-const LAYER_COLORS = [
+// Exported for figureLayerPanel.js, which gives an old layer with no color one.
+export const LAYER_COLORS = [
   "#c0392b", "#2471a3", "#1e8449", "#d68910",
   "#7d3c98", "#117a8b", "#a04000", "#566573"
 ];
@@ -270,56 +255,6 @@ export function rebuildInstances(tabId) {
 } // end rebuildInstances
 
 
-/* ============================================================
-   canBreakApart(tabId)
-   ------------------------------------------------------------
-   True when the active layer is visible and its object can come apart
-   (its registry entry has a decompose()).
-   ============================================================ */
-export function canBreakApart(tabId) {
-
-  const ts = uiState.figures.tabs[tabId];
-  const f  = ts?.figure;
-  if (!f || f.activeLayer < 0) return false;
-  return !!f.layers[f.activeLayer].visible &&
-         typeof ts.instances?.[f.activeLayer]?.decompose === "function";
-
-} // end canBreakApart
-
-
-/* ============================================================
-   breakApartLayer(tabId)
-   ------------------------------------------------------------
-   Replaces the active layer's object with its pieces (Phase 7c). The
-   object's decompose() returns [{ key, params }]; each piece becomes a
-   new layer of its own, on top of the stack, with the same transform, so
-   the picture does not change. The original layer is hidden, not deleted:
-   layer numbers are never reused and deleting layers waits for Phase 11.
-   Its discs stay with it. The last piece becomes the active layer.
-   ============================================================ */
-export function breakApartLayer(tabId) {
-
-  if (!canBreakApart(tabId)) return;
-
-  const ts     = uiState.figures.tabs[tabId];
-  const figure = ts.figure;
-  const index  = figure.activeLayer;
-  const layer  = figure.layers[index];
-  const pieces = ts.instances[index].decompose();
-
-  layer.visible          = false;
-  ts.selectedPoint       = null;
-  ts.centroidSelected    = false;
-
-  // insertLayer copies the transform ({ ...transform }), so the pieces
-  // can later be moved without moving each other or the hidden original.
-  for (const piece of pieces) {
-    insertLayer(tabId, piece.key, { params: piece.params, transform: layer.transform });
-  }
-
-} // end breakApartLayer
-
-
 /* ------------------------------------------------------------
    offsetParams(params, d)
    Shifts whatever positions a registry object keeps: its points,
@@ -352,266 +287,6 @@ function offsetParams(params, d) {
   }
 
 } // end offsetParams
-
-
-/* ============================================================
-   redrawFigure(tabId)
-   ------------------------------------------------------------
-   Clears the canvas and draws every visible layer, bottom to top.
-   A layer that throws is reported with its index and skipped.
-
-   This is the one place a figure is drawn. Nearly every change ends
-   by calling it: a slider, a handle drag (through
-   instance.redrawHandler), a disc click, a weld, a mode switch. It
-   draws in three passes:
-     1. the layers (each object's own draw(), through drawLine)
-     2. the discs (figurePoints.js), after recomputing where anchored
-        ones now are
-     3. the weld marks (figureWelds.js), then the centroid overlay
-   ============================================================ */
-export function redrawFigure(tabId, { dim = true } = {}) {
-
-  const tabState = uiState.figures.tabs[tabId];
-  if (!tabState || !tabState.figure) return;
-
-  resetCanvas();
-
-  const figure    = tabState.figure;
-  const instances = tabState.instances || [];
-  // Preview (the Show All checkbox, not saved) and final mode draw every
-  // layer at full strength, hidden ones included. Layers of kind "template"
-  // (guides, a later phase) are left out of both. Points mode sets
-  // drawState.final while the layers draw, so they show only their points
-  // (one flag, set here, restored below), but it follows the same
-  // visibility and dimming rules as lines mode.
-  const pointsMode = tabState.mode === "points";
-  const showAll    = drawState.final || !!tabState.preview;
-  const dimming    = dim && !showAll;
-  const wasFinal   = drawState.final;
-  if (pointsMode) drawState.final = true;
-
-  // drawOrder is top first; paint bottom to top.
-  for (let k = figure.drawOrder.length - 1; k >= 0; k--) {
-    const i = figure.drawOrder[k];
-    if (showAll && figure.layers[i].kind === "template") continue;
-    if (!figure.layers[i].visible && !showAll) continue;
-
-    const inst = instances[i];
-    // save()/restore() bracket each layer so its alpha (dimming) and any
-    // style it sets do not leak into the next layer.
-    ctx.save();
-    if (dimming && i !== figure.activeLayer) ctx.globalAlpha = DIM_ALPHA;
-    // drawLine maps what the object draws through this layer's transform and
-    // notes its extent in drawState.bounds. Both are null again afterwards.
-    drawState.transform = figure.layers[i].transform || null;
-    drawState.bounds    = newBounds();
-    // update() first: it brings the object's internal geometry in line
-    // with its params (a slider or a handle may have changed them).
-    try {
-      inst.update(inst.params);
-      inst.draw();
-    } catch (err) {
-      console.error(`Figure layer ${i + 1} (${figure.layers[i].id}) failed to draw:`, err);
-    }
-    inst.bounds         = drawState.bounds;    // kept for figureCentroid.js
-    drawState.transform = null;
-    drawState.bounds    = null;
-    ctx.restore();
-  }
-
-  drawState.final = wasFinal;
-
-  // Discs are always shown, in both modes, by the same visibility and dimming
-  // rules as the layers. Anchored ones follow their layers, so refresh first.
-  refreshPoints(tabState);
-  drawFigurePoints(tabState, { showAll, dimming });
-  drawWeldMarks(tabState);
-
-  // The active layer's centroid, and its box and rotation handle when selected.
-  drawCentroid(tabState);
-
-} // end redrawFigure
-
-
-/* ============================================================
-   renderLayerPanel(tabId)
-   ------------------------------------------------------------
-   Layer numbers go in the gray strip
-   left of the canvas (#figure-sidebar); a hidden layer's number is
-   grayed and struck through. The action panel gets the active
-   layer's controls. The subtab bar item for the active layer
-   (name and Show checkbox) is refreshed. Arms the point
-   interactor (the object's handles) on the active layer when it is
-   visible, or always in points mode, and the points-mode mouse
-   input as well in points mode.
-
-   Called whenever which layer is active, or the mode, changes. It
-   tears down every mouse listener (handles, points mode, centroid)
-   and sets up the ones that fit the new situation, so nothing from
-   the previous layer is ever left listening.
-   ============================================================ */
-export function renderLayerPanel(tabId) {
-
-  const tabState = uiState.figures.tabs[tabId];
-  const action   = document.getElementById("action");
-  const strip    = document.getElementById("figure-sidebar");
-  if (!tabState || !tabState.figure || !action) return;
-
-  const figure    = tabState.figure;
-  const instances = tabState.instances || [];
-
-  // ---- layer numbers in the strip ----------------------------------
-  if (strip) {
-    strip.innerHTML = "";
-
-    figure.layers.forEach((layer, i) => {
-
-      if (layer.deleted) return;        // a deleted layer keeps its number but has no row
-
-      const reg = window.drawRegistry?.[layer.id];
-
-      const row = document.createElement("div");
-      row.className = "figure-layer-row";
-      row.title = reg?.name || layer.id;      // the tooltip names the object
-      row.style.cssText =
-        "display:flex; align-items:center; justify-content:center; width:100%; padding:1px 4px; cursor:pointer;" +
-        (i === figure.activeLayer ? " background:rgba(0,0,0,0.18); font-weight:bold;" : "");
-
-      // The number sits on a chip in the layer's color, the same color as the
-      // layer's discs. Right-click it to choose another color.
-      if (!layer.color) layer.color = LAYER_COLORS[i % LAYER_COLORS.length];
-
-      const num = document.createElement("span");
-      num.textContent = String(i + 1);
-      num.style.cssText =
-        "display:inline-block; min-width:22px; padding:1px 0; border-radius:11px; text-align:center;" +
-        " background:" + layer.color + "; color:" + textColorOn(layer.color) + ";";
-      num.title = "Right-click to change this layer's color";
-
-      // Hidden native color picker, opened by the right-click.
-      const picker = document.createElement("input");
-      picker.type  = "color";
-      picker.value = layer.color;
-      picker.style.cssText = "position:absolute; width:0; height:0; opacity:0; pointer-events:none;";
-      picker.oninput = () => {
-        layer.color = picker.value;
-        num.style.background = layer.color;
-        num.style.color      = textColorOn(layer.color);
-        redrawFigure(tabId);
-      };
-      num.oncontextmenu = (e) => {
-        e.preventDefault();       // no browser menu
-        picker.click();           // opens the system color chooser
-      };
-
-      if (!layer.visible) {
-        row.style.opacity = "0.4";
-        num.style.textDecoration = "line-through";
-        row.title += " (hidden)";
-      }
-
-      row.onclick = () => selectLayer(tabId, i);
-      row.appendChild(num);
-      row.appendChild(picker);
-      strip.appendChild(row);
-    });
-  }
-
-  // ---- heading and controls for the active layer ---------------------
-  action.innerHTML = "";
-  const active = instances[figure.activeLayer];
-
-  if (!active) {
-    action.textContent = "Use Insert Object, Line or Parabola to begin.";
-  } else {
-    const info = {
-      drawRegistry:  active,           // controls come from the registry entry
-      parameters:    active.params,
-      redrawHandler: () => redrawFigure(tabId),
-      onParamChange: () => {}          // dirty tracking arrives with Save As
-    };
-    buildParameterControls(info, "tab-draw", true);
-  }
-
-  updateLayerInfo(tabId);
-
-  // ---- interactor (drag handles) ------------------------------------
-  // The overlay canvases must be the same size as the main canvas, or a
-  // handle drawn on them would not sit over the point it belongs to.
-  const canvas = window.drawCanvas;
-  if (canvas) {
-    syncOverlayToCanvas("interaction", canvas);
-    syncOverlayToCanvas("guides", canvas);
-    syncOverlayToCanvas("bbox", canvas);
-  }
-
-  // The active object's own handles are the only draggable points, in both
-  // modes, and a hidden layer has none. In points mode figurePointer.js also
-  // takes clicks (place, select, delete). It is set up after the interactor:
-  // an object with no handles makes the interactor hide the interaction
-  // layer, and the pointer input has to show it again.
-  disarmInteractor();
-  deactivatePointsInput();
-
-  const pointsMode = tabState.mode === "points";
-  if (active && figure.layers[figure.activeLayer].visible) {
-    armInteractor(active);
-  }
-  if (pointsMode) activatePointsInput(tabId, () => redrawFigure(tabId));
-  activateCentroid(tabId, () => redrawFigure(tabId));
-
-} // end renderLayerPanel
-
-
-/* ------------------------------------------------------------
-   textColorOn(hex)
-   Black or white, whichever reads better on the given background.
-
-   "#c0392b" -> parseInt("c0392b", 16) is one number holding all three
-   color bytes; ">> 16" and "& 255" pick out red, ">> 8" green, the
-   last byte blue. The weights 0.299, 0.587, 0.114 are the standard
-   perceived-brightness formula (green looks brightest to the eye).
-   ------------------------------------------------------------ */
-function textColorOn(hex) {
-
-  const n = parseInt(hex.slice(1), 16);
-  const r = (n >> 16) & 255;
-  const g = (n >> 8)  & 255;
-  const b = n & 255;
-  return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? "#000000" : "#ffffff";
-
-} // end textColorOn
-
-
-/* ============================================================
-   updateLayerInfo(tabId)
-   ------------------------------------------------------------
-   Fills the "Layer N . Name  [x] Show" item in the subtab bar
-   (built by figuresNav.js) for the active layer.
-   ============================================================ */
-function updateLayerInfo(tabId) {
-
-  const label = document.getElementById("figureLayerLabel");
-  const box   = document.getElementById("figureLayerShow");
-  if (!label || !box) return;
-
-  const figure = uiState.figures.tabs[tabId].figure;
-  const layer  = figure.layers[figure.activeLayer];
-
-  if (!layer) {
-    label.textContent = "";
-    box.checked  = true;
-    box.disabled = true;
-    return;
-  }
-
-  const reg = window.drawRegistry?.[layer.id];
-  // · is the middle dot character.
-  label.textContent = "Layer " + (figure.activeLayer + 1) + " · " + (reg?.name || layer.id);
-  box.checked  = layer.visible;
-  box.disabled = false;
-
-} // end updateLayerInfo
 
 
 /* ============================================================

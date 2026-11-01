@@ -767,7 +767,7 @@ await page.selectOption("#figureInsertSelect", "regularPolygon");
 await page.waitForTimeout(300);
 const canvasShot = () => page.evaluate(async () => {
   const t = uiState.figures.tabs[uiState.figures.activeSubtab];
-  const m = await import("/ui/figures/figureLayers.js");
+  const m = await import("/ui/figures/figureDraw.js");
   m.redrawFigure(uiState.figures.activeSubtab, { dim: false });   // every visible layer at full strength
   const c = window.drawCanvas;
   return Array.from(c.getContext("2d").getImageData(0, 0, c.width, c.height).data);
@@ -981,7 +981,7 @@ const setActiveParams = (patch) => page.evaluate(async (patch) => {
   const t = uiState.figures.tabs[uiState.figures.activeSubtab];
   const inst = t.instances[t.figure.activeLayer];
   Object.assign(inst.params, patch);
-  const m = await import("/ui/figures/figureLayers.js");
+  const m = await import("/ui/figures/figureDraw.js");
   m.redrawFigure(uiState.figures.activeSubtab);
 }, patch);
 

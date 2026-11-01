@@ -232,13 +232,14 @@ async function renderTarget(t) {
 
   if (t.source === "figure") {
     const figure = await (await fetch(t.sourcePath, { cache: "no-store" })).json();
-    const fig = await import("/ui/figures/figureLayers.js");
+    const fig  = await import("/ui/figures/figureLayers.js");
+    const draw = await import("/ui/figures/figureDraw.js");
     const tabId = "tab-thumbnail-temp";
     prepareSharedCanvas();
     uiState.figures.tabs[tabId] = { type: "figure", figure, mode: "lines", preview: true, selectedPoint: null, centroidSelected: false };
     try {
       fig.rebuildInstances(tabId);
-      fig.redrawFigure(tabId);
+      draw.redrawFigure(tabId);
     } finally {
       delete uiState.figures.tabs[tabId];
     }

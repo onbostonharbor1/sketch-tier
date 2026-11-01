@@ -5,7 +5,7 @@
    Role:
      The numbered points of a figure: creating, finding, moving,
      deleting and drawing them. No event handling (that is
-     figurePointer.js) and no layer drawing (figureLayers.js).
+     figurePointer.js) and no layer drawing (figureDraw.js).
 
    Point record, in figure.points:
      { n, kind: "anchored", layer, arm, t, x, y, dx, dy }
@@ -90,12 +90,12 @@
    ============================================================ */
 
 import { applyTransform, inverseTransform } from "/draw/drawTransform.js";
-import { removeFromWeld } from "./figureWelds.js";
+import { removeFromWeld } from "./figureWeldModel.js";
 
 const MARKER_RADIUS = 9;   // drawn size of a numbered point
 const HALO_GAP      = 4;   // selected point: gap from the marker to its outer ring
 // Alpha for the discs of layers that are not the active one, while editing.
-// Layers themselves are dimmed harder (DIM_ALPHA in figureLayers.js).
+// Layers themselves are dimmed harder (DIM_ALPHA in figureDraw.js).
 const DISC_DIM_ALPHA = 0.5;
 
 
@@ -271,7 +271,7 @@ export function addHandlePoint(figure, layer, h, x, y) {
    this way (it rides along with its object); returns false for it.
 
    Used by a points-mode drag (figurePointer.js) and by a weld that
-   has to bring a free member along (figureWelds.js).
+   has to bring a free member along (figureWeldMove.js).
    ============================================================ */
 export function moveFreePoint(point, x, y, transform = null) {
 
