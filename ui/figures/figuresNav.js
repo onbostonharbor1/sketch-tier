@@ -48,10 +48,10 @@ import { setFiguresCaption }   from "./figuresCommands.js";
 import {
   listInsertableObjects,
   insertLayer,
-  setLayerVisible,
-  redrawFigure,
-  renderLayerPanel
+  setLayerVisible
 }                             from "./figureLayers.js";
+import { redrawFigure }      from "./figureDraw.js";
+import { renderLayerPanel }  from "./figureLayerPanel.js";
 import { deactivatePointsInput } from "./figurePointer.js";
 import { deactivateCentroid }    from "./figureCentroid.js";
 import {
@@ -175,7 +175,7 @@ export function renderSubtabs() {
 
      middle : Line and Parabola shortcut buttons
      right  : "Layer N . Name" and the Show checkbox (filled in by
-              figureLayers.js), just left of the "v" button
+              figureLayerPanel.js), just left of the "v" button
 
    The full registry list is the Insert Object list in the left
    command area (see updateFigureButtons).
@@ -214,7 +214,7 @@ function addCaptionTools(tabId) {
   info.style.cssText = "display:inline-flex; align-items:center; gap:8px; margin-right:10px;";
 
   const label = document.createElement("span");
-  label.id = "figureLayerLabel";       // filled by updateLayerInfo() in figureLayers.js
+  label.id = "figureLayerLabel";       // filled by updateLayerInfo() in figureLayerPanel.js
   info.appendChild(label);
 
   const showLabel = document.createElement("label");

@@ -40,7 +40,7 @@
                     the active layer can be edited.
      format      -- 1. The layout of the saved file (Phase 10).
    templates   -- [] for now; reserved for templates and scaffolds.
-   welds       -- added by figureWelds.js on the first weld (absent
+   welds       -- added by figureWeldModel.js on the first weld (absent
                     until then):
                       [ { members: [ { layer, n }, ... ] }, ... ]
                     Each entry ties together discs that must stay
@@ -55,7 +55,7 @@
    ============================================================ */
 
 // A new, empty figure. Called by openNewFigureTab() in figuresNav.js.
-// "welds" is not listed here; figureWelds.js creates it the first
+// "welds" is not listed here; figureWeldModel.js creates it the first
 // time two discs are welded, and every reader allows for it being
 // missing (figure.welds || []).
 export function createEmptyFigure(name) {

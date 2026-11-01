@@ -139,7 +139,7 @@ export function showWeldNotice(message) {
    ------------------------------------------------------------
    redraw() redraws the whole figure. Replaces any earlier
    activation. Called after armInteractor() (renderLayerPanel in
-   figureLayers.js does this): both use the same interaction layer,
+   figureLayerPanel.js does this): both use the same interaction layer,
    the interactor draws the handles on it, and an object with no
    handles makes the interactor hide that layer, which has to be
    shown again here.
