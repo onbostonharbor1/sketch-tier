@@ -25,7 +25,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Done |
 | 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Done |
 | 7 | Break apart for the other composite objects | Opus | Done (Inverse Star; see G-7) |
-| 8 | Parametric draggable points | Opus | Not started |
+| 8 | Parametric draggable points | Opus | Done |
 | 9 | 13 Sweep tool (guess: parameter study grid) | Opus | Not started |
 | 10 | 12 Insert list as icons with larger preview on hover | Sonnet | Not started |
 | 11 | Pursuit (temp): leftover point picker becomes a handle | Sonnet | Not started |

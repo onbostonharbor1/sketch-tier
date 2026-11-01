@@ -2316,6 +2316,60 @@ for (const setup of [{ name: "default", shorten: 0, nodes: 5 }, { name: "shorten
   if (d > 0) problems.push(`[break apart inverse star ${setup.name}] the picture changed: ${d} channel values differ`);
 }
 
+/* v1-finish item 8: Parametrics has a centre handle and a size handle. */
+stage = "parametric handles";
+await newFigure();
+await page.selectOption("#figureInsertSelect", "parametrics");
+await page.waitForTimeout(400);
+const paraBox = () => page.evaluate(async () => {
+  const id = uiState.figures.activeSubtab;
+  const t = uiState.figures.tabs[id];
+  (await import("/ui/figures/figureDraw.js")).redrawFigure(id);
+  const b = t.instances[0].bounds;
+  const p = t.instances[0].params;
+  // On the canvas: in Figures the centroid sits on the centre handle, so a drag
+  // there moves the layer's transform (the curve still moves). No turn here.
+  const tr = t.figure.layers[0].transform;
+  return { cx: (b.minX + b.maxX) / 2 + tr.tx, cy: (b.minY + b.maxY) / 2 + tr.ty, w: b.maxX - b.minX, handles: p.points.length,
+           h0: [Math.round(p.points[0].x + tr.tx), Math.round(p.points[0].y + tr.ty)],
+           h1: [Math.round(p.points[1].x + tr.tx), Math.round(p.points[1].y + tr.ty)] };
+});
+const pb0 = await paraBox();
+await dragTo(pb0.h0[0], pb0.h0[1], pb0.h0[0] + 50, pb0.h0[1] + 20);       // the centre handle
+const pb1 = await paraBox();
+await dragTo(pb1.h1[0], pb1.h1[1], pb1.h1[0] + 75, pb1.h1[1]);             // the size handle: 150 px out to 225
+const pb2 = await paraBox();
+if (pb0.handles !== 2 || Math.abs(pb1.cx - pb0.cx - 50) > 1 || Math.abs(pb1.cy - pb0.cy - 20) > 1
+    || Math.abs(pb1.w - pb0.w) > 1 || Math.abs(pb2.w / pb1.w - 1.5) > 0.02) {
+  problems.push("[parametric handles] " + JSON.stringify({ pb0, pb1, pb2 }));
+}
+
+/* v1-finish item 8 in the Draw tab: a slider change (a redraw) must not leave
+   the handles impossible to drag. */
+stage = "draw handles after a slider";
+await page.click("#draw-tab");
+await page.waitForTimeout(700);
+await page.locator("#subtabs button", { hasText: "Categories" }).first().click();
+await page.waitForTimeout(500);
+await page.click('#text .item[data-key="Parametrics"]');
+await page.waitForTimeout(1200);
+await page.evaluate(() => {
+  const r = [...document.querySelectorAll("#action input[type=range]")].find((e) => e.min === "3" && e.max === "200");
+  r.value = "60"; r.dispatchEvent(new Event("input", { bubbles: true })); r.dispatchEvent(new Event("change", { bubbles: true }));
+});
+await page.waitForTimeout(500);
+const drawPara = async () => page.evaluate(async () => {
+  const { uiState } = await import("/ui/uiState.js");
+  const i = uiState.draw.tabs[uiState.draw.activeSubtab];
+  return { pts: i.parameters.points.map((q) => [Math.round(q.x), Math.round(q.y)]), loops: i.parameters.complexity };
+});
+const dp0 = await drawPara();
+await dragTo(dp0.pts[0][0], dp0.pts[0][1], dp0.pts[0][0] + 60, dp0.pts[0][1] + 30);
+const dp1 = await drawPara();
+if (dp0.loops !== 60 || dp0.pts.length !== 2 || Math.abs(dp1.pts[0][0] - dp0.pts[0][0] - 60) > 1 || Math.abs(dp1.pts[1][0] - dp0.pts[1][0] - 60) > 1) {
+  problems.push("[draw handles after a slider] " + JSON.stringify({ dp0, dp1 }));
+}
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2326,4 +2380,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, no errors");

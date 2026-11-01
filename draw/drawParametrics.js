@@ -175,10 +175,18 @@ export function autoFitParametricToCanvas(thing) {
     const sY = usableH / height;
     thing.scale = (sX < sY) ? sX : sY;
 
+    // Draggable handles (v1-finish item 8): a zoom on top of the fitted
+    // size, and the point the curve is centred on (the canvas centre
+    // unless thing.centerAt says otherwise). zoom 1 at the canvas centre
+    // is exactly the old fit.
+    if (thing.zoom) thing.scale *= thing.zoom;
+    const cx = thing.centerAt ? thing.centerAt.x : canvas.width / 2;
+    const cy = thing.centerAt ? thing.centerAt.y : canvas.height / 2;
+
     // Calculate centering offset
     thing.mid = new Point(
-        canvas.width / 2 - thing.scale * ((b.minX + b.maxX) / 2),
-        canvas.height / 2 - thing.scale * ((b.minY + b.maxY) / 2)
+        cx - thing.scale * ((b.minX + b.maxX) / 2),
+        cy - thing.scale * ((b.minY + b.maxY) / 2)
     );
 
     return b;

@@ -10,6 +10,8 @@ window.drawRegistry_parametrics = {
     name:        "Parametrics",
     id:          "parametrics",
     version:     1,   // whole numbers; raise when params change meaning (saved figures record it)
+    handleNames: ["center", "size"],   // what each params.points entry is, by index (saved with handle discs)
+    interactive: true,
     category:    "Parametrics",
     firstOrder:  true,
     source:      "internal",
@@ -34,7 +36,14 @@ window.drawRegistry_parametrics = {
         sharpness: 5,
         phase:     0,
         complexity: 75,      // Lowered default so "Ends" are visible
-        showIntersections: false
+        showIntersections: false,
+        // Handles (v1-finish item 8): points[0] the centre the curve sits
+        // on, points[1] a size handle SIZE_ARM px from it at zoom 1.
+        // Dragging the centre moves the curve; dragging the size handle
+        // away or in scales it. Filled in by init().
+        center:    null,
+        zoom:      1,
+        points:    []
     },
 
     controls: {
@@ -68,13 +77,27 @@ window.drawRegistry_parametrics = {
             { label: "Four Circles", action() { setVariantAndRedraw("fourCircles"); } },
             { label: "Four Ended",  action() { setVariantAndRedraw("fourEnded");   } }
         ];
-        self.elements = { curve: buildCurveFromParams(self.params) };
+        const p = self.params;
+        if (!p.center) p.center = { x: (window.drawCanvas?.width || 800) / 2, y: (window.drawCanvas?.height || 800) / 2 };
+        if (!p.points.length) p.points.push({ x: p.center.x, y: p.center.y }, { x: p.center.x + SIZE_ARM * p.zoom, y: p.center.y });
+        self.elements = { curve: buildCurveFromParams(p) };
     },
 
     update(params) {
         if (!params) return;
         if (params.variant) this.params.variant = params.variant;
         Object.assign(this.params, params);
+        // A dragged centre moves the curve and takes the size handle with
+        // it; the size handle's distance from the centre is the zoom.
+        const p = this.params;
+        if (p.points && p.points.length >= 2 && p.center) {
+            const dx = p.points[0].x - p.center.x, dy = p.points[0].y - p.center.y;
+            if (dx || dy) {
+                p.points[1] = { x: p.points[1].x + dx, y: p.points[1].y + dy };
+                p.center = { x: p.points[0].x, y: p.points[0].y };
+            }
+            p.zoom = Math.max(0.05, Math.hypot(p.points[1].x - p.center.x, p.points[1].y - p.center.y) / SIZE_ARM);
+        }
         this.elements.curve = buildCurveFromParams(this.params);
     },
 
@@ -104,8 +127,13 @@ window.drawRegistry_parametrics = {
     }
 };
 
+// Distance in pixels from the centre handle to the size handle at zoom 1.
+const SIZE_ARM = 150;
+
 function buildCurveFromParams(p) {
     const common = {
+        centerAt: p.center,
+        zoom: p.zoom || 1,
         color: p.color,
         lineWidth: p.lineWidth,
         showIntersections: p.showIntersections,
