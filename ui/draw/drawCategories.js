@@ -45,7 +45,7 @@ export function setDrawText() {
    ============================================================ */
 export function collectRegistryEntries() {
 
-  return Object.entries(window.drawRegistry || {}).map(([key, entry]) => ({
+  return Object.entries(window.drawRegistry || {}).filter(([, entry]) => !entry.template).map(([key, entry]) => ({
     key,
     name:     entry.name     || key,
     category: entry.category || "uncategorized",

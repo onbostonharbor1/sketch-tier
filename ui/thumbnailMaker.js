@@ -93,7 +93,7 @@ export async function listThumbnailTargets(sets = THUMB_SETS) {
 
   if (want("Draw")) {
     for (const key of Object.keys(window.drawRegistry || {})) {
-      if (!window.drawRegistry[key]) continue;
+      if (!window.drawRegistry[key] || window.drawRegistry[key].template) continue;   // Figures guide shapes have no picture
       targets.push({ set: "Draw", kind: "drawRegistry", category: key, name: key, source: "draw", sourcePath: key,
                      thumbUrl: drawThumb(key) });
     }

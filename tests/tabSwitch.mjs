@@ -745,7 +745,7 @@ await pickLayer(0);
 if ((await layerInfo()).sel) problems.push("[7b deselect] selection survived a layer change");
 
 stage = "7b every object draws and has a centroid";
-for (const key of Object.keys(await page.evaluate(() => window.drawRegistry))) {
+for (const key of await page.evaluate(() => Object.keys(window.drawRegistry).filter((k) => !window.drawRegistry[k].template))) {
   await newFigure();
   await page.selectOption("#figureInsertSelect", key);
   await page.waitForTimeout(250);
@@ -1733,7 +1733,7 @@ await page.locator("#action select").selectOption("Draw");
 await page.locator("#action button", { hasText: "Regenerate" }).click();
 await page.waitForFunction(() => /Made \d+ pictures/.test(document.getElementById("text").innerText), null, { timeout: 30000 });
 const regenText = await page.evaluate(() => document.getElementById("text").innerText);
-const drawKeys = await page.evaluate(() => Object.keys(window.drawRegistry).filter((k) => window.drawRegistry[k]));
+const drawKeys = await page.evaluate(() => Object.keys(window.drawRegistry).filter((k) => window.drawRegistry[k] && !window.drawRegistry[k].template));   // Figures guides have no picture
 if (!/Made 14 pictures\. Skipped 0\. Failed 0\./.test(regenText)) problems.push("[regenerate] summary: " + regenText.slice(0, 200));
 if (thumbWrites.length !== drawKeys.length || thumbWrites.some((w) => w.kind !== "drawRegistry" || w.category !== w.name || !/^iVBORw0KGgo/.test(w.pngBase64 || ""))) {
   problems.push("[regenerate] requests: " + thumbWrites.length + " for " + drawKeys.length + " Draw objects; first " + JSON.stringify(thumbWrites[0] && { ...thumbWrites[0], pngBase64: "..." }));
@@ -2224,6 +2224,72 @@ const ends = await page.evaluate(async () => {
 if (ends.source !== "stitch ends" || ends.count < 10) problems.push("[9 print] stitch-end nails: " + JSON.stringify(ends));
 page.off("dialog", onPrintDialog);
 
+/* v1-finish item 6: templates (guide layers). */
+stage = "templates";
+await newFigure();
+await insertExact("drawLine", { pt1: { x: 100, y: 100 }, pt2: { x: 300, y: 300 } });   // L1
+await page.selectOption("#figureTemplateSelect", "guideRectangle");                       // L2: 200,200 to 600,500
+await page.waitForTimeout(300);
+const tplInfo = await page.evaluate(async () => {
+  const id = uiState.figures.activeSubtab;
+  const t = uiState.figures.tabs[id];
+  const { listInsertableObjects } = await import("/ui/figures/figureLayers.js");
+  const { collectRegistryEntries } = await import("/ui/draw/drawCategories.js");
+  const { includedLayers } = await import("/ui/figures/figurePrint.js");
+  const { redrawFigure } = await import("/ui/figures/figureDraw.js");
+  const ink = () => Array.from(window.drawCanvas.getContext("2d").getImageData(450, 200, 1, 1).data).slice(0, 3);
+  const normal = ink();
+  t.preview = true; redrawFigure(id); const showAll = ink(); t.preview = false; redrawFigure(id);
+  return { layers: t.figure.layers.length, role: t.figure.layers[1].role, id: t.figure.layers[1].id,
+           inInsert: listInsertableObjects().some((o) => o.key.startsWith("guide")),
+           inDraw: collectRegistryEntries().some((e) => e.entry.template), printed: includedLayers(t.figure),
+           normal, showAll };
+});
+const grey = (c) => c[0] > 100 && c[0] < 200 && Math.abs(c[0] - c[2]) < 10;
+const white = (c) => c.every((v) => v > 240);
+if (tplInfo.layers !== 2 || tplInfo.role !== "guide" || tplInfo.id !== "guideRectangle" || tplInfo.inInsert || tplInfo.inDraw
+    || JSON.stringify(tplInfo.printed) !== "[0]" || !grey(tplInfo.normal) || !white(tplInfo.showAll)) {
+  problems.push("[templates] rectangle: " + JSON.stringify(tplInfo));
+}
+await page.locator("#figure-sidebar .figure-guide-x").first().click();
+await page.waitForTimeout(250);
+const hiddenGuide = await page.evaluate(() => uiState.figures.tabs[uiState.figures.activeSubtab].figure.layers[1].visible);
+await page.selectOption("#figureTemplateSelect", "guideRectangle");
+await page.waitForTimeout(250);
+const backAgain = await page.evaluate(() => {
+  const f = uiState.figures.tabs[uiState.figures.activeSubtab].figure;
+  return { layers: f.layers.length, visible: f.layers[1].visible, active: f.activeLayer };
+});
+if (hiddenGuide !== false || backAgain.layers !== 2 || !backAgain.visible || backAgain.active !== 1) {
+  problems.push("[templates] X then insert again: hidden=" + hiddenGuide + " " + JSON.stringify(backAgain));
+}
+await page.selectOption("#figureTemplateSelect", "boundingBox");
+await page.waitForTimeout(250);
+await page.selectOption("#figureTemplateSelect", "guideRuler");
+await page.waitForTimeout(250);
+const boxAndRuler = await page.evaluate(() => {
+  const f = uiState.figures.tabs[uiState.figures.activeSubtab].figure;
+  const bb = f.layers[2];
+  return { box: [bb.params.corner1, bb.params.corner2].map((p) => [Math.round(p.x), Math.round(p.y)]), boxRole: bb.role,
+           ruler: f.layers[3]?.id, label: document.getElementById("figureLayerLabel")?.textContent || "" };
+});
+// The box fits L1 (100,100 to 300,300), not the guide rectangle.
+if (JSON.stringify(boxAndRuler.box) !== "[[100,100],[300,300]]" || boxAndRuler.boxRole !== "guide"
+    || boxAndRuler.ruler !== "guideRuler" || !/Ruler: 300 px/.test(boxAndRuler.label)) {
+  problems.push("[templates] bounding box and ruler: " + JSON.stringify(boxAndRuler));
+}
+const scaffold = await page.evaluate(async () => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  const { includedLayers } = await import("/ui/figures/figurePrint.js");
+  const { checkFigureFormat } = await import("/ui/figures/figureModel.js");
+  t.figure.layers[0].role = "scaffold";
+  const printed = includedLayers(t.figure);
+  const problemsFound = checkFigureFormat(t.figure);
+  t.figure.layers[0].role = "stitch";
+  return { printed, problemsFound };
+});
+if (scaffold.printed.length !== 0 || scaffold.problemsFound.length) problems.push("[templates] scaffold: " + JSON.stringify(scaffold));
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2234,4 +2300,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, no errors");

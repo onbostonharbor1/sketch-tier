@@ -20,7 +20,8 @@ import { armInteractor, disarmInteractor } from "/ui/interactor.js";
 import { activatePointsInput, deactivatePointsInput } from "./figurePointer.js";
 import { activateCentroid }       from "./figureCentroid.js";
 import { redrawFigure }           from "./figureDraw.js";
-import { selectLayer, LAYER_COLORS } from "./figureLayers.js";
+import { selectLayer, setLayerVisible, LAYER_COLORS } from "./figureLayers.js";
+import { rulerText }              from "./figureTemplates.js";
 
 
 /* ============================================================
@@ -103,10 +104,25 @@ export function renderLayerPanel(tabId) {
         num.style.outline = "1px dashed #000";        // a dashed box: not printed
         row.title += " (not printed)";
       }
+      if (layer.role === "guide" || layer.role === "scaffold") {
+        num.style.fontStyle = "italic";               // italic: never printed
+        row.title += layer.role === "guide" ? " (guide)" : " (scaffold)";
+      }
 
       row.onclick = () => selectLayer(tabId, i);
       row.appendChild(num);
       row.appendChild(picker);
+      // A guide has an X that hides it (shown again from its number, or by
+      // inserting the same template). Decision G-4.
+      if (layer.role === "guide" && layer.visible) {
+        const x = document.createElement("span");
+        x.className = "figure-guide-x";
+        x.textContent = "\u00d7";                  // the multiplication sign, a neat X
+        x.title = "Hide this guide";
+        x.style.cssText = "margin-left:3px; cursor:pointer; font-weight:bold;";
+        x.onclick = (e) => { e.stopPropagation(); setLayerVisible(tabId, i, false); };
+        row.appendChild(x);
+      }
       strip.appendChild(row);
     });
   }
@@ -183,7 +199,7 @@ function textColorOn(hex) {
    Fills the "Layer N . Name  [x] Show" item in the subtab bar
    (built by figuresNav.js) for the active layer.
    ============================================================ */
-function updateLayerInfo(tabId) {
+export function updateLayerInfo(tabId) {
 
   const label = document.getElementById("figureLayerLabel");
   const box   = document.getElementById("figureLayerShow");
@@ -201,7 +217,8 @@ function updateLayerInfo(tabId) {
 
   const reg = window.drawRegistry?.[layer.id];
   // · is the middle dot character.
-  label.textContent = "Layer " + (figure.activeLayer + 1) + " · " + (reg?.name || layer.id);
+  const ruler = rulerText(layer, figure.scale);       // a ruler shows its length here
+  label.textContent = "Layer " + (figure.activeLayer + 1) + " · " + (reg?.name || layer.id) + (ruler ? " · " + ruler : "");
   box.checked  = layer.visible;
   box.disabled = false;
 

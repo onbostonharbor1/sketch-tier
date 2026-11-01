@@ -32,12 +32,14 @@
    ============================================================ */
 
 import { resetCanvas, drawState } from "/draw/drawState.js";
+import { uiState }               from "/ui/uiState.js";
 import { newBounds }              from "/draw/drawTransform.js";
 import { refreshPoints, drawFigurePoints } from "./figurePoints.js";
 import { drawCentroid }           from "./figureCentroid.js";
 import { drawWeldMarks }          from "./figureWeldMarks.js";
 import { drawMagicMarks }         from "./figureMagic.js";
 import { drawSpacingMarks }       from "./figurePrint.js";
+import { updateLayerInfo }        from "./figureLayerPanel.js";
 
 // Alpha for layers that are not the active one.
 const DIM_ALPHA = 0.2;
@@ -68,8 +70,8 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   const figure    = tabState.figure;
   const instances = tabState.instances || [];
   // Preview (the Show All checkbox, not saved) and final mode draw every
-  // layer at full strength, hidden ones included. Layers of kind "template"
-  // (guides, a later phase) are left out of both. Points mode sets
+  // layer at full strength, hidden ones included. Guide layers (templates,
+  // figureTemplates.js) are left out of both. Points mode sets
   // drawState.final while the layers draw, so they show only their points
   // (one flag, set here, restored below), but it follows the same
   // visibility and dimming rules as lines mode.
@@ -82,7 +84,10 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   // drawOrder is top first; paint bottom to top.
   for (let k = figure.drawOrder.length - 1; k >= 0; k--) {
     const i = figure.drawOrder[k];
-    if (showAll && figure.layers[i].kind === "template") continue;
+    // Guides (templates) are for drawing against: Show All and Final leave
+    // them out. Scaffold is design, shown in Show All, but never in Final.
+    if (showAll && figure.layers[i].role === "guide") continue;
+    if (wasFinal && figure.layers[i].role === "scaffold") continue;
     if (!figure.layers[i].visible && !showAll) continue;
 
     const inst = instances[i];
@@ -123,6 +128,9 @@ export function redrawFigure(tabId, { dim = true } = {}) {
 
   // The active layer's centroid, and its box and rotation handle when selected.
   drawCentroid(tabState);
+
+  // The caption's layer label (a ruler shows its length there, which a drag changes).
+  if (uiState.figures.activeSubtab === tabId) updateLayerInfo(tabId);
 
 } // end redrawFigure
 

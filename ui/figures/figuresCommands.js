@@ -313,6 +313,21 @@ export async function getFiguresCaptionMenuItems(title) {
       redrawFigure(uiState.figures.activeSubtab);
     }
   };
+  // A stitch layer can become scaffold: kept for drawing against and for
+  // other layers to attach to, never printed. Guides keep their own role.
+  const scaffoldItem = {
+    label:    act0 && act0.role === "scaffold" ? "Use layer for stitching" : "Use layer as scaffold",
+    disabled: !act0 || act0.role === "guide",
+    tooltip:  "Scaffold is shown while you work and in Show All, but never printed or shown in Final.",
+    onClick:  () => {
+      const ts = activeTab();
+      const l = ts?.figure?.layers[ts.figure.activeLayer];
+      if (!l || l.role === "guide") return;
+      l.role = l.role === "scaffold" ? "stitch" : "scaffold";
+      renderLayerPanel(uiState.figures.activeSubtab);
+      redrawFigure(uiState.figures.activeSubtab);
+    }
+  };
   const printItem = {
     label:    "Print template...",
     disabled: !(fig0 && fig0.scale),
@@ -337,6 +352,7 @@ export async function getFiguresCaptionMenuItems(title) {
     nailSizeItem,
     spacingItem,
     outputItem,
+    scaffoldItem,
     printItem,
     later("Show Script")
   ];

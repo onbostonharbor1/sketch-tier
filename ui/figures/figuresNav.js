@@ -44,6 +44,7 @@
    ============================================================ */
 
 import { setCurrentTabId }     from "./figuresState.js";
+import { TEMPLATE_CHOICES, insertTemplate } from "./figureTemplates.js";
 import { setFiguresCaption }   from "./figuresCommands.js";
 import {
   listInsertableObjects,
@@ -207,6 +208,18 @@ function addCaptionTools(tabId) {
     b.onclick = () => insertLayer(tabId, key);
     mid.appendChild(b);
   }
+  // Templates: guide shapes to draw against (figureTemplates.js).
+  const tpl = document.createElement("select");
+  tpl.id = "figureTemplateSelect";
+  tpl.title = "Insert a guide: drawn grey, never printed, left out of Show All";
+  tpl.innerHTML = "<option value=''>Template...</option>" +
+    TEMPLATE_CHOICES.map((c) => "<option value='" + c.value + "'>" + c.label + "</option>").join("");
+  tpl.onchange = () => {
+    const choice = tpl.value;
+    tpl.value = "";
+    if (choice) insertTemplate(tabId, choice);
+  };
+  mid.appendChild(tpl);
   caption.insertBefore(mid, btnRow);
 
   // ---- right: active layer name and Show checkbox ----------------

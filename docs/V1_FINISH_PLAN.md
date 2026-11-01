@@ -23,7 +23,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 3 | Bug: script state leak (scripts fail after about 100 earlier runs) | Opus | Done |
 | 4 | 8b magic points: midpoints, lobe tips, cusps, crossings, named by feature | Opus | Done |
 | 5 | 9 print aids: units and scale, scale bar, 100 mm calibration line, true-size print, nail spacing check, weld group prints as one nail, output inclusion | Opus | Done |
-| 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Not started |
+| 6 | Templates as layers with a role: guide shapes, ruler, bounding-box template, X hides | Opus | Done |
 | 7 | Break apart for the other composite objects | Opus | Not started |
 | 8 | Parametric draggable points | Opus | Not started |
 | 9 | 13 Sweep tool (guess: parameter study grid) | Opus | Not started |
@@ -58,4 +58,6 @@ activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node fol
 | G-14 | 5 | How print size is set | One number: the printed width from leftmost to rightmost nail, in mm |
 | G-15 | 5 | Paper | US Letter, 10 mm margins, sheets tiled with 10 mm overlap and + alignment marks |
 | G-16 | 5 | Disc numbers on the print | Printed small beside each nail ("11+12" for nails that merge) |
+| G-17 | 6 | Scaffold in V1 | A menu switch turns any stitch layer into scaffold and back: shown while working and in Show All, never printed or shown in Final. Snap versus attach left for V2 |
+| G-18 | 6 | Ruler length | Shown in the caption beside the layer name, in px and (once the print size is set) mm |
 | G-12 | 4 | Lobe tip | A point farther from the curve's centre than its neighbours by at least 1.5 px within 3 points either side |

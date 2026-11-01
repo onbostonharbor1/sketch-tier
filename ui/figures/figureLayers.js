@@ -76,6 +76,7 @@ import { redrawFigure }     from "./figureDraw.js";
 import { renderLayerPanel } from "./figureLayerPanel.js";
 import { newTransform }     from "/draw/drawTransform.js";
 import { newLayerFields }   from "./figureModel.js";
+import { registerTemplates } from "./figureTemplates.js";
 
 // Experiment switch: true = the last layer clicked goes on top.
 const MOVE_TO_FRONT_ON_SELECT = true;
@@ -106,7 +107,7 @@ export function listInsertableObjects() {
   const reg = window.drawRegistry || {};
 
   return Object.keys(reg)
-    .filter((key) => reg[key])
+    .filter((key) => reg[key] && !reg[key].template)     // templates have their own pulldown
     .map((key) => ({ key, name: reg[key].name || key }))
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -132,7 +133,9 @@ export function listInsertableObjects() {
      4. attach the callbacks that interactor.js and the weld code use
      5. put it on top, make it active, redraw
    ============================================================ */
-export function insertLayer(tabId, registryKey, { params = null, transform = null } = {}) {
+export function insertLayer(tabId, registryKey, { params = null, transform = null, role = null } = {}) {
+
+  registerTemplates();      // guide shapes are registry-shaped objects too (figureTemplates.js)
 
   const tabState = uiState.figures.tabs[tabId];
   if (!tabState || !tabState.figure) throw new Error("insertLayer: no figure for " + tabId);
@@ -174,6 +177,7 @@ export function insertLayer(tabId, registryKey, { params = null, transform = nul
     params:    instance.params,       // the same object, not a copy (see header)
     transform: transform ? { ...transform } : newTransform()   // { ...t } is a shallow copy
   };
+  if (role) layer.role = role;           // "guide" for a template (figureTemplates.js)
   figure.layers.push(layer);
   tabState.instances.push(instance);
 
@@ -242,6 +246,7 @@ export function rebuildInstances(tabId) {
   const tabState = uiState.figures.tabs[tabId];
   const figure   = tabState.figure;
   tabState.instances = [];
+  registerTemplates();      // a saved figure may hold guide layers
 
   figure.layers.forEach((layer, index) => {
     const entry = window.drawRegistry?.[layer.id];
