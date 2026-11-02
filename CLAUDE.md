@@ -96,6 +96,7 @@ path), say so and let him decide.
   approved copy in `tests/regression/` (report in `tests/regression/report.html`). Run it before every review. An
   intended change is approved with `npm run test:regression -- accept <name>`, and the new approved copy is committed.
 - `npm run test:errors` tests the error bar, the error log, the Home summary and the registry and figure-file checks.
+- `npm run test:history` tests Script history (VS Code's saved versions of a script; `ui/scriptHistory.js`).
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);
   revert them with `git checkout` before committing.

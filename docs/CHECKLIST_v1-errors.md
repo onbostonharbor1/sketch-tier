@@ -1,8 +1,9 @@
 # Checklist: what to check by hand on `claude/v1-errors`
 
-Branch from `claude/v1-finish` (2 Nov 2026). It makes errors visible and adds the registry and figure-file checks.
-Everything below passes here: `lint:globals` (0 errors), `check:imports`, `check:ids`, `test:tabs`, `test:node` (105
-passed, 0 failed), `test:regression` (no drawing changed) and the new `test:errors`.
+Branch from `claude/v1-finish` (2 Nov 2026). It makes errors visible, adds the registry and figure-file checks, and adds
+Script history (VS Code's saved versions of a script, to run or compare).
+Everything below passes here: `lint:globals` (0 errors), `check:imports`, `check:ids`, `test:tabs`, `test:node` (112
+passed, 0 failed), `test:regression` (no drawing changed), `test:scripts`, and the new `test:errors` and `test:history`.
 
 **Setup.** `git fetch`, `git checkout claude/v1-errors`, `npm install`, start as usual. Restart Vite if it was running
 while files changed.
@@ -29,4 +30,13 @@ Utilities tab does not have. Click a name for detail, as before.
 **E6. Figure files.** Utilities > Tools > Check Figure Files: one line per saved figure, OK or its problems. Opening a
 figure with problems still opens it, as before, but names each problem in the error bar and the log.
 
-**Undo:** `git revert 45e1759`.
+**E7. Script history.** Open a pattern or gallery script, caption menu v > Script history...: the side panel lists every
+version VS Code saved of that script, newest first. **Run** draws that version on the canvas, with its own sliders; the
+file is not touched, and the panel's top line says which version is showing. **Diff** shows what that save changed (red
+"-" removed, green "+" added, a few lines around each change); **against now** compares it with the file as it is.
+**Run the file as it is now** goes back. Check: edit a script in VS Code, save, run it in Sketchpad, change it, save,
+run, then open Script history: both saves are there. VS Code's limit is now 500 versions per file
+(`.vscode/settings.json`); it applies from when VS Code reloads the setting. If the panel says there are no saved
+versions for a script you have saved, tell me: it looks in `%APPDATA%\Code\User\History`.
+
+**Undo:** `git revert 1a85701` (Script history), `git revert 45e1759` (errors and checks).
