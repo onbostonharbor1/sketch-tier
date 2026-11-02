@@ -3,13 +3,12 @@
    Hint for 219.jpg
    ============================================================
    What it seems to be: chords round a circle whose skip grows as they go round, so the envelope spirals inward; gold and grey
-   Built from:          circlePoints (the growing skip is written here: a new rule stitchWith does not have)
+   Built from:          circlePoints, growingChords
    Guessed:             start skip and growth
    A hint, not a copy: the construction, not the picture.
    ============================================================ */
 
-import { middle, P, startHint, circlePoints } from "/gallery/Ideabook/scripts/ideabookRoutines.js";
-import { drawLine } from "/draw/drawUtilities.js";
+import { middle, P, startHint, circlePoints, growingChords } from "/gallery/Ideabook/scripts/ideabookRoutines.js";
 
 export const scriptInfo = {
   title: "Chords with a growing skip (spiral)",
@@ -30,10 +29,7 @@ export const scriptInfo = {
   },
   draw(p) {
     const c = middle(), pts = circlePoints(c, p.size, p.nails);
-    for (let i = 0; i < pts.length; i++) {
-      const j = Math.round(i + p.skip0 + i * p.grow) % pts.length;
-      drawLine(pts[i], pts[j], i % 2 ? "#d4b26a" : "#9a9a9a", p.lineWidth);
-    }
+    growingChords(pts, { skip0: p.skip0, grow: p.grow, colors: ["#9a9a9a", "#d4b26a"], lineWidth: p.lineWidth });
   }
 };
 

@@ -28,7 +28,7 @@ const check = (ok, what) => { console.log((ok ? "  ok   " : "  FAIL ") + what); 
 const categories = JSON.parse(fs.readFileSync(path.join(IDEABOOK, "directoryRegistry.json"), "utf8"));
 const scriptsOf = (cat) => {
   const dir = path.join(IDEABOOK, cat, "scripts");
-  return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".js") && !f.startsWith("_")).map((f) => f.slice(0, -3)) : [];
+  return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".js")).map((f) => f.slice(0, -3)) : [];
 };
 const manifestOf = (cat) => JSON.parse(fs.readFileSync(path.join(IDEABOOK, cat, "manifest.json"), "utf8"));
 

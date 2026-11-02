@@ -133,7 +133,7 @@ export async function readScriptHistoryVersion(payload = {}) {
    gallery/Ideabook/<category>/scripts/. A script belongs to the image
    with the same name (IMG_8500.JPG and scripts/IMG_8500.js), so the
    Ideabook's Run script button (ui/gallery) can tell which images have
-   one. Files starting with "_" (notes such as _notDone.txt) are not scripts.
+   one. Only .js files count (the folder's _notDone.txt note is not a script).
    Payload:  { category: "Pursuit" }
    Returns:  { request, status: "ok", category, names: ["IMG_8500", ...] }
              names without ".js"; [] when the folder does not exist.
@@ -145,7 +145,7 @@ export async function listIdeabookScripts(payload = {}) {
   }
   const dir = path.resolve(".", "gallery", "Ideabook", category, "scripts");
   const names = fs.existsSync(dir)
-    ? fs.readdirSync(dir).filter((f) => /\.js$/i.test(f) && !f.startsWith("_")).map((f) => f.replace(/\.js$/i, "")).sort()
+    ? fs.readdirSync(dir).filter((f) => /\.js$/i.test(f)).map((f) => f.replace(/\.js$/i, "")).sort()
     : [];
   return { request: "listIdeabookScripts", status: "ok", category, names };
 } // end listIdeabookScripts

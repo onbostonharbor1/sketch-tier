@@ -24,6 +24,8 @@
      arcPoints(c, r, fromDeg, toDeg, n)       n+1 points along an arc
      polygonCorners(c, r, sides, rotateDeg)   the corners of a regular polygon
      polygonPoints(c, r, sides, perSide, rotateDeg)  points spaced along its edges
+     starCorners(c, R, r, n, rotateDeg)       the 2n corners of a star polygon,
+                                              tips at R, notches at r
      spiralPoints(c, r0, r1, turns, n)        an Archimedean spiral
      roulettePoints(c, s)                     a Spirograph curve (hypotrochoid or
                                               epitrochoid): s.R, s.r, s.d, s.turns, s.steps
@@ -45,10 +47,18 @@
                                  (long thin points); s.twist shifts that point
                                  round (a pinwheel); s.turn turns the whole star
      polygonCornerStitch(corners, steps, s)  a corner stitch at every corner of a
-                                 polygon: the rounded shape inside a frame
+                                 polygon: the rounded shape inside a frame. From the
+                                 mid-points of the two edges, or with s.full the
+                                 whole edges (corner to corner: holes appear)
+     segmentStitch(a1, a2, b1, b2, steps, s)  segment a1->a2 joined point for point
+                                 to segment b1->b2 (hourglasses, crossed bands)
      chords(pts, s)              point i to point i+skip within one list. One rule for
                                  what drawManyLines, drawLinesAround and drawLinesWithin
                                  each do with different wrap and chop handling
+     growingChords(pts, s)       point i to point i + skip0 + i*grow: the skip grows
+                                 as the chords go round, so the envelope curls (the
+                                 teardrops and spirals of many circle boards).
+                                 s.colors [from, to] blends round the circle
      timesTable(pts, s)          point i to point (i * factor) mod n: cardioids,
                                  nephroids (Sketchpad's Cycloid rule)
      allToAll(pts, s)            every pair once (Mystic Rose)
@@ -133,6 +143,15 @@ export function polygonPoints(c, r, sides = 3, perSide = 10, rotateDeg = 0) {
   return out;
 } // end polygonPoints
 
+export function starCorners(c, R = 150, r = 60, n = 5, rotateDeg = 0) {
+  const out = [];
+  for (let k = 0; k < 2 * n; k++) {
+    const a = (-90 + rotateDeg + 180 * k / n) * RAD, rad = k % 2 ? r : R;
+    out.push(new Point(c.x + rad * Math.cos(a), c.y + rad * Math.sin(a)));
+  }
+  return out;
+} // end starCorners
+
 export function spiralPoints(c, r0 = 10, r1 = 200, turns = 3, n = 120) {
   const out = [];
   for (let i = 0; i <= n; i++) {
@@ -211,11 +230,16 @@ export function polygonCornerStitch(corners, steps = 15, s = {}) {
   for (let k = 0; k < n; k++) {
     // From the middle of the edge before the corner to the middle of the edge after it.
     const a = corners[(k + n - 1) % n], c = corners[k], b = corners[(k + 1) % n];
-    const m1 = new Point((a.x + c.x) / 2, (a.y + c.y) / 2), m2 = new Point((c.x + b.x) / 2, (c.y + b.y) / 2);
+    const m1 = s.full ? a : new Point((a.x + c.x) / 2, (a.y + c.y) / 2);
+    const m2 = s.full ? b : new Point((c.x + b.x) / 2, (c.y + b.y) / 2);
     corner(m1, c, m2, steps, s).forEach((l) => lines.push(l));
   }
   return lines;
 } // end polygonCornerStitch
+
+export function segmentStitch(a1, a2, b1, b2, steps = 15, s = {}) {
+  return stitchWith(linePoints(a1, a2, steps), linePoints(b1, b2, steps), s);
+} // end segmentStitch
 
 export function chords(pts, s = {}) {
   const { skip = 1, wrap = true, from = 0, to = null } = s;
@@ -229,6 +253,16 @@ export function chords(pts, s = {}) {
   }
   return lines;
 } // end chords
+
+export function growingChords(pts, s = {}) {
+  const { skip0 = 30, grow = 0.4, colors = null } = s;
+  const lines = [], n = pts.length;
+  for (let i = 0; i < n; i++) {
+    const j = Math.round(i + skip0 + i * grow) % n;
+    join(pts[i], pts[j], colors ? { ...s, color: blend(colors[0], colors[1], i / n) } : s, lines);
+  }
+  return lines;
+} // end growingChords
 
 export function timesTable(pts, s = {}) {
   const { factor = 2 } = s;
