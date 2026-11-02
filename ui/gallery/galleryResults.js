@@ -14,7 +14,7 @@
        state (activeDomain, activeCategory, activeItem, saved).
 
    Exports:
-     ideabookScriptPath(category, entry), ideabookHasScript(category, entry),
+     ideabookScriptName(filename), ideabookScriptPath(category, entry), ideabookHasScript(category, entry),
      toggleIdeabookScript(category)     Ideabook hint scripts (Run script)
      showGalleryResultsImages(domain, category, startIndex)
      showGalleryResultsScripts(category, index)
@@ -285,15 +285,23 @@ async function showGalleryScript(category, entry) {
    file of the same name in the category's scripts folder:
        gallery/Ideabook/Pursuit/IMG_8500.JPG
        gallery/Ideabook/Pursuit/scripts/IMG_8500.js
+   (with & , # ? % + ; in the image's name written as _: ideabookScriptName).
    The caption's Run script button (galleryMenuCmds.js) is greyed when
    the image has none. Pressed, it draws the script on the canvas in place
    of the image and becomes "Show image". Prev and Next go back to images.
    ============================================================ */
 
+// The script's file name for an image: the image's name, with the few
+// characters the dev server will not serve in a file name (& , # ? % + ;)
+// replaced by "_". ("Mandala, Modern & Boho" -> "Mandala_ Modern _ Boho")
+export function ideabookScriptName(filename) {
+  return String(filename).replace(/[&,#?%+;]/g, "_");
+} // end ideabookScriptName
+
 // The app path of an image's hint script (it may not exist).
 export function ideabookScriptPath(category, entry) {
   return "/gallery/Ideabook/" + encodeURIComponent(category) + "/scripts/" +
-         encodeURIComponent(entry.filename) + ".js";
+         encodeURIComponent(ideabookScriptName(entry.filename)) + ".js";
 } // end ideabookScriptPath
 
 
@@ -306,7 +314,7 @@ export async function ideabookHasScript(category, entry) {
     try { known[category] = (await nodeListIdeabookScripts(category)).names || []; }
     catch (err) { return false; }          // no service: leave unknown, try again next time
   }
-  return known[category].includes(entry.filename);
+  return known[category].includes(ideabookScriptName(entry.filename));
 } // end ideabookHasScript
 
 

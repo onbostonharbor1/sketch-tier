@@ -26,6 +26,8 @@
      polygonPoints(c, r, sides, perSide, rotateDeg)  points spaced along its edges
      starCorners(c, R, r, n, rotateDeg)       the 2n corners of a star polygon,
                                               tips at R, notches at r
+     zigzagPoints(c, width, height, teeth)    the corners of a zigzag row: teeth
+                                              points up, centred on c
      spiralPoints(c, r0, r1, turns, n)        an Archimedean spiral
      roulettePoints(c, s)                     a Spirograph curve (hypotrochoid or
                                               epitrochoid): s.R, s.r, s.d, s.turns, s.steps
@@ -40,6 +42,8 @@
                                  s.from / s.to (part of the arm), s.wrap (offsets
                                  wrap round arm2 instead of stopping)
      corner(a, c, b, steps, s)   the classic curve stitch: arm a->c joined to arm c->b
+     zigzagStitch(pts, steps, s) a corner stitch at every inner corner of a zigzag
+                                 (or any path); s.colors: a list, one per corner
      starOfCorners(c, r, n, steps, s)  a star of n curved points: a corner stitch
                                  between each pair of neighbouring tips, bending
                                  round the centre (n = 4: the four-pointed star),
@@ -152,6 +156,14 @@ export function starCorners(c, R = 150, r = 60, n = 5, rotateDeg = 0) {
   return out;
 } // end starCorners
 
+export function zigzagPoints(c, width = 500, height = 150, teeth = 6) {
+  const out = [];
+  for (let k = 0; k <= 2 * teeth; k++) {
+    out.push(new Point(c.x - width / 2 + width * k / (2 * teeth), c.y + (k % 2 ? -height / 2 : height / 2)));
+  }
+  return out;
+} // end zigzagPoints
+
 export function spiralPoints(c, r0 = 10, r1 = 200, turns = 3, n = 120) {
   const out = [];
   for (let i = 0; i <= n; i++) {
@@ -240,6 +252,15 @@ export function polygonCornerStitch(corners, steps = 15, s = {}) {
 export function segmentStitch(a1, a2, b1, b2, steps = 15, s = {}) {
   return stitchWith(linePoints(a1, a2, steps), linePoints(b1, b2, steps), s);
 } // end segmentStitch
+
+export function zigzagStitch(pts, steps = 15, s = {}) {
+  const lines = [];
+  for (let k = 1; k + 1 < pts.length; k++) {
+    const color = s.colors ? s.colors[(k - 1) % s.colors.length] : s.color;
+    corner(pts[k - 1], pts[k], pts[k + 1], steps, { ...s, color }).forEach((l) => lines.push(l));
+  }
+  return lines;
+} // end zigzagStitch
 
 export function chords(pts, s = {}) {
   const { skip = 1, wrap = true, from = 0, to = null } = s;

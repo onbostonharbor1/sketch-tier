@@ -31,14 +31,15 @@ const scriptsOf = (cat) => {
   return fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".js")).map((f) => f.slice(0, -3)) : [];
 };
 const manifestOf = (cat) => JSON.parse(fs.readFileSync(path.join(IDEABOOK, cat, "manifest.json"), "utf8"));
+const scriptName = (filename) => String(filename).replace(/[&,#?%+;]/g, "_");   // as ideabookScriptName
 
 // An image that has a script, and one that has none.
 let withScript = null, without = null;
 for (const cat of categories) {
   const names = scriptsOf(cat);
   manifestOf(cat).forEach((e, i) => {
-    if (!withScript && names.includes(e.filename) && i + 1 < manifestOf(cat).length) withScript = { cat, i };
-    if (!without && !names.includes(e.filename)) without = { cat, i };
+    if (!withScript && names.includes(scriptName(e.filename)) && i + 1 < manifestOf(cat).length) withScript = { cat, i };
+    if (!without && !names.includes(scriptName(e.filename))) without = { cat, i };
   });
 }
 
