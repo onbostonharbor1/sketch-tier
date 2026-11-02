@@ -31,6 +31,7 @@
      redrawFigure(tabId, { dim })
    ============================================================ */
 
+import { reportError } from "/ui/errorReport.js";
 import { resetCanvas, drawState } from "/draw/drawState.js";
 import { uiState }               from "/ui/uiState.js";
 import { newBounds }              from "/draw/drawTransform.js";
@@ -106,7 +107,8 @@ export function redrawFigure(tabId, { dim = true } = {}) {
       inst.update(inst.params);
       inst.draw();
     } catch (err) {
-      console.error(`Figure layer ${i + 1} (${figure.layers[i].id}) failed to draw:`, err);
+      // This layer is left out; the others still draw.
+      reportError(`Figure "${figure.name || tabId}", layer ${i + 1} (${figure.layers[i].id})`, err);
     }
     inst.bounds         = drawState.bounds;    // kept for figureCentroid.js
     inst.stitchEnds     = drawState.collect;   // kept for figurePrint.js

@@ -1,15 +1,19 @@
 /* ===========================================================
    validateDrawRegistry.js  – Tools script (runPattern version)
    -----------------------------------------------------------
-   One CLOSED accordion.
+   On opening, #text shows every drawRegistry object with the result of
+   the shape check (ui/registryCheck.js, the same check that runs at
+   start-up) and the drawing check (does it reach the canvas only through
+   drawLine?).
 
-   Open it to see a simple list of drawRegistry names.
-   Click a name to validate it and print results into #text.
+   One CLOSED accordion lists the names. Click a name to see that object
+   in detail: its problems, the fields it has, and its full contents.
 
    Uses parameterControls.js widget: "accordion" with section.items.
 =========================================================== */
 
 import { buildParameterControls } from "/ui/parameterControls.js";
+import { checkRegistryEntry, checkDrawsThroughDrawLine } from "/ui/registryCheck.js";
 
 
 /* ===========================================================
@@ -82,8 +86,8 @@ export function runPattern() {
     true
   );
 
-  // Return the initial message as HTML so it displays in the Result tab
-  return "Open the accordion, then click a drawRegistry item to validate it.";
+  showSummary(keys, textDiv);
+  return undefined;
 
 } // end runPattern
 
@@ -91,20 +95,14 @@ export function runPattern() {
 /* ===========================================================
    validate(key, textDiv)
    -----------------------------------------------------------
-   Updated validation output:
+   Detail for one object:
 
      - Prints drawRegistry entry name at top
-     - Shows four sections (h3):
-         Required: Found
-         Required: Missing
-         Optional: Found
-         Optional: Missing
-     - init/update/draw are treated as REQUIRED and validated
-       as functions.
-
-   NOTE:
-   - "Required" list is explicit (based on your framework).
-   - Everything else present in the object is treated as Optional.
+     - Checks: Found / Missing: the shape check (checkRegistryEntry in
+       ui/registryCheck.js, the same one start-up runs) and the drawing
+       check (only through drawLine)
+     - Fields present: every field the object has
+     - Then the object's full contents as JSON
 =========================================================== */
 function validate(key, textDiv) {
 
@@ -126,69 +124,17 @@ function validate(key, textDiv) {
   textDiv.appendChild(title);
 
   // ---------------------------------------------------------
-  // Required vs Optional keys
-  // (Required list reflects your framework + lifecycle functions)
+  // The checks (ui/registryCheck.js), then the fields it has
   // ---------------------------------------------------------
-  const requiredKeys = [
-    "name",
-    "id",
-    "category",
-    "firstOrder",
-    "elements",
-    "params",
-    "controls",
-    "init",
-    "update",
-    "draw"
-  ];
-
-  // ---------------------------------------------------------
-  // Buckets
-  // ---------------------------------------------------------
-  const requiredFound   = [];
-  const requiredMissing = [];
-  const optionalFound   = [];
-  const optionalMissing = []; // only meaningful if we define optional expectations (we don't)
-
-  // ---------------------------------------------------------
-  // Required checks (including function checks)
-  // ---------------------------------------------------------
-  for (let i = 0; i < requiredKeys.length; i++) {
-
-    const prop = requiredKeys[i];
-
-    if (!Object.prototype.hasOwnProperty.call(reg, prop)) {
-      requiredMissing.push(prop);
-      continue;
-    }
-
-    // Special handling: lifecycle functions must be functions
-    if (prop === "init" || prop === "update" || prop === "draw") {
-      if (typeof reg[prop] === "function") {
-        requiredFound.push(prop + " (function)");
-      } else {
-        requiredMissing.push(prop + " (missing function)");
-      }
-      continue;
-    }
-
-    requiredFound.push(prop);
-  }
-
-  // ---------------------------------------------------------
-  // Optional checks:
-  // Everything present but not required is "Optional: Found".
-  // For "Optional: Missing" we have no declared optional schema,
-  // so this list will normally be empty.
-  // ---------------------------------------------------------
-  const allKeys = Object.keys(reg);
-
-  for (let i = 0; i < allKeys.length; i++) {
-    const prop = allKeys[i];
-    if (requiredKeys.indexOf(prop) !== -1) continue;
-    optionalFound.push(prop);
-  }
-
+  const problems = checkRegistryEntry(key, reg);
+  const drawing  = drawingResult(reg);
+  const requiredFound   = problems.length ? [] : ["every required field, in the expected form"];
+  const requiredMissing = problems.slice();
+  if (drawing.error) requiredFound.push("drawing not checked here (it could not draw on this tab: " + drawing.error + ")");
+  else if (drawing.outside.length) requiredMissing.push("draws outside drawLine: " + drawing.outside.join(", "));
+  else requiredFound.push("draws only through drawLine (" + drawing.calls + " canvas calls)");
+  const optionalFound   = Object.keys(reg);
+  const optionalMissing = [];
   // ---------------------------------------------------------
   // Render helpers
   // ---------------------------------------------------------
@@ -221,10 +167,10 @@ function validate(key, textDiv) {
   // ---------------------------------------------------------
   // Sections (blank lines are handled by heading block layout)
   // ---------------------------------------------------------
-  addSection("Required: Found", requiredFound);
-  addSection("Required: Missing", requiredMissing);
-  addSection("Optional: Found", optionalFound);
-  addSection("Optional: Missing", optionalMissing);
+  addSection("Checks: Found", requiredFound);
+  addSection("Checks: Missing", requiredMissing);
+  addSection("Fields present", optionalFound);
+  if (optionalMissing.length) addSection("Optional: Missing", optionalMissing);
 
   // ---------------------------------------------------------
   // Divider + pretty print (keep, because it's still useful)
@@ -237,3 +183,41 @@ function validate(key, textDiv) {
   textDiv.appendChild(pre);
 
 } // end validate
+
+
+// The drawing check for one object, with any failure as text.
+function drawingResult(reg) {
+  try { return checkDrawsThroughDrawLine(reg); }
+  catch (err) { return { calls: 0, outside: [], error: String(err && err.message || err) }; }
+} // end drawingResult
+
+
+/* ===========================================================
+   showSummary(keys, textDiv)
+   -----------------------------------------------------------
+   One line per object: OK, or its problems.
+=========================================================== */
+function showSummary(keys, textDiv) {
+  const h = document.createElement("h1");
+  h.textContent = "Draw registry check";
+  textDiv.appendChild(h);
+  // A drawing that cannot run on this tab (Parametrics fits itself to the
+  // Draw tab's canvas) is noted in grey, not counted as a problem.
+  let bad = 0;
+  for (const k of keys) {
+    const reg = window.drawRegistry[k];
+    const problems = checkRegistryEntry(k, reg);
+    const drawing  = drawingResult(reg);
+    if (!drawing.error && drawing.outside.length) problems.push("draws outside drawLine: " + drawing.outside.join(", "));
+    const note = drawing.error ? " (drawing not checked here: " + drawing.error + ")" : "";
+    const line = document.createElement("div");
+    line.textContent = k + ": " + (problems.length ? problems.join("; ") : "OK") + note;
+    line.style.color = problems.length ? "red" : (note ? "#777" : "green");
+    textDiv.appendChild(line);
+    if (problems.length) bad++;
+  }
+  const foot = document.createElement("p");
+  foot.textContent = keys.length + " objects, " + (bad ? bad + " with problems." : "all sound.") +
+                     " Open the accordion and click a name for detail.";
+  textDiv.appendChild(foot);
+} // end showSummary

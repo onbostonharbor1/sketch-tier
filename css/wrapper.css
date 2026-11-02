@@ -405,6 +405,22 @@ body {
 }
 
 
+/* Error bar (ui/errorReport.js): errors since the page loaded, on every tab.
+   It shares the alert bar's layout (head, list, foot) in red. */
+#errorBar {
+  margin: 6px 8px;
+  padding: 6px 10px;
+  background: #fde2e1;
+  border: 1px solid #d9534f;
+  border-radius: 4px;
+  color: #7a1612;
+  font-size: 0.8rem;
+}
+#errorBar .alert-head { display: flex; justify-content: space-between; align-items: center; }
+#errorBar ul          { margin: 4px 0 4px 18px; padding: 0; }
+#errorBar .alert-foot { font-size: 0.72rem; opacity: 0.8; }
+#errorBar .alert-dismiss { font-size: 0.72rem; padding: 0 8px; }
+
 /* Home alert bar: a summary of the last manifest check when it found problems */
 #alertBar {
   margin: 6px 8px;

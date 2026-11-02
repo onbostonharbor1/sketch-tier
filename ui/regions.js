@@ -23,6 +23,8 @@ export const REGIONS = [
   { id: "figure-sidebar",    clear: "empty-hide" },   // Figures only
   { id: "interface-controls", clear: "empty" },
   { id: "sketchpad-wrapper", clear: "hide" },
+  // errorBar is left out on purpose: errors stay shown across tab switches
+  // until dismissed (ui/errorReport.js).
 ];
 
 // Per-tab additions to the permanent #button region carry this class.

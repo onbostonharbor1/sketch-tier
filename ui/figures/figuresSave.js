@@ -39,6 +39,7 @@ import { uiState }                   from "/ui/uiState.js";
 import { nodeDispatch }              from "/ui/nodeLayer.js";
 import { getFiguresRegistry }        from "./figuresState.js";
 import { snapshotOfFigure, nextFigureTabId, upgradeFigureV1, checkFigureFormat } from "./figureModel.js";
+import { reportError, reportProblems } from "/ui/errorReport.js";
 import { rebuildInstances } from "./figureLayers.js";
 import { redrawFigure }     from "./figureDraw.js";
 import { buildCanvasThumbnailBase64 } from "/ui/thumbnails.js";
@@ -212,11 +213,15 @@ export async function openSavedFigure(category, fileName) {
       throw new Error("the file is not a figure");
     }
   } catch (err) {
+    reportError("Opening figure " + category + "/" + fileName, err);
     window.alert("Could not open " + category + "/" + fileName + ".\n\n" + err.message);
     return null;
   }
 
   upgradeFigureV1(figure);       // fills in any field added to the format since the file was written
+  // A file with problems still opens (it did before this check), but each
+  // problem is named in the error bar and the error log.
+  reportProblems("Figure file " + category + "/" + fileName, checkFigureFormat(figure));
   figure.name     = title;
   figure.category = category;
 
@@ -232,6 +237,7 @@ export async function openSavedFigure(category, fileName) {
   try {
     rebuildInstances(tabId);
   } catch (err) {
+    reportError("Opening figure " + category + "/" + fileName, err);
     delete tabs[tabId];
     window.alert("Could not open " + category + "/" + fileName + ".\n\n" + err.message);
     return null;

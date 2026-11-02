@@ -228,6 +228,22 @@ export function checkFigureFormat(figure) {
     if (p.feature !== undefined) need(typeof p.feature === "string" && p.feature, at + "feature is not a name");
     if (p.kind === "handle")   need(Number.isInteger(p.h) && typeof p.hname === "string", at + "handle without h and hname");
   }
+  // drawOrder names each layer at most once, and only layers that exist.
+  const ordered = new Set();
+  for (const i of figure.drawOrder) {
+    need(Number.isInteger(i) && i >= 0 && i < figure.layers.length, "drawOrder names layer " + i + ", which does not exist");
+    need(!ordered.has(i), "drawOrder names layer " + i + " twice"); ordered.add(i);
+  }
+  need(figure.activeLayer === -1 || (Number.isInteger(figure.activeLayer) && figure.activeLayer < figure.layers.length),
+       "activeLayer names a layer that does not exist");
+  // Each layer's object must be in the draw registry (registry names are permanent).
+  if (typeof window !== "undefined" && window.drawRegistry) {
+    figure.layers.forEach((l, i) => {
+      if (!l.deleted && typeof l.id === "string" && !window.drawRegistry[l.id]) {
+        problems.push("layer " + (i + 1) + ": object \"" + l.id + "\" is not in the draw registry");
+      }
+    });
+  }
   for (const w of (figure.welds || [])) {
     need(Array.isArray(w.members) && w.members.length >= 2, "a weld has fewer than two members");
     for (const m of (w.members || [])) need(numbers.has(m.n), "a weld names point " + m.n + ", which does not exist");

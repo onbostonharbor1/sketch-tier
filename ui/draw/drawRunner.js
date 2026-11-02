@@ -10,6 +10,7 @@
      (The export of a Draw object as a Pattern script is in ui/menuCmds.js.)
    ------------------------------------------------------------ */
 
+import { reportError } from "/ui/errorReport.js";
 import { uiState }               from "/ui/uiState.js";
 import { resetCanvas }           from "/draw/drawState.js";
 import { buildParameterControls } from "/ui/parameterControls.js";
@@ -72,7 +73,7 @@ export function drawActiveTab() {
     renderScaffoldGuides(entry);
 
   } catch (err) {
-    console.error("✗ Error redrawing " + entry.name, err);
+    reportError("Draw tab, " + entry.name, err);
   }
 } // end drawActiveTab
 

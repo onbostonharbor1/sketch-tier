@@ -3,8 +3,10 @@
    -----------------------------------------------------------
    PURPOSE
    -------
-   Show newest 10 log files in a radio list (Action panel).
-   Selecting a radio displays the log in #text.
+   Show the newest log files in a radio list (Action panel), in three
+   groups: error logs (errors_<date>.txt, written by ui/errorReport.js),
+   manifest checks (manifestMaintenance_*.txt), and any others.
+   Selecting a radio displays the log in #text. The newest is shown first.
 
    Node tasks used:
      - listLogFiles
@@ -25,7 +27,7 @@ export async function runPattern() {
   action.innerHTML = "";
   textDiv.innerHTML = "Loading log list...";
 
-  const report = await nodeListLogFiles(10);
+  const report = await nodeListLogFiles(30);
   if (!report || report.status !== "ok") {
     throw new Error("showLogs: listLogFiles failed: " + JSON.stringify(report));
   }
@@ -58,19 +60,33 @@ function renderRadioList(actionDiv, files, onSelect) {
 
   const wrap = document.createElement("div");
 
-  // simple header line
-  const header = document.createElement("div");
-  header.textContent = "Log files (newest first):";
-  header.style.marginBottom = "8px";
-  wrap.appendChild(header);
-
   const groupName = "utilities-logfiles";
 
-  for (let i = 0; i < files.length; i++) {
-    const f = files[i];
-    if (!f || typeof f.name !== "string") {
-      throw new Error("showLogs: invalid file entry at index " + i);
-    }
+  // Three groups, each newest first. Every file goes in exactly one.
+  const groups = [
+    { title: "Error logs",      test: (n) => n.startsWith("errors_") },
+    { title: "Manifest checks", test: (n) => n.startsWith("manifestMaintenance_") },
+    { title: "Other logs",      test: () => true }
+  ];
+  const placed = new Set();
+  let i = 0;
+  for (const g of groups) {
+    const inGroup = files.filter((f) => !placed.has(f) && f && typeof f.name === "string" && g.test(f.name));
+    if (!inGroup.length) continue;
+    inGroup.forEach((f) => placed.add(f));
+
+    const header = document.createElement("div");
+    header.textContent = g.title + " (newest first):";
+    header.style.margin = "8px 0 4px";
+    header.style.fontWeight = "bold";
+    wrap.appendChild(header);
+
+    for (const f of inGroup) addRow(f, i++);
+  }
+  actionDiv.appendChild(wrap);
+
+  // One radio button and its label, added to wrap.
+  function addRow(f, i) {
 
     const row = document.createElement("div");
     row.className = "ctrl-field";
@@ -98,9 +114,7 @@ function renderRadioList(actionDiv, files, onSelect) {
     row.appendChild(label);
     row.appendChild(input);
     wrap.appendChild(row);
-  }
-
-  actionDiv.appendChild(wrap);
+  } // end addRow
 
 } // end renderRadioList
 
@@ -124,6 +138,8 @@ function selectRadioAndLoad(actionDiv, fileName) {
 function formatLogLabel(filename) {
   return String(filename)
     .replace(/^newGalleryImages_/, "")
+    .replace(/^errors_/, "")
+    .replace(/^manifestMaintenance_/, "")
     .replace(/\.txt$/i, "");
 } // end formatLogLabel
 

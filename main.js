@@ -2,6 +2,9 @@
 
 
 // === Core classes ===
+// First, so an error anywhere after this is shown and logged (not only on the console).
+import "/ui/errorReport.js";
+
 import "./classes/classes.js";
 import "./classes/curveStitchClass.js";
 import "./classes/ellipseClass.js";
@@ -79,5 +82,11 @@ import "/ui/utilities/utilitiesMenuCmds.js";
 import "/ui/uiUtilities.js";
 import "/ui/setUI.js";
 
+
+// Start-up check of the draw registry: any object not in the expected shape
+// is named in the error bar and the error log (ui/registryCheck.js).
+import { checkDrawRegistry } from "/ui/registryCheck.js";
+import { reportProblems }    from "/ui/errorReport.js";
+reportProblems("Draw registry check", checkDrawRegistry(window.drawRegistry));
 
 console.log("Sketchpad loaded under Vite.");

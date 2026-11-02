@@ -35,7 +35,8 @@ export const uiState = {
      Home alert (ui/homeAlert.js): the log whose problems were dismissed
   ========================================================= */
   homeAlert: {
-    dismissedLog: null     // name of the manifest log the person dismissed, or null
+    dismissedLog: null,    // name of the manifest log the person dismissed, or null
+    dismissedErrors: null  // "<error log name>:<count>" when its errors were dismissed, or null
   },
 
   /* =========================================================

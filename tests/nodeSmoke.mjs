@@ -107,7 +107,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
-  "listLogFiles", "readLogFile", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
+  "listLogFiles", "readLogFile", "appendErrorLog", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
   "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "writeThumbnail", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {
@@ -215,6 +215,15 @@ r = await call("readLogFile", { name: "smoke.txt" });
 check("readLogFile valid", r.status === 200 && JSON.stringify(r.json).includes("line one"), "status " + r.status);
 r = await call("readLogFile", { name: "../../package.json" });
 check("readLogFile with a path: refused", refused(r) || (r.status === 200 && !JSON.stringify(r.json).includes("sentinel")), "status " + r.status);
+r = await call("appendErrorLog", { entries: [{ where: "Smoke", message: "first\nsecond", place: "ui/x.js:1" }] });
+{
+  const name = r.json && r.json.name;
+  const text = name && exists("utilities", "logfiles", name) ? fs.readFileSync(path.join(scratch, "utilities", "logfiles", name), "utf8") : "";
+  check("appendErrorLog writes one line to errors_<date>.txt", r.status === 200 && /^errors_\d{4}-\d\d-\d\d\.txt$/.test(name) &&
+        /\d\d:\d\d:\d\d  Smoke: first second  \(ui\/x\.js:1\)\n$/.test(text), "status " + r.status + " " + JSON.stringify(text));
+}
+r = await call("appendErrorLog", { entries: [] });
+check("appendErrorLog with no entries: refused", refused(r), "status " + r.status);
 // Every request name in the dispatcher table is covered by the empty-payload test above, and no name is untested.
 const serviceText = fs.readFileSync(path.join(nodeDir, "sketchpadService.mjs"), "utf8");
 const tableText = serviceText.slice(serviceText.indexOf("const HANDLERS = {"), serviceText.indexOf("};", serviceText.indexOf("const HANDLERS = {")));

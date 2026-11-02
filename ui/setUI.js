@@ -4,6 +4,7 @@
    ------------------------------------------------------------
 */
 
+import { reportError } from "/ui/errorReport.js";
 import { HomeTabSpec }     from "/ui/home/home.js";
 import { DrawTabSpec }     from "/ui/draw/draw.js";
 import { PatternsTabSpec } from "/ui/patterns/patterns.js";
@@ -167,7 +168,7 @@ async function activateWithReport(tab) {
   try {
     await timed("tab switch " + tab, () => runSetUI(tab, progress));
   } catch (e) {
-    console.error(`setUI("${tab}") failed during stage "${progress.stage}":`, e);
+    reportError(`Switching to the ${tab} tab (stage "${progress.stage}")`, e);
     throw e;
   }
 } // end activateWithReport

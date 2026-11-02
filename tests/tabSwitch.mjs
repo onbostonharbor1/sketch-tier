@@ -28,7 +28,8 @@ const TABS = ["home", "draw", "patterns", "figures", "gallery", "utilities"];
 const problems = [];   // fail the test
 const notes    = [];   // reported only
 
-const browser = await chromium.launch();
+// PW_CHROMIUM: a Chromium to use instead of Playwright's own (as in the other tests).
+const browser = await chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
 const page    = await browser.newPage({ viewport: { width: 1400, height: 900 } });
 const tinyRequests = [];   // every request whose URL names TinyMCE, from the start of the run
 page.on("request", r => { if (/tinymce/i.test(r.url())) tinyRequests.push(r.url()); });

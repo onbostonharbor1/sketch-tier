@@ -25,6 +25,9 @@
               ├── main                  the right column
               │     ├── subtabs
               │     ├── caption
+              │     ├── errorBar             every tab: errors since the page loaded, until
+              │     │                        dismissed (ui/errorReport.js); not cleared on a
+              │     │                        tab switch; hidden when there are none
               │     ├── alertBar             Home only: a summary of the last manifest check
               │     │                        when it found problems; hidden otherwise
               │     ├── text
@@ -137,6 +140,7 @@
         <div id="main">
           <div id="subtabs">TBD</div>
           <div id="caption">TBD</div>
+          <div id="errorBar" style="display: none;"></div>
           <div id="alertBar" style="display: none;"></div>
           <div id="text">TBD</div>
           <div id="sketchpad-wrapper">

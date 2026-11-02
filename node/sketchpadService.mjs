@@ -38,6 +38,7 @@
 
    Logs and editor
      • listLogFiles, readLogFile      the files in ./utilities/logfiles
+     • appendErrorLog                 adds errors to ./utilities/logfiles/errors_<date>.txt
      • openInEditor                   open a project file in VS Code
 
    Every path built from request text is checked by safePaths.mjs.
@@ -74,7 +75,7 @@ import { writePatternThumbnail, writePatternFromDrawRegistry,
          writeGalleryPatternPng, writeHelpFile }                  from "./writerRequests.mjs";
 import { saveSecondaryObject, readSecondaryObject, archiveSecondaryObject,
          getSecondaryManifest, getPrimaryObjectsWithSecondaries } from "./secondaryRequests.mjs";
-import { listLogFiles, readLogFile, openInEditor }                from "./logAndEditorRequests.mjs";
+import { listLogFiles, readLogFile, appendErrorLog, openInEditor } from "./logAndEditorRequests.mjs";
 
 
 /* ===========================================================
@@ -123,6 +124,7 @@ const HANDLERS = {
 
   listLogFiles:                     listLogFiles,
   readLogFile:                      readLogFile,
+  appendErrorLog:                   appendErrorLog,
   openInEditor:                     openInEditor
 };
 

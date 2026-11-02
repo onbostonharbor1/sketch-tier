@@ -1,8 +1,8 @@
 /* ===========================================================
    logAndEditorRequests.mjs  (Node.js)
    -----------------------------------------------------------
-   Requests that list and read the files in ./utilities/logfiles, and open a project file
-   in VS Code.
+   Requests that list and read the files in ./utilities/logfiles, append to the error
+   log there, and open a project file in VS Code.
    Called by the dispatcher in sketchpadService.mjs.
    =========================================================== */
 
@@ -223,3 +223,54 @@ function launchDetached(cmd, args) {
     setTimeout(() => { child.unref(); finish("ok"); }, 1200);
   });
 }
+
+
+/* ===========================================================
+   TASK: appendErrorLog
+
+   DESCRIPTION
+   -----------
+   Appends errors reported by the app (ui/errorReport.js) to today's
+   error log, ./utilities/logfiles/errors_<YYYY-MM-DD>.txt. A new file
+   starts with a heading line. Each error is one line, beginning with
+   its time, then where it happened, the message, and the file and line:
+
+       2026-11-02 14:03:11  Figure "star", layer 3 (parabola): x is undefined  (ui/figures/figureDraw.js:104)
+
+   Payload:
+     { entries: [ { where, message, place } ] }
+
+   Returns:
+     { request: "appendErrorLog", status: "ok", name: "<filename>", added: <number> }
+=========================================================== */
+export async function appendErrorLog(payload = {}) {
+
+  const entries = payload.entries;
+  if (!Array.isArray(entries) || entries.length === 0) {
+    throw new Error("appendErrorLog: entries missing or empty");
+  }
+
+  const logDir = path.resolve("./utilities/logfiles");
+  fs.mkdirSync(logDir, { recursive: true });
+
+  const now  = new Date();
+  const pad  = (n) => String(n).padStart(2, "0");
+  const day  = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+  const time = day + " " + pad(now.getHours()) + ":" + pad(now.getMinutes()) + ":" + pad(now.getSeconds());
+  const name = "errors_" + day + ".txt";
+  const full = path.join(logDir, name);
+
+  // One line per error: newlines inside the text would split it.
+  const oneLine = (v) => String(v === undefined || v === null ? "" : v).replace(/[\r\n]+/g, " ").slice(0, 500);
+
+  let text = "";
+  if (!fs.existsSync(full)) text += "ERRORS reported by Sketchpad on " + day + " (one line each, oldest first)\n";
+  for (const e of entries) {
+    const place = oneLine(e && e.place);
+    text += time + "  " + oneLine(e && e.where) + ": " + oneLine(e && e.message) + (place ? "  (" + place + ")" : "") + "\n";
+  }
+  fs.appendFileSync(full, text, "utf8");
+
+  return { request: "appendErrorLog", status: "ok", name, added: entries.length };
+
+} // end appendErrorLog
