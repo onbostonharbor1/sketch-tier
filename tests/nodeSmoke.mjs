@@ -26,7 +26,7 @@ import net from "node:net";
 import path from "node:path";
 import http from "node:http";
 import { spawn } from "node:child_process";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 /* SKETCHPAD_NODE_DIR points the test at another copy of node/ (to see the old code fail). */
@@ -53,12 +53,25 @@ fs.writeFileSync(path.join(scratch, "package.json"), '{"sentinel":true}\n');
 fs.mkdirSync(path.join(scratch, "help", "test"), { recursive: true });
 fs.mkdirSync(path.join(scratch, "helpzz"), { recursive: true });
 
+/* ---- a pretend VS Code local history for one script (listScriptHistory) ---- */
+const vscodeHistory = path.join(base, "vscodeHistory");
+const histFolder = path.join(vscodeHistory, "1a2b3c");
+fs.mkdirSync(histFolder, { recursive: true });
+fs.writeFileSync(path.join(histFolder, "old.js"), "// version one\n");
+fs.writeFileSync(path.join(histFolder, "new.js"), "// version two\n");
+fs.writeFileSync(path.join(histFolder, "entries.json"), JSON.stringify({
+  version: 1,
+  resource: pathToFileURL(path.join(scratch, "patterns", "circles", "circle.js")).href,
+  entries: [{ id: "old.js", timestamp: 1000 }, { id: "new.js", timestamp: 2000 }, { id: "gone.js", timestamp: 3000 }]
+}));
+fs.mkdirSync(path.join(vscodeHistory, "junk"));            // a folder with no entries.json is passed over
+
 /* ---- start the service ---- */
 const port = await new Promise((resolve) => {
   const s = net.createServer().listen(0, "127.0.0.1", () => { const p = s.address().port; s.close(() => resolve(p)); });
 });
 const server = spawn(process.execPath, [path.join(nodeDir, "sketchpadServer.mjs")], {
-  cwd: scratch, env: { ...process.env, SKETCHPAD_PORT: String(port), SKETCHPAD_ROOT: scratch }, stdio: ["ignore", "pipe", "pipe"]
+  cwd: scratch, env: { ...process.env, SKETCHPAD_PORT: String(port), SKETCHPAD_ROOT: scratch, SKETCHPAD_VSCODE_HISTORY: vscodeHistory }, stdio: ["ignore", "pipe", "pipe"]
 });
 let serverLog = "";
 server.stdout.on("data", d => serverLog += d);
@@ -107,7 +120,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
-  "listLogFiles", "readLogFile", "appendErrorLog", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
+  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
   "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "writeThumbnail", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {
@@ -222,6 +235,17 @@ r = await call("appendErrorLog", { entries: [{ where: "Smoke", message: "first\n
   check("appendErrorLog writes one line to errors_<date>.txt", r.status === 200 && /^errors_\d{4}-\d\d-\d\d\.txt$/.test(name) &&
         /\d\d:\d\d:\d\d  Smoke: first second  \(ui\/x\.js:1\)\n$/.test(text), "status " + r.status + " " + JSON.stringify(text));
 }
+r = await call("listScriptHistory", { path: "/patterns/circles/circle.js" });
+check("listScriptHistory: the saved versions, newest first, missing files left out",
+  r.status === 200 && r.json.found === true && r.json.versions.map((v) => v.id).join(",") === "new.js,old.js", "status " + r.status + " " + JSON.stringify(r.json));
+r = await call("readScriptHistoryVersion", { path: "/patterns/circles/circle.js", id: "old.js" });
+check("readScriptHistoryVersion: the version's text", r.status === 200 && r.json.text === "// version one\n", "status " + r.status);
+r = await call("readScriptHistoryVersion", { path: "/patterns/circles/circle.js", id: "../entries.json" });
+check("readScriptHistoryVersion with a path in the id: refused", refused(r), "status " + r.status);
+r = await call("listScriptHistory", { path: "/../package.json" });
+check("listScriptHistory outside the project or not .js: refused", refused(r), "status " + r.status);
+r = await call("listScriptHistory", { path: "/patterns/circles/skippingPositive.js" });
+check("listScriptHistory for a script with no history: found false", r.status === 200 && r.json.found === false && r.json.versions.length === 0, "status " + r.status);
 r = await call("appendErrorLog", { entries: [] });
 check("appendErrorLog with no entries: refused", refused(r), "status " + r.status);
 // Every request name in the dispatcher table is covered by the empty-payload test above, and no name is untested.

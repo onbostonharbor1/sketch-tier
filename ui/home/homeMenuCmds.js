@@ -29,7 +29,7 @@ import { menuManager }                       from "/ui/menuManager.js";
 import { setCaptionBar }                     from "/ui/caption.js";
 import { openHelpHomeOverlay }               from "/ui/help.js";
 import { nodeRebuildAndValidateManifests }   from "/ui/nodeLayer.js";
-import { makeHelpItem, makeShowScriptItem, makeEditManifestItem } from "/ui/menuCmds.js";
+import { makeHelpItem, makeShowScriptItem, makeScriptHistoryItem, makeEditManifestItem } from "/ui/menuCmds.js";
 import { showScriptOffcanvas } from "/ui/scriptView.js";
 import { openEditManifestDialog } from "/ui/editManifestDialog.js";
 import { formatRebuildReportShared } from "/ui/rebuildSync.js";
@@ -137,6 +137,7 @@ export async function getHomeCaptionMenuItems(info) {
   return [
     await makeHelpItem("home", info.helpKey),
     makeShowScriptItem(info, showScriptOffcanvas),
+    makeScriptHistoryItem(info),
     makeEditManifestItem(() => editHomeManifestItem(info))
   ];
 

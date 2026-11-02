@@ -33,7 +33,7 @@ import { menuManager }                from "/ui/menuManager.js";
 import { setCaptionBar }              from "/ui/caption.js";
 import { openHelpHomeOverlay }        from "/ui/help.js";
 import { nodeRebuildAndValidateManifests } from "/ui/nodeLayer.js";
-import { makeHelpItem, makeShowScriptItem, makeNotesItem, makeThumbnailItem, makeEditManifestItem, makeArchiveItem } from "/ui/menuCmds.js";
+import { makeHelpItem, makeShowScriptItem, makeScriptHistoryItem, makeNotesItem, makeThumbnailItem, makeEditManifestItem, makeArchiveItem } from "/ui/menuCmds.js";
 import { showScriptOffcanvas } from "/ui/scriptView.js";
 import { archiveItem } from "/ui/archiveItem.js";
 import { openEditManifestDialog } from "/ui/editManifestDialog.js";
@@ -240,6 +240,7 @@ export async function getPatternsCaptionMenuItems(info) {
   return [
     await makeHelpItem("patterns", info.helpKey),
     makeShowScriptItem(info, showScriptOffcanvas),
+    makeScriptHistoryItem(info),
     await makeNotesItem(info.isScript ? info.scriptPath : null, info.filename || info.title),
     makeThumbnailItem(() => createPatternThumbnail(info)),
     makeEditManifestItem(() => editPatternsManifestItem(info)),

@@ -15,6 +15,7 @@
       - Draw export requests    ui/draw/drawExport.js
 */
 
+import { openScriptHistory } from "/ui/scriptHistory.js";
 import { nodeDispatch } from "./nodeLayer.js";
 import { showNotesOverlay, closeNotesOverlay } from "./overlay.js";
 import { extractHeaderNotes, reflowNotes } from "./notes.js";
@@ -81,6 +82,26 @@ export function makeShowScriptItem(info, handler) {
     onClick:  () => { if (enabled) handler(scriptPath, label); }
   };
 } // end makeShowScriptItem
+
+
+/* ------------------------------------------------------------
+   makeScriptHistoryItem(info)
+   ------------------------------------------------------------
+   Returns a "Script history..." menu item: the versions VS Code saved
+   of the open script, to run or compare (ui/scriptHistory.js).
+   Disabled, like Show Script, when the item is not a script.
+   ------------------------------------------------------------ */
+export function makeScriptHistoryItem(info) {
+  const scriptPath = info.scriptPath || "";
+  const enabled    = !!(info.isScript && scriptPath);
+  const label      = info.filename || info.title || info.file || scriptPath || "(untitled)";
+  return {
+    label:    "Script history...",
+    disabled: !enabled,
+    tooltip:  "The versions saved in VS Code: run one, or see what changed",
+    onClick:  () => { if (enabled) openScriptHistory(scriptPath, label); }
+  };
+} // end makeScriptHistoryItem
 
 
 /* ------------------------------------------------------------

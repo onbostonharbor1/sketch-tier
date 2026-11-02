@@ -83,6 +83,17 @@ export async function nodeReadLogFile(name) {
 } // end nodeReadLogFile
 
 
+// VS Code's saved versions of a script (node/scriptHistoryRequests.mjs).
+export async function nodeListScriptHistory(path) {
+  return await nodeDispatch("listScriptHistory", { path });
+} // end nodeListScriptHistory
+
+
+export async function nodeReadScriptHistoryVersion(path, id) {
+  return await nodeDispatch("readScriptHistoryVersion", { path, id });
+} // end nodeReadScriptHistoryVersion
+
+
 export async function nodeRebuildAndValidateManifests() {
   return await nodeDispatch("manifestMaintenance", {});
 } // end nodeRebuildAndValidateManifests

@@ -37,6 +37,12 @@
   "terminal.integrated.shellIntegration.enabled": true,
   "terminal.integrated.scrollback": 5000,
 
+  // === Local history (Sketchpad's Script history reads it) ===
+  // VS Code keeps a copy of a file at each save; the default is 50 per file,
+  // a few hours of save-run-change work. Script history in Sketchpad
+  // (caption menu v) lists these copies, so keep more of them.
+  "workbench.localHistory.maxFileEntries": 500,
+
   // === Misc ===
   "window.zoomLevel": 0,
   "explorer.confirmDelete": false,

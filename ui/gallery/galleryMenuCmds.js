@@ -31,7 +31,7 @@ import { setCaptionBar }                   from "/ui/caption.js";
 import { menuManager }                     from "/ui/menuManager.js";
 import { openHelpHomeOverlay }             from "/ui/help.js";
 import { nodeRebuildAndValidateManifests } from "/ui/nodeLayer.js";
-import { makeHelpItem, makeShowScriptItem, makeEditManifestItem, makeNotesItem, makeArchiveItem } from "/ui/menuCmds.js";
+import { makeHelpItem, makeShowScriptItem, makeScriptHistoryItem, makeEditManifestItem, makeNotesItem, makeArchiveItem } from "/ui/menuCmds.js";
 import { showScriptOffcanvas } from "/ui/scriptView.js";
 import { openEditManifestDialog } from "/ui/editManifestDialog.js";
 import { formatRebuildReportShared } from "/ui/rebuildSync.js";
@@ -125,6 +125,7 @@ export async function getGalleryCaptionMenuItems(info) {
   return [
     await makeHelpItem("gallery", info.helpKey, { subdirs: info.helpSubdirs }),
     makeShowScriptItem(info, (path, label) => showGalleryScriptSource({ ...info, scriptPath: path })),
+    makeScriptHistoryItem(info),
     await makeNotesItem(info.isScript ? info.scriptPath : null, info.filename || info.title),
     makeEditManifestItem(() => editGalleryManifestItem(info)),
     makeArchiveItem(() => archiveGalleryItem(info))

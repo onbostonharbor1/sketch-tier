@@ -128,6 +128,39 @@ export async function loadScriptModule(path) {
 
 
 /* ===========================================================
+   loadScriptModuleFromText(text, path)
+   -----------------------------------------------------------
+   Loads script text as a module, as if it were the file at path. Used to
+   run an old saved version of a script (ui/scriptHistory.js).
+
+   The text is loaded from a blob: URL, which cannot resolve the script's
+   imports by itself, so each import is first written out in full:
+     "/draw/x.js"   becomes  http://localhost:5173/draw/x.js
+     "./y.js"       becomes  the same, resolved against path's folder
+   The modules it imports are then the very ones the app has loaded.
+=========================================================== */
+export async function loadScriptModuleFromText(text, path) {
+  const base = window.location.origin + (path.startsWith("/") ? path : "/" + path);
+  const full = String(text).replace(
+    /(\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)(["'])([^"'\n]+)\2/g,
+    (all, head, q, spec) => (spec.startsWith("/") || spec.startsWith("./") || spec.startsWith("../"))
+      ? head + q + new URL(spec, base).href + q
+      : all
+  );
+  const url = URL.createObjectURL(new Blob([full], { type: "text/javascript" }));
+  try {
+    const mod = await import(/* @vite-ignore */ url);
+    if (!mod || typeof mod.runPattern !== "function") {
+      throw new Error("loadScriptModuleFromText: this version has no exported runPattern(): " + path);
+    }
+    return mod;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+} // end loadScriptModuleFromText
+
+
+/* ===========================================================
    normalizeScriptInfo(mod)
    -----------------------------------------------------------
    Ensure scriptInfo vocabulary consistency:
@@ -366,7 +399,11 @@ export async function runScriptByPath(path, mode, options = {}) {
     }
   }
 
-  const mod = await loadScriptModule(path);
+  // options.sourceText: run this text as the script at path (an old saved
+  // version, ui/scriptHistory.js) instead of the file as it is now.
+  const mod = (typeof options.sourceText === "string")
+    ? await loadScriptModuleFromText(options.sourceText, path)
+    : await loadScriptModule(path);
 
   // Store the new module so we can stop it later
   activeModule = mod;
