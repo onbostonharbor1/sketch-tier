@@ -69,5 +69,13 @@ controls is gone. Undo: `git revert 1cfee9c`.
 **F12. Survey (item 12).** Nothing to check in the app. `docs/V2_LEGACY_SURVEY.md` lists what the scripts rely on; skim it
 for anything you know is wrong.
 
+**F13. Regression test (item 14).** With the app running: `npm run test:regression`. It draws the 14 Draw objects at their
+defaults and all 185 scripts, twice each, and compares them with the approved copies in `tests/regression/` (made here in
+the sandbox). Expect PASS, with 3 unstable (barnsleyFern, voronoi, ribbonAnimated draw differently each time) and 2 that
+fail on their own both then and now. On Windows the pictures may differ slightly from the sandbox's: if many scripts
+report "picture: ... pixels differ" and nothing else, run `npm run test:regression -- accept` once on the PC and commit
+`tests/regression/` so the approved copies are yours. To see it work: change a colour in a pattern, run it, open
+`tests/regression/report.html`, then undo the change. Undo the whole item: `git revert` the regression commit.
+
 **Not done on this branch, on purpose:** the file boundary (14), the commands pattern (15), one restore shape, the
 `!important` and show/hide cleanup, `validateDrawRegistry`, and the Node follow-ups. Version 2 replaces them.

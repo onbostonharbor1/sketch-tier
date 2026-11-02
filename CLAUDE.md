@@ -88,6 +88,9 @@ path), say so and let him decide.
 - `npx vite --port 5173 --strictPort` and `node node/sketchpadServer.mjs` (or `sketchpad.bat`).
 - `npm run test:tabs` runs the Playwright tab-switch tests (set `TEST_LOCAL_BOOTSTRAP=1` where the CDN is blocked).
   Extend it with every phase. Verify changes in the real app, not just by reading code.
+- `npm run test:regression` draws every Draw object and every pattern and gallery script and compares each with its
+  approved copy in `tests/regression/` (report in `tests/regression/report.html`). Run it before every review. An
+  intended change is approved with `npm run test:regression -- accept <name>`, and the new approved copy is committed.
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);
   revert them with `git checkout` before committing.

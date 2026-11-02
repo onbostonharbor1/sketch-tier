@@ -30,6 +30,7 @@ file format, once item 1 is done, may only gain fields (never rename or remove),
 | 10 | 12 Insert list as icons with larger preview on hover | Sonnet | Done |
 | 11 | Pursuit (temp): leftover point picker becomes a handle | Sonnet | Done |
 | 12 | Gallery-script facility survey for the V2 legacy adapter (into `V2_IDEAS.md`) | Sonnet | Done |
+| 14 | Regression test (Barry, 2 Nov): `npm run test:regression` compares every Draw object and script with an approved copy | Opus | Done |
 | 13 | Checklist for Barry (`docs/CHECKLIST_v1-finish.md`), PHASES.md and NOT_DONE.md updated | Sonnet | Done |
 
 Skipped on purpose (V2 replaces them): 14 file boundary, 15 commands pattern, one restore shape, START case in tab
@@ -37,7 +38,7 @@ activation, `!important` and show/hide cleanup, `validateDrawRegistry`, Node fol
 
 ## In progress
 
-Nothing. All 13 items are done; the branch waits for Barry's review (`docs/CHECKLIST_v1-finish.md`).
+Nothing. All 14 items are done; the branch waits for Barry's review (`docs/CHECKLIST_v1-finish.md`).
 
 ## Decisions log (guesses Barry may reverse)
 
