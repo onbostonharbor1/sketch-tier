@@ -38,6 +38,11 @@
                                  s.from / s.to (part of the arm), s.wrap (offsets
                                  wrap round arm2 instead of stopping)
      corner(a, c, b, steps, s)   the classic curve stitch: arm a->c joined to arm c->b
+     starOfCorners(c, r, n, steps, s)  a star of n curved points: a corner stitch
+                                 between each pair of neighbouring spokes from c
+                                 (n = 4: the four-pointed star). s.turn turns it
+     polygonCornerStitch(corners, steps, s)  a corner stitch at every corner of a
+                                 polygon: the rounded shape inside a frame
      chords(pts, s)              point i to point i+skip within one list. One rule for
                                  what drawManyLines, drawLinesAround and drawLinesWithin
                                  each do with different wrap and chop handling
@@ -183,6 +188,24 @@ export function stitchWith(arm1, arm2, s = {}) {
 export function corner(a, c, b, steps = 12, s = {}) {
   return stitchWith(linePoints(a, c, steps), linePoints(c, b, steps), s);
 } // end corner
+
+export function starOfCorners(c, r = 150, n = 4, steps = 15, s = {}) {
+  const tips = circlePoints(c, r, n, { start: -90 + (s.turn || 0) });
+  const lines = [];
+  for (let k = 0; k < n; k++) corner(tips[k], c, tips[(k + 1) % n], steps, s).forEach((l) => lines.push(l));
+  return lines;
+} // end starOfCorners
+
+export function polygonCornerStitch(corners, steps = 15, s = {}) {
+  const n = corners.length, lines = [];
+  for (let k = 0; k < n; k++) {
+    // From the middle of the edge before the corner to the middle of the edge after it.
+    const a = corners[(k + n - 1) % n], c = corners[k], b = corners[(k + 1) % n];
+    const m1 = new Point((a.x + c.x) / 2, (a.y + c.y) / 2), m2 = new Point((c.x + b.x) / 2, (c.y + b.y) / 2);
+    corner(m1, c, m2, steps, s).forEach((l) => lines.push(l));
+  }
+  return lines;
+} // end polygonCornerStitch
 
 export function chords(pts, s = {}) {
   const { skip = 1, wrap = true, from = 0, to = null } = s;
