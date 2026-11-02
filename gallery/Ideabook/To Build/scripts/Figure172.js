@@ -4,6 +4,9 @@
    ============================================================
    What it seems to be: Figure 172, Square Sine: a row of squares, each with corner stitches in two opposite corners, alternating, so the stitching snakes along like a wave
    Built from:          squareTiles, corner
+   Original:            figure172() in the first StringThing.html (line 4025), the program that
+                        drew this figure. Read it with
+                        git show 7e7bc4b:StringThingOld/StringThing.html
    Guessed:             rows; which corners
    A hint, not a copy: the construction, not the picture.
    ============================================================ */

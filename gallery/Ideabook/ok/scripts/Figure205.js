@@ -4,6 +4,9 @@
    ============================================================
    What it seems to be: Figure 205: a ring of nails stitched to a second ring, offset and turned, leaving an off-centre hole
    Built from:          circlePoints, stitchWith
+   Original:            figure205() in the first StringThing.html (line 4162), the program that
+                        drew this figure. Read it with
+                        git show 7e7bc4b:StringThingOld/StringThing.html
    Guessed:             sizes, step counts and colours
    A hint, not a copy: the construction, not the picture.
    ============================================================ */

@@ -4,6 +4,9 @@
    ============================================================
    What it seems to be: two butterfly wings: corner stitches between the centre line and the outer corners, left and right, with a small star at the middle
    Built from:          corner, starOfCorners
+   Original:            figure98() in the first StringThing.html (line 3753), the program that
+                        drew this figure. Read it with
+                        git show 7e7bc4b:StringThingOld/StringThing.html
    Guessed:             the wing points
    A hint, not a copy: the construction, not the picture.
    ============================================================ */

@@ -4,6 +4,9 @@
    ============================================================
    What it seems to be: four four-pointed stars in a 2 by 2 square, with a fifth, turned 45 degrees, over the centre
    Built from:          starOfCorners
+   Original:            figure151() in the first StringThing.html (line 3857), the program that
+                        drew this figure. Read it with
+                        git show 7e7bc4b:StringThingOld/StringThing.html
    Guessed:             the centre star's size
    A hint, not a copy: the construction, not the picture.
    ============================================================ */

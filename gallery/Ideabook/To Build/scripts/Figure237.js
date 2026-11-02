@@ -4,6 +4,9 @@
    ============================================================
    What it seems to be: Figure 237: a circle of nails with an eight-petalled rose of white chords inside a band of blue chords
    Built from:          circlePoints, chords, starOfCorners
+   Original:            figure237() in the first StringThing.html (line 4419), the program that
+                        drew this figure. Read it with
+                        git show 7e7bc4b:StringThingOld/StringThing.html
    Guessed:             the petals as an eight-point star; the band as chords at a short skip
    A hint, not a copy: the construction, not the picture.
    ============================================================ */

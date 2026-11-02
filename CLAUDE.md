@@ -85,6 +85,10 @@ path), say so and let him decide.
   opening a file) and call `reportError(where, err)`; never scatter try/catch through logic. It shows the red
   `#errorBar` (all tabs) and appends once to `utilities/logfiles/errors_<date>.txt`; Home summarises the newest log.
   Start-up runs `checkDrawRegistry` (`ui/registryCheck.js`); figure files are checked by `checkFigureFormat`.
+- Ideabook hint scripts: `gallery/Ideabook/<category>/scripts/<image name>.js` (& , # ? % + ; written as _),
+  shown by the caption's Run script button. Shared routines in `gallery/Ideabook/scripts/ideabookRoutines.js`
+  (StringThing style: defaults, nothing refused, all through `drawLine`); the pursuit engine is `pursuitEngine.js`
+  beside it, to become a draw function. Hints, not copies; the header of each says what was guessed.
 - `node/`: the local Node service on port 5174, request shape `{requestName, payload}`.
 
 ## Running and testing
@@ -97,6 +101,7 @@ path), say so and let him decide.
   intended change is approved with `npm run test:regression -- accept <name>`, and the new approved copy is committed.
 - `npm run test:errors` tests the error bar, the error log, the Home summary and the registry and figure-file checks.
 - `npm run test:history` tests Script history (VS Code's saved versions of a script; `ui/scriptHistory.js`).
+- `npm run test:ideabook` tests the Ideabook Run script button and runs every hint script.
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);
   revert them with `git checkout` before committing.
