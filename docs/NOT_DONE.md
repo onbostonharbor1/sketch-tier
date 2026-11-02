@@ -65,7 +65,7 @@ hand checks in `docs/CHECKLIST_v1-finish.md`. In short:
 | No. | Item | Status |
 |---|---|---|
 | 3.1 | Check Coloris: version, loads, works without the dev server | Superseded. Coloris was removed (`95f6617`) for the browser colour input. Confirm on the PC (B14). |
-| 3.2 | Update `validateDrawRegistry` once the JSON shape is stable; add the rule that registry draw code draws only through `drawLine` | Not done. No commit found for it. |
+| 3.2 | Update `validateDrawRegistry` once the JSON shape is stable; add the rule that registry draw code draws only through `drawLine` | Done on `claude/v1-errors` (2 Nov 2026): `ui/registryCheck.js`, run at start-up and by the tool, which also checks drawing only through `drawLine`. Found: Linked Circles strokes its circles itself. |
 | 3.3 | Cycloid radius does not change the drawn size | Fixed in the sandbox (`2cbf270`, test added). Waiting for your check on the PC (B2). |
 | 3.4 | Simplify tab activation: Home starts with saved empty like the others; remove the special START case in `setUI.js`; remove dead blocks | Partly done. Dead blocks and the unused last-tab write removed (`80a9961`). The START case is not confirmed removed; check `ui/setUI.js`. |
 | 3.5 | Utilities shows its last result again when you come back | Done (built before batch-1; "Utilities redisplay"). Confirm with B1 if you want. |

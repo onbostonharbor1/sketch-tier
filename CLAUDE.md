@@ -81,6 +81,10 @@ path), say so and let him decide.
   object space; `drawLine` maps through `drawState.transform` (null outside a figure layer) and notes
   `drawState.bounds`. Anything that shows or hits a handle or disc maps through the same transform
   (`interactor.js` via `getTransform`, `figurePoints.js`). No ctx.translate or ctx.rotate.
+- Errors (`ui/errorReport.js`): catch only at choke points (a figure layer's draw, the Draw redraw, a tab switch,
+  opening a file) and call `reportError(where, err)`; never scatter try/catch through logic. It shows the red
+  `#errorBar` (all tabs) and appends once to `utilities/logfiles/errors_<date>.txt`; Home summarises the newest log.
+  Start-up runs `checkDrawRegistry` (`ui/registryCheck.js`); figure files are checked by `checkFigureFormat`.
 - `node/`: the local Node service on port 5174, request shape `{requestName, payload}`.
 
 ## Running and testing
@@ -91,6 +95,7 @@ path), say so and let him decide.
 - `npm run test:regression` draws every Draw object and every pattern and gallery script and compares each with its
   approved copy in `tests/regression/` (report in `tests/regression/report.html`). Run it before every review. An
   intended change is approved with `npm run test:regression -- accept <name>`, and the new approved copy is committed.
+- `npm run test:errors` tests the error bar, the error log, the Home summary and the registry and figure-file checks.
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);
   revert them with `git checkout` before committing.
