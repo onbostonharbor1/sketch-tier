@@ -29,3 +29,7 @@ __pycache__/
 
 # Pictures from npm run pixels:save
 /pixel-refs/
+
+# Regression test: this run's pictures and report (the approved copies are committed)
+/tests/regression/latest/
+/tests/regression/report.html

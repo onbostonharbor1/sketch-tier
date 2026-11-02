@@ -14,24 +14,12 @@
    Optional: SKETCHPAD_URL, and SCRIPT_ORDER_SEED for the shuffle.
    ------------------------------------------------------------ */
 import { chromium } from "playwright";
-import { readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { listAllScripts } from "./scriptList.mjs";
 
 const URL  = process.env.SKETCHPAD_URL || "http://localhost:5173/";
-const ROOT = new globalThis.URL("..", import.meta.url).pathname;
 const SEED = Number(process.env.SCRIPT_ORDER_SEED || 7);
 
-// Every .js under patterns/ and gallery/Scripts/, skipping archive folders.
-function listScripts(dir) {
-  const out = [];
-  for (const name of readdirSync(dir)) {
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) { if (name !== "archive") out.push(...listScripts(p)); }
-    else if (name.endsWith(".js")) out.push("/" + relative(ROOT, p).split("\\").join("/"));
-  }
-  return out;
-}
-const scripts = [...listScripts(join(ROOT, "patterns")), ...listScripts(join(ROOT, "gallery/Scripts"))].sort();
+const scripts = listAllScripts();
 
 // A repeatable shuffle (the same seed gives the same order).
 function shuffled(list, seed) {
