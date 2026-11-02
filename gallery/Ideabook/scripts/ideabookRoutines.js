@@ -39,8 +39,11 @@
                                  wrap round arm2 instead of stopping)
      corner(a, c, b, steps, s)   the classic curve stitch: arm a->c joined to arm c->b
      starOfCorners(c, r, n, steps, s)  a star of n curved points: a corner stitch
-                                 between each pair of neighbouring spokes from c
-                                 (n = 4: the four-pointed star). s.turn turns it
+                                 between each pair of neighbouring tips, bending
+                                 round the centre (n = 4: the four-pointed star),
+                                 or round a point on a circle of radius s.inner
+                                 (long thin points); s.twist shifts that point
+                                 round (a pinwheel); s.turn turns the whole star
      polygonCornerStitch(corners, steps, s)  a corner stitch at every corner of a
                                  polygon: the rounded shape inside a frame
      chords(pts, s)              point i to point i+skip within one list. One rule for
@@ -190,9 +193,16 @@ export function corner(a, c, b, steps = 12, s = {}) {
 } // end corner
 
 export function starOfCorners(c, r = 150, n = 4, steps = 15, s = {}) {
-  const tips = circlePoints(c, r, n, { start: -90 + (s.turn || 0) });
+  // s.inner: the corner of each stitch sits on a circle of this radius,
+  // between two tips (0, the default: at the centre). s.twist: that corner
+  // moved round the inner circle by this many degrees (a pinwheel).
+  const { inner = 0, twist = 0, turn = 0 } = s;
+  const tips = circlePoints(c, r, n, { start: -90 + turn });
+  const mids = circlePoints(c, inner, n, { start: -90 + turn + 180 / n + twist });
   const lines = [];
-  for (let k = 0; k < n; k++) corner(tips[k], c, tips[(k + 1) % n], steps, s).forEach((l) => lines.push(l));
+  for (let k = 0; k < n; k++) {
+    corner(tips[k], inner ? mids[k] : c, tips[(k + 1) % n], steps, s).forEach((l) => lines.push(l));
+  }
   return lines;
 } // end starOfCorners
 
@@ -224,7 +234,7 @@ export function timesTable(pts, s = {}) {
   const { factor = 2 } = s;
   const lines = [], n = pts.length;
   for (let i = 0; i < n; i++) {
-    const j = Math.round(i * factor) % n;
+    const j = ((Math.round(i * factor) % n) + n) % n;     // a negative factor wraps too
     if (j !== i) join(pts[i], pts[j], s, lines);
   }
   return lines;
