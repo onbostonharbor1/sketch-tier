@@ -117,6 +117,14 @@ export const uiState = {
       index: null              // number | null
     },
 
+    // Ideabook hint scripts (gallery/Ideabook/<category>/scripts/<image name>.js).
+    // ideabookView: what the Ideabook shows for the open image, "image" or
+    // "script" (its hint script drawn on the canvas; the Run script button).
+    // ideabookScripts: per category, the names that have a script, as the
+    // Node service listed them; filled the first time a category is shown.
+    ideabookView: "image",
+    ideabookScripts: {},
+
     // The actual restore contract used by GalleryTabSpec.restore().
     // gallery.js owns this object and rewrites it on navigation.
     // null means “cold start”.

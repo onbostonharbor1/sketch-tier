@@ -120,7 +120,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
-  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
+  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "listIdeabookScripts", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
   "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "writeThumbnail", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {
@@ -246,6 +246,13 @@ r = await call("listScriptHistory", { path: "/../package.json" });
 check("listScriptHistory outside the project or not .js: refused", refused(r), "status " + r.status);
 r = await call("listScriptHistory", { path: "/patterns/circles/skippingPositive.js" });
 check("listScriptHistory for a script with no history: found false", r.status === 200 && r.json.found === false && r.json.versions.length === 0, "status " + r.status);
+fs.mkdirSync(path.join(scratch, "gallery", "Ideabook", "Pursuit", "scripts"), { recursive: true });
+fs.writeFileSync(path.join(scratch, "gallery", "Ideabook", "Pursuit", "scripts", "IMG_1.js"), "export function runPattern() {}\n");
+fs.writeFileSync(path.join(scratch, "gallery", "Ideabook", "Pursuit", "scripts", "_notDone.txt"), "x\n");
+r = await call("listIdeabookScripts", { category: "Pursuit" });
+check("listIdeabookScripts: script names, notes left out", r.status === 200 && JSON.stringify(r.json.names).includes("IMG_1") && !JSON.stringify(r.json.names).includes("notDone"), "status " + r.status + " " + JSON.stringify(r.json));
+r = await call("listIdeabookScripts", { category: "../../node" });
+check("listIdeabookScripts outside the Ideabook: refused", refused(r), "status " + r.status);
 r = await call("appendErrorLog", { entries: [] });
 check("appendErrorLog with no entries: refused", refused(r), "status " + r.status);
 // Every request name in the dispatcher table is covered by the empty-payload test above, and no name is untested.

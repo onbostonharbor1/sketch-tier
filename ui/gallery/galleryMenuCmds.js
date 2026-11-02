@@ -41,7 +41,9 @@ import { getCurrentCategory }              from "./galleryState.js";
 import {
   showPrevGalleryItem,
   showNextGalleryItem,
-  normalizeGalleryEntryPath
+  normalizeGalleryEntryPath,
+  ideabookHasScript,
+  toggleIdeabookScript
 }                                          from "./galleryResults.js";
 import { hideOffcanvas } from "/ui/offcanvas.js";
 
@@ -103,14 +105,37 @@ export function updateGalleryCaption(domain, categoryLabel) {
     menuManager.open(menuItems, anchor);
   };
 
+  // Ideabook: Run script (or Show image when a hint script is showing),
+  // greyed until the image is known to have a hint script.
+  const extraButtons = [];
+  const ideabook = (domain === "Ideabook");
+  const showing  = ideabook && uiState.gallery.ideabookView === "script";
+  if (ideabook) {
+    extraButtons.push({
+      id:       "ideabookRunScript",
+      label:    showing ? "Show image" : "Run script",
+      disabled: !showing,
+      title:    "This image's hint script, scripts/" + (item.filename || "") + ".js",
+      onClick:  () => toggleIdeabookScript(getCurrentCategory())
+    });
+  }
+
   setCaptionBar({
     targetId: "caption",
     title,
     onPrev,
     onNext,
     onMenu,
-    overlayTargetId
+    overlayTargetId: showing ? "sketchpad-wrapper" : overlayTargetId,
+    extraButtons
   });
+
+  if (ideabook && !showing) {
+    ideabookHasScript(getCurrentCategory(), item).then((has) => {
+      const b = document.getElementById("ideabookRunScript");
+      if (b && uiState.gallery.activeItem === item) b.disabled = !has;
+    });
+  }
 
 } // end updateGalleryCaption
 

@@ -22,9 +22,13 @@
    VS Code keeps 50 versions of a file unless told otherwise; the
    project's .vscode/settings.json raises that to 500.
 
+   Also here: listIdeabookScripts, the hint scripts that go with an
+   Ideabook category's images (see the end of this file).
+
    Exports:
      listScriptHistory({ path })            the saved versions, newest first
      readScriptHistoryVersion({ path, id }) one version's text
+     listIdeabookScripts({ category })      the Ideabook hint scripts of a category
    =========================================================== */
 
 import fs from "fs";
@@ -121,5 +125,29 @@ export async function readScriptHistoryVersion(payload = {}) {
   const text = fs.readFileSync(path.join(hist.folder, entry.id), "utf8");
   return { request: "readScriptHistoryVersion", status: "ok", id: entry.id, timestamp: entry.timestamp, text };
 } // end readScriptHistoryVersion
+
+/* ===========================================================
+   TASK: listIdeabookScripts
+   -----------------------------------------------------------
+   The hint scripts of one Ideabook category: the .js files in
+   gallery/Ideabook/<category>/scripts/. A script belongs to the image
+   with the same name (IMG_8500.JPG and scripts/IMG_8500.js), so the
+   Ideabook's Run script button (ui/gallery) can tell which images have
+   one. Files starting with "_" (notes such as _notDone.txt) are not scripts.
+   Payload:  { category: "Pursuit" }
+   Returns:  { request, status: "ok", category, names: ["IMG_8500", ...] }
+             names without ".js"; [] when the folder does not exist.
+=========================================================== */
+export async function listIdeabookScripts(payload = {}) {
+  const category = payload.category;
+  if (typeof category !== "string" || !category || /[\\/]|\.\./.test(category)) {
+    throw new Error("listIdeabookScripts: category missing or invalid");
+  }
+  const dir = path.resolve(".", "gallery", "Ideabook", category, "scripts");
+  const names = fs.existsSync(dir)
+    ? fs.readdirSync(dir).filter((f) => /\.js$/i.test(f) && !f.startsWith("_")).map((f) => f.replace(/\.js$/i, "")).sort()
+    : [];
+  return { request: "listIdeabookScripts", status: "ok", category, names };
+} // end listIdeabookScripts
 
 // end scriptHistoryRequests.mjs

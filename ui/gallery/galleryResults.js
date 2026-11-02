@@ -14,6 +14,8 @@
        state (activeDomain, activeCategory, activeItem, saved).
 
    Exports:
+     ideabookScriptPath(category, entry), ideabookHasScript(category, entry),
+     toggleIdeabookScript(category)     Ideabook hint scripts (Run script)
      showGalleryResultsImages(domain, category, startIndex)
      showGalleryResultsScripts(category, index)
      showPrevGalleryItem(domain)
@@ -37,6 +39,7 @@ import {
 }                                 from "./galleryState.js";
 import { getGalleryCache }        from "/ui/gallery/gallery.js";
 import { updateGalleryCaption }   from "./galleryMenuCmds.js";
+import { nodeListIdeabookScripts } from "/ui/nodeLayer.js";
 
 
 /* ============================================================
@@ -73,6 +76,7 @@ export async function showGalleryResultsImages(domain, category, startIndex) {
   uiState.gallery.activeDomain   = domain;
   uiState.gallery.activeCategory = category;
   uiState.gallery.activeItem     = list[idx];
+  uiState.gallery.ideabookView   = "image";
 
   const saved = { view: "results", domain, category, index: idx };
   uiState.gallery.saved = saved;
@@ -160,6 +164,11 @@ export async function showPrevGalleryItem(domain) {
     updateGalleryCaption(domain, category);
     return;
   }
+  // An Ideabook hint script is showing: go back to images, at the new one.
+  if (uiState.gallery.ideabookView === "script") {
+    await showGalleryResultsImages(domain, category, newIndex);
+    return;
+  }
 
   showGalleryImage(domain, category, list[newIndex]);
   updateGalleryCaption(domain, category);
@@ -188,6 +197,10 @@ export async function showNextGalleryItem(domain) {
 
   if (domain === DOMAIN_SCRIPTS) {
     await showGalleryResultsScripts(category, newIndex);
+  } else if (uiState.gallery.ideabookView === "script") {
+    // An Ideabook hint script is showing: go back to images, at the new one.
+    await showGalleryResultsImages(domain, category, newIndex);
+    return;
   } else {
     showGalleryImage(domain, category, list[newIndex]);
     markSelectedThumbnail("action", newIndex);
@@ -262,6 +275,61 @@ async function showGalleryScript(category, entry) {
   }
 
 } // end showGalleryScript
+
+
+/* ============================================================
+   Ideabook hint scripts
+   ------------------------------------------------------------
+   An Ideabook image may have a hint script: a sketch, in Sketchpad's
+   own drawing functions, of how the image might be built. It is the
+   file of the same name in the category's scripts folder:
+       gallery/Ideabook/Pursuit/IMG_8500.JPG
+       gallery/Ideabook/Pursuit/scripts/IMG_8500.js
+   The caption's Run script button (galleryMenuCmds.js) is greyed when
+   the image has none. Pressed, it draws the script on the canvas in place
+   of the image and becomes "Show image". Prev and Next go back to images.
+   ============================================================ */
+
+// The app path of an image's hint script (it may not exist).
+export function ideabookScriptPath(category, entry) {
+  return "/gallery/Ideabook/" + encodeURIComponent(category) + "/scripts/" +
+         encodeURIComponent(entry.filename) + ".js";
+} // end ideabookScriptPath
+
+
+// True if the image has a hint script. The category's list is asked of
+// the Node service once and kept; without the service, nothing has one.
+export async function ideabookHasScript(category, entry) {
+  if (!entry || !entry.filename) return false;
+  const known = uiState.gallery.ideabookScripts;
+  if (!known[category]) {
+    try { known[category] = (await nodeListIdeabookScripts(category)).names || []; }
+    catch (err) { return false; }          // no service: leave unknown, try again next time
+  }
+  return known[category].includes(entry.filename);
+} // end ideabookHasScript
+
+
+// Run script / Show image.
+export async function toggleIdeabookScript(category) {
+  const domain = "Ideabook";
+  if (uiState.gallery.ideabookView === "script") {
+    await showGalleryResultsImages(domain, category, getCurrentIndex());
+    return;
+  }
+  const entry = uiState.gallery.activeItem;
+  const text  = document.getElementById("text");
+  if (text) text.innerHTML = "";
+  uiState.gallery.ideabookView = "script";
+  try {
+    await runScriptByPath(ideabookScriptPath(category, entry), "canvas", {
+      canvasRegionId: "sketchpad",
+      enableControls: true
+    });
+  } finally {
+    updateGalleryCaption(domain, category);
+  }
+} // end toggleIdeabookScript
 
 
 /* ============================================================

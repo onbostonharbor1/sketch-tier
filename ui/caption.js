@@ -5,7 +5,7 @@
    ------------------------------------------------------------
    Layout (exact and permanent):
        LEFT:   Title
-       RIGHT:  Prev | Next | v(menu)
+       RIGHT:  Prev | Next | (extra buttons) | v(menu)
 
    Behavior:
      • "v" ALWAYS exists
@@ -40,6 +40,9 @@ import {
        onMenu:    <function>     (optional)
        overlayTargetId: <string> (optional: "text" or
                                  "sketchpad-wrapper")
+       extraButtons: [ { id, label, disabled, title, onClick } ]
+                                 (optional: buttons after Next, each
+                                 can be greyed; Ideabook: Run script)
      }
 
    Notes:
@@ -57,7 +60,8 @@ export function setCaptionBar(config) {
     onNext,
     onPrimary,
     onMenu,
-    overlayTargetId
+    overlayTargetId,
+    extraButtons = []      // [{ id, label, disabled, title, onClick }] after Next (Ideabook: Run script)
   } = config;
 
   const el = document.getElementById(targetId);
@@ -121,6 +125,17 @@ export function setCaptionBar(config) {
     bNext.textContent = "Next";
     bNext.onclick = onNext;
     btnRow.appendChild(bNext);
+  }
+
+  // Extra buttons a tab asks for, after Next. Each can be greyed.
+  for (const b of extraButtons) {
+    const btn = document.createElement("button");
+    if (b.id) btn.id = b.id;
+    btn.textContent = b.label;
+    btn.disabled = !!b.disabled;
+    if (b.title) btn.title = b.title;
+    btn.onclick = b.onClick;
+    btnRow.appendChild(btn);
   }
 
   // Reset button (for secondary objects)

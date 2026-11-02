@@ -89,6 +89,12 @@ export async function nodeListScriptHistory(path) {
 } // end nodeListScriptHistory
 
 
+// The Ideabook hint scripts of one category (names without .js).
+export async function nodeListIdeabookScripts(category) {
+  return await nodeDispatch("listIdeabookScripts", { category });
+} // end nodeListIdeabookScripts
+
+
 export async function nodeReadScriptHistoryVersion(path, id) {
   return await nodeDispatch("readScriptHistoryVersion", { path, id });
 } // end nodeReadScriptHistoryVersion

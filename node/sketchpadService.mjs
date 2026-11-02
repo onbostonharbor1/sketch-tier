@@ -40,6 +40,7 @@
      • listLogFiles, readLogFile      the files in ./utilities/logfiles
      • appendErrorLog                 adds errors to ./utilities/logfiles/errors_<date>.txt
      • listScriptHistory, readScriptHistoryVersion   VS Code's saved versions of a script (read only)
+     • listIdeabookScripts            the hint scripts in gallery/Ideabook/<category>/scripts/
      • openInEditor                   open a project file in VS Code
 
    Every path built from request text is checked by safePaths.mjs.
@@ -77,7 +78,7 @@ import { writePatternThumbnail, writePatternFromDrawRegistry,
 import { saveSecondaryObject, readSecondaryObject, archiveSecondaryObject,
          getSecondaryManifest, getPrimaryObjectsWithSecondaries } from "./secondaryRequests.mjs";
 import { listLogFiles, readLogFile, appendErrorLog, openInEditor } from "./logAndEditorRequests.mjs";
-import { listScriptHistory, readScriptHistoryVersion }           from "./scriptHistoryRequests.mjs";
+import { listScriptHistory, readScriptHistoryVersion, listIdeabookScripts } from "./scriptHistoryRequests.mjs";
 
 
 /* ===========================================================
@@ -129,6 +130,7 @@ const HANDLERS = {
   appendErrorLog:                   appendErrorLog,
   listScriptHistory:                listScriptHistory,
   readScriptHistoryVersion:         readScriptHistoryVersion,
+  listIdeabookScripts:              listIdeabookScripts,
   openInEditor:                     openInEditor
 };
 
