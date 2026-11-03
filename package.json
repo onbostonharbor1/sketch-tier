@@ -30,6 +30,7 @@
     "test:errors": "node tests/errorReport.mjs",
     "test:history": "node tests/scriptHistory.mjs",
     "test:ideabook": "node tests/ideabook.mjs",
+    "test:shapers": "node --no-warnings tests/shapersConnectors.mjs",
     "build:static": "node scripts/buildStatic.mjs",
     "pixels:save": "node tests/pixelShots.mjs",
     "pixels:compare": "node tests/pixelCompare.mjs",

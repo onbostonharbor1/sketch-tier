@@ -101,6 +101,8 @@ path), say so and let him decide.
   intended change is approved with `npm run test:regression -- accept <name>`, and the new approved copy is committed.
 - `npm run test:errors` tests the error bar, the error log, the Home summary and the registry and figure-file checks.
 - `npm run test:history` tests Script history (VS Code's saved versions of a script; `ui/scriptHistory.js`).
+- `npm run test:shapers` tests `draw/shapers.js` (point-array operations) and `draw/connectors.js` (ways of stitching) in Node.
+  Both are pure: arrays in, arrays or [a, b] pairs out, no drawing; draw pairs with `drawPairs` (`draw/drawUtilities.js`).
 - `npm run test:ideabook` tests the Ideabook Run script button and runs every hint script.
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);

@@ -29,6 +29,8 @@ Do one phase at a time. After each, stop and wait for him to review, play with i
 | 14 | Filesystem boundary refactor (C3) | Not doing in V1: Version 2 replaces it |
 | 15 | Investigate redoing the older tabs' command and caption code with `ui/figures/figuresCommands.js` as the pattern (Barry, 2026-10-27: it reads cleaner than the others). Investigate and report first; rebuild only after he decides | |
 
+| T1 | Tier A step 1 (docs/TIERS.md): shapers (point-array operations) and connectors (ways of stitching) as pure functions; `drawPairs`; tests | Built on `claude/hopeful-dirac-iirr6d` |
+
 Barry's "Deferred" and "Dropped" lists belong here too. Paste them in from his original list; they are not
 reproduced above.
 

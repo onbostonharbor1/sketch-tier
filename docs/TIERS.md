@@ -97,6 +97,9 @@ Utilities > Tools > Thumbnails > Check Missing Images.
 
 ## 3. Order of work
 
+Progress: step 1 built (3 Nov 2026): `draw/shapers.js`, `draw/connectors.js`, `drawPairs`, `npm run test:shapers`
+(20 tests). The Ideabook routines are not yet rewired to use them; that is for Barry to choose (promotion rule).
+
 Each step is a phase on its own branch, reviewed and merged by Barry, in this order:
 
 1. A1, A2, A9, A10: the shapers and connectors library (`draw/shapers.js`, `draw/connectors.js`), pulled from the

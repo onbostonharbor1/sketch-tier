@@ -24,6 +24,10 @@ drawLine(arg1, arg2, arg3, arg4)
   them in drawState.bounds. Both are null outside a figure layer, so
   nothing changes anywhere else.
 
+drawPairs(pairs, color, lineWidth)
+- Draws the [a, b] pairs a connector (draw/connectors.js) returned,
+  each through drawLine.
+
 drawALine(color, lineWidth, line)
 - A specialized wrapper that renders a single Line object with
   defensive checks to ensure the Line structure is valid.
@@ -712,6 +716,15 @@ function setPt(pt,draw=true) {
 	  return drawState.pts.length - 1;
 }
 
+/////////////////////////////////////////////////////////////////
+// drawPairs: draw the lines a connector returned (draw/connectors.js).
+// pairs is an array of [a, b]; each goes through drawLine, so Final mode,
+// figure transforms and the print aids see it like any other line.
+/////////////////////////////////////////////////////////////////
+function drawPairs(pairs, color = "blue", lineWidth = 1) {
+    for (const [a, b] of pairs) drawLine(a, b, color, lineWidth);
+} // end drawPairs
+
 export {
   toRadians,
   toDegrees,
@@ -728,6 +741,7 @@ export {
   drawManyLines,
   drawALine,
   drawLine,
+  drawPairs,
   getLineEquation,
   midpoint,
   _m,
