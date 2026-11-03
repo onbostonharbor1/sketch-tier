@@ -29,7 +29,12 @@ export let drawState = {
   // Print aids (Figures, Phase 9): while a figure layer draws, the canvas
   // position of every stitch end is pushed here, so a figure without discs
   // can still be printed as nails. Null except while a figure layer draws.
-  collect: null
+  collect: null,
+  // Stepping view (Tier A step 2, ui/draw/drawStep.js): null, or
+  // { limit, count, lines }. While set, drawLine counts every line, draws
+  // only the first `limit`, marks line number `limit`, and records each
+  // line it is asked for in `lines`.
+  step: null
 };
 
 // The starting values of every field above, kept so each script run can

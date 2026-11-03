@@ -34,6 +34,7 @@
 
 import { menuManager }                from "/ui/menuManager.js";
 import { openSweepPanel } from "/ui/draw/drawSweep.js";
+import { startStepping } from "/ui/draw/drawStep.js";
 import { makeDrawInstance, registryKeyOf } from "/ui/draw/drawInstance.js";
 import { setCaptionBar }              from "/ui/caption.js";
 import { makeHelpItem, makeNotesItem } from "/ui/menuCmds.js";
@@ -134,6 +135,12 @@ export async function getDrawCaptionMenuItems(entry) {
       disabled: false,
       tooltip:  "Pictures of the object across a range of one setting; click one to use it.",
       onClick:  () => openSweepPanel()
+    },
+    {
+      label:    "Step through the drawing",
+      disabled: false,
+      tooltip:  "Draw the object one line at a time; the current line is marked in red.",
+      onClick:  () => startStepping()
     }
   ];
 

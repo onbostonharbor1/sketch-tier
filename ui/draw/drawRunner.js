@@ -10,6 +10,7 @@
      (The export of a Draw object as a Pattern script is in ui/menuCmds.js.)
    ------------------------------------------------------------ */
 
+import { beginStepPass, endStepPass } from "/ui/draw/drawStep.js";
 import { reportError } from "/ui/errorReport.js";
 import { uiState }               from "/ui/uiState.js";
 import { resetCanvas }           from "/draw/drawState.js";
@@ -67,7 +68,9 @@ export function drawActiveTab() {
   try {
     const params = (state.parameters = entry.params);
     entry.update(params);
+    beginStepPass();          // stepping view: count lines from zero (drawStep.js)
     entry.draw();
+    endStepPass();
 
     // --- NEW: Render the ghost skeleton for Line 1 ---
     renderScaffoldGuides(entry);

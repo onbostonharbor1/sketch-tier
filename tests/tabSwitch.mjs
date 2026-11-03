@@ -2454,6 +2454,41 @@ if (pursuit.handles !== 1 || JSON.stringify(pursuit.at) !== "[300,300]" || pursu
   problems.push("[pursuit handle] " + JSON.stringify({ pursuit, pursuitMoved }));
 }
 
+/* ---- Tier A step 2: stepping view ---------------------------
+   Draw > Cycloid > Step through the drawing: the controls appear in the
+   left column, the last line is shown; First shows line 1; Next line 2;
+   the readout names the line; Done removes the controls and draws all;
+   a tab switch while stepping stops it. */
+stage = "stepping view";
+{
+  const items = await drawMenuItems("Cycloid");
+  if (!items.some(([t]) => /Step through the drawing/.test(t))) problems.push("[stepping] no menu item");
+  await page.locator(".caption-menu-item", { hasText: "Step through the drawing" }).click();
+  await page.waitForTimeout(800);
+  const total = await page.evaluate(async () => { const { drawState } = await import('/draw/drawState.js'); return drawState.step && drawState.step.lines.length; });
+  const lastText = await page.textContent("#drawStepText");
+  await page.click("#drawStepFirst"); await page.waitForTimeout(300);
+  const firstText = await page.textContent("#drawStepText");
+  await page.click("#drawStepNext"); await page.waitForTimeout(300);
+  const secondText = await page.textContent("#drawStepText");
+  const limit = await page.evaluate(async () => (await import('/draw/drawState.js')).drawState.step.limit);
+  await page.click("#drawStepDone"); await page.waitForTimeout(300);
+  const after = await page.evaluate(async () => ({ step: (await import("/draw/drawState.js")).drawState.step, box: !!document.getElementById("drawStepBox") }));
+  if (!(total > 10) || !lastText.startsWith("Line " + total + " of " + total) || !firstText.startsWith("Line 1 of")
+      || !secondText.startsWith("Line 2 of") || limit !== 2 || after.step !== null || after.box) {
+    problems.push("[stepping] " + JSON.stringify({ total, lastText, firstText, secondText, limit, after }));
+  }
+  // A tab switch while stepping ends it.
+  await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click();
+  await page.waitForTimeout(400);
+  await page.locator(".caption-menu-item", { hasText: "Step through the drawing" }).click();
+  await page.waitForTimeout(600);
+  await page.click("#utilities-tab"); await page.waitForTimeout(600);
+  await page.click("#draw-tab"); await page.waitForTimeout(1200);
+  const gone = await page.evaluate(async () => ({ step: (await import("/draw/drawState.js")).drawState.step, box: !!document.getElementById("drawStepBox") }));
+  if (gone.step !== null || gone.box) problems.push("[stepping after tab switch] " + JSON.stringify(gone));
+}
+
 await browser.close();
 
 for (const n of notes.slice(0, 5)) console.log("note:", n);
@@ -2464,4 +2499,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, no errors");

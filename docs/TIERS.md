@@ -99,6 +99,10 @@ Utilities > Tools > Thumbnails > Check Missing Images.
 
 Progress: step 1 built (3 Nov 2026): `draw/shapers.js`, `draw/connectors.js`, `drawPairs`, `npm run test:shapers`
 (20 tests). The Ideabook routines are not yet rewired to use them; that is for Barry to choose (promotion rule).
+Step 2 built (3 Nov 2026): Draw caption menu > Step through the drawing (`ui/draw/drawStep.js`). drawLine counts and
+records every line while `drawState.step` is set, draws the first k and marks line k in red; controls in the left column
+(first, previous, next, last, slider, readout of the line's ends and colour, Done). Works on every Draw object unchanged.
+Figures and scripts: not yet (the same drawLine hook serves them; their controls come later).
 
 Each step is a phase on its own branch, reviewed and merged by Barry, in this order:
 

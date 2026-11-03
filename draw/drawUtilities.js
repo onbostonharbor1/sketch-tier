@@ -424,6 +424,30 @@ function drawLine(arg1, arg2, arg3 = "blue", arg4 = 1) {
     if (drawState.collect) drawState.collect.push({ x: pt1.x, y: pt1.y }, { x: pt2.x, y: pt2.y });
 
     // ------------------------------------------------------------
+    // Stepping view (ui/draw/drawStep.js): count and record every line;
+    // draw only the first `limit`; mark the last one drawn.
+    // ------------------------------------------------------------
+    if (drawState.step && !drawState.step.box.isConnected) drawState.step = null;   // controls gone: tab switched
+    if (drawState.step) {
+        const step = drawState.step;
+        step.count++;
+        step.lines.push({ a: { x: pt1.x, y: pt1.y }, b: { x: pt2.x, y: pt2.y }, color });
+        if (step.count > step.limit) return;
+        if (step.count === step.limit) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.strokeStyle = "#ff0000";
+            ctx.lineWidth = Math.max(3, lineWidth + 2);
+            ctx.moveTo(pt1.x, pt1.y);
+            ctx.lineTo(pt2.x, pt2.y);
+            ctx.stroke();
+            ctx.restore();
+            displayPoint(pt1, "#ff0000");
+            return;
+        }
+    }
+
+    // ------------------------------------------------------------
     // Final mode (drawState.final): draw just the points, no line.
     // Registry draw code must reach the canvas through drawLine so
     // this one flag covers every line.
