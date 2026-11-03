@@ -5,11 +5,16 @@
    Before this file, an error went to the browser console, where nobody
    looks. Now every error is:
      1. shown in the error bar (#errorBar in index.html), on every tab,
-        until dismissed: what failed, where, and the file and line;
+        until ticked: what failed, where, and the file and line;
      2. written to the error log, utilities/logfiles/errors_<date>.txt
         (one file per day, through the Node service). Utilities > Show
         Logs lists it, and the Home tab says at start-up when the newest
         one has errors (ui/homeAlert.js).
+
+   Each error in the bar has a Tick button, and the bar has Tick all
+   (Tier A step 3, ui/errorChecklist.js): ticking acknowledges the error
+   in the log. Until ticked, an error stays on Home > Errors, across
+   restarts.
 
    An error that repeats (a layer that fails on every redraw) is logged
    once; the bar counts the repeats. If the Node service is not running,
@@ -33,6 +38,7 @@
    ------------------------------------------------------------ */
 
 import { nodeDispatch } from "/ui/nodeLayer.js";
+import { acknowledge }  from "/ui/errorChecklist.js";
 
 const SHOWN = 5;                 // how many different errors the bar lists
 
@@ -117,11 +123,13 @@ function showBar() {
   head.className = "alert-head";
   const title = document.createElement("strong");
   title.textContent = seen.length === 1 ? "An error:" : seen.length + " different errors:";
+  // Tick all: every error listed is acknowledged in the log and leaves the bar.
   const dismiss = document.createElement("button");
   dismiss.type = "button";
   dismiss.className = "alert-dismiss";
-  dismiss.textContent = "Dismiss";
-  dismiss.addEventListener("click", () => { seen.length = 0; showBar(); });
+  dismiss.textContent = "Tick all";
+  dismiss.title = "Acknowledge every error listed; each is noted in the error log";
+  dismiss.addEventListener("click", () => { for (const e of seen.splice(0)) tick(e); showBar(); });
   head.appendChild(title);
   head.appendChild(dismiss);
   bar.appendChild(head);
@@ -131,7 +139,15 @@ function showBar() {
     const li = document.createElement("li");
     li.textContent = e.where + ": " + e.message +
                      (e.place ? "  (" + e.place + ")" : "") +
-                     (e.count > 1 ? "  [" + e.count + " times]" : "");
+                     (e.count > 1 ? "  [" + e.count + " times]" : "") + "  ";
+    // Tick: acknowledge this one error (errorChecklist.js); it leaves the bar.
+    const tickBtn = document.createElement("button");
+    tickBtn.type = "button";
+    tickBtn.className = "alert-dismiss";
+    tickBtn.textContent = "Tick";
+    tickBtn.title = "Acknowledge this error; it is noted in the error log";
+    tickBtn.addEventListener("click", () => { seen.splice(seen.indexOf(e), 1); tick(e); showBar(); });
+    li.appendChild(tickBtn);
     ul.appendChild(li);
   }
   bar.appendChild(ul);
@@ -145,6 +161,13 @@ function showBar() {
   bar.appendChild(foot);
   bar.style.display = "block";
 } // end showBar
+
+
+// Acknowledges one error in the log. Never throws: without the Node service
+// the tick only clears the bar (the error stays open on Home > Errors).
+function tick(e) {
+  acknowledge(e.where + ": " + e.message).catch(() => {});
+} // end tick
 
 
 /* ------------------------------------------------------------

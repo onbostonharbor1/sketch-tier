@@ -103,6 +103,9 @@ Step 2 built (3 Nov 2026): Draw caption menu > Step through the drawing (`ui/dra
 records every line while `drawState.step` is set, draws the first k and marks line k in red; controls in the left column
 (first, previous, next, last, slider, readout of the line's ends and colour, Done). Works on every Draw object unchanged.
 Figures and scripts: not yet (the same drawLine hook serves them; their controls come later).
+Step 3 built (3 Nov 2026): errors as a checklist (`ui/errorChecklist.js`): Tick and Tick all in the error bar write
+"Acknowledged: ..." to the error log; Home > Errors lists every error not yet ticked, from all error logs, across
+restarts; Home's alert counts unticked errors. Home > Notes shows `home/notes.md`, opened in VS Code from there.
 
 Each step is a phase on its own branch, reviewed and merged by Barry, in this order:
 

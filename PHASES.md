@@ -31,6 +31,7 @@ Do one phase at a time. After each, stop and wait for him to review, play with i
 
 | T1 | Tier A step 1 (docs/TIERS.md): shapers (point-array operations) and connectors (ways of stitching) as pure functions; `drawPairs`; tests | Built on `claude/tier-a` |
 | T2 | Tier A step 2: stepping view on the Draw tab (Step through the drawing) | Built on `claude/tier-a` |
+| T3 | Tier A step 3: error checklist (Tick in the bar, Home > Errors), Home > Notes | Built on `claude/tier-a` |
 
 Barry's "Deferred" and "Dropped" lists belong here too. Paste them in from his original list; they are not
 reproduced above.

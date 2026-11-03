@@ -19,6 +19,9 @@
      switchHomeView(viewKey)
      renderHomeCategories(grouped)
      renderHomeCategoriesIfReady()
+
+   Subtabs: Categories, Results (when an item is open), Errors
+   (homeErrors.js) and Notes (homeNotes.js).
    ============================================================ */
 
 import { renderCategories }              from "/ui/categories.js";
@@ -32,6 +35,15 @@ import { getHomeManifestGrouped }        from "./homeState.js";
    ============================================================ */
 const HOME_VIEW_CATEGORIES = "categories";
 const HOME_VIEW_RESULTS    = "results";
+const HOME_VIEW_ERRORS     = "errors";      // Tier A step 3: homeErrors.js
+const HOME_VIEW_NOTES      = "notes";       // Tier A step 3: homeNotes.js
+
+const VIEW_IDS = {
+  categories: "home-categories",
+  results:    "home-results",
+  errors:     "home-errors",
+  notes:      "home-notes"
+};
 
 const CATEGORIES_ID = "home-categories";
 const RESULTS_ID    = "home-results";
@@ -47,7 +59,7 @@ function buildHomeAdapter() {
 
     getActiveId() {
       const view = uiState.home?.saved?.view;
-      return (view === HOME_VIEW_RESULTS) ? RESULTS_ID : CATEGORIES_ID;
+      return VIEW_IDS[view] || CATEGORIES_ID;
     },
 
     tabs: [
@@ -64,6 +76,20 @@ function buildHomeAdapter() {
         condition: () => !!uiState.home?.saved?.activeEntry,
         async onClick() {
           await switchHomeView(HOME_VIEW_RESULTS);
+        }
+      },
+      {
+        id:    VIEW_IDS.errors,
+        label: "Errors",
+        async onClick() {
+          await switchHomeView(HOME_VIEW_ERRORS);
+        }
+      },
+      {
+        id:    VIEW_IDS.notes,
+        label: "Notes",
+        async onClick() {
+          await switchHomeView(HOME_VIEW_NOTES);
         }
       }
     ]
@@ -85,7 +111,7 @@ export function setHomeSubtabs() {
    activateHomeSubtabButton(viewKey)
    ============================================================ */
 export function activateHomeSubtabButton(viewKey) {
-  const activeId = (viewKey === HOME_VIEW_RESULTS) ? RESULTS_ID : CATEGORIES_ID;
+  const activeId = VIEW_IDS[viewKey] || CATEGORIES_ID;
   activateSubtab(CSS_CLASS, activeId);
 } // end activateHomeSubtabButton
 
@@ -117,6 +143,22 @@ export async function switchHomeView(viewKey) {
     actionDiv.innerHTML = "";
 
     renderHomeCategoriesIfReady();
+    return;
+  }
+
+  if (viewKey === HOME_VIEW_ERRORS || viewKey === HOME_VIEW_NOTES) {
+    for (const id of ["caption", "sketchpad", "action"]) {
+      const div = document.getElementById(id);
+      if (!div) throw new Error("switchHomeView: #" + id + " not found");
+      div.innerHTML = "";
+    }
+    if (viewKey === HOME_VIEW_ERRORS) {
+      const { renderHomeErrors } = await import("/ui/home/homeErrors.js");
+      await renderHomeErrors();
+    } else {
+      const { renderHomeNotes } = await import("/ui/home/homeNotes.js");
+      await renderHomeNotes();
+    }
     return;
   }
 

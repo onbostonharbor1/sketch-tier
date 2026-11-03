@@ -99,7 +99,8 @@ path), say so and let him decide.
 - `npm run test:regression` draws every Draw object and every pattern and gallery script and compares each with its
   approved copy in `tests/regression/` (report in `tests/regression/report.html`). Run it before every review. An
   intended change is approved with `npm run test:regression -- accept <name>`, and the new approved copy is committed.
-- `npm run test:errors` tests the error bar, the error log, the Home summary and the registry and figure-file checks.
+- `npm run test:errors` tests the error bar, the error log, the Home summary, the error checklist (Tick, Home > Errors,
+  `ui/errorChecklist.js`), Home > Notes, and the registry and figure-file checks.
 - `npm run test:history` tests Script history (VS Code's saved versions of a script; `ui/scriptHistory.js`).
 - `npm run test:shapers` tests `draw/shapers.js` (point-array operations) and `draw/connectors.js` (ways of stitching) in Node.
   Both are pure: arrays in, arrays or [a, b] pairs out, no drawing; draw pairs with `drawPairs` (`draw/drawUtilities.js`).

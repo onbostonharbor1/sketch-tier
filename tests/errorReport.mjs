@@ -14,6 +14,7 @@
         drawing only through drawLine).
      7. Check Figure Files runs, and checkFigureFormat names a figure's
         broken references (a layer not in the registry, a bad drawOrder).
+     8. The error checklist: Tick in the bar, Home > Errors, Home > Notes.
    The error log written here is removed at the end if this test created it.
 
    Needs the app and the Node service running (npm run dev:all).
@@ -93,7 +94,7 @@ try {
   console.log("4. Home after a reload");
   await load();
   const alert = await page.evaluate(() => document.getElementById("alertBar").textContent);
-  check(/The newest error log has \d+ error/.test(alert), "Home says the error log has errors");
+  check(/\d+ errors? (is|are) not yet ticked/.test(alert), "Home says errors are not yet ticked");
   check(alert.includes("regression probe"), "and lists the latest of them");
 
   console.log("5. Show Logs");
@@ -138,6 +139,37 @@ try {
   check(fig.sound.length === 0, "a new empty figure passes the check");
   check(fig.broken.some((p) => p.includes("not in the draw registry")), "a layer not in the registry is named");
   check(fig.broken.some((p) => p.includes("twice")) && fig.broken.some((p) => p.includes("does not exist")), "a bad drawOrder is named");
+
+  console.log("8. The error checklist (Tier A step 3)");
+  const pure = await page.evaluate(async () => {
+    const { openErrors } = await import("/ui/errorChecklist.js");
+    const log1 = "ERRORS heading\n2026-11-01 10:00:00  A: one  (ui/x.js:1)\n2026-11-01 10:00:01  A: two\n";
+    const log2 = "2026-11-02 09:00:00  Acknowledged: A: one\n2026-11-02 09:00:01  A: two  (ui/y.js:2)\n2026-11-02 09:00:02  A: three\n" +
+                 "2026-11-02 09:00:03  Acknowledged: A: three\n2026-11-02 09:00:04  A: three\n";
+    return openErrors([log1, log2]).map((e) => e.key + "/" + e.count);
+  });
+  check(JSON.stringify(pure) === JSON.stringify(["A: two/2", "A: three/1"]), "openErrors: ticked errors leave, repeats count, a later report reopens (" + pure.join(", ") + ")");
+  await page.evaluate(() => { setTimeout(() => { throw new Error("regression probe tick"); }, 0); });
+  await page.waitForTimeout(500);
+  const tickButtons = page.locator("#errorBar li", { hasText: "regression probe tick" }).locator("button", { hasText: "Tick" });
+  await tickButtons.click();
+  await page.waitForTimeout(600);
+  check(!(await barText()).includes("regression probe tick"), "Tick removes the error from the bar");
+  check(newLogText().includes("Acknowledged: Uncaught error: regression probe tick"), "and writes Acknowledged to the log");
+  await page.click("#home-tab");
+  await page.waitForTimeout(800);
+  await page.locator("#subtabs button", { hasText: "Errors" }).click();
+  await page.waitForTimeout(1200);
+  const listed = await page.evaluate(() => document.getElementById("text").textContent);
+  check(listed.includes("regression probe one") && !listed.includes("regression probe tick"), "Home > Errors lists open errors, not ticked ones");
+  await page.locator("#homeErrorsList li", { hasText: "regression probe one" }).first().locator("button").click();
+  await page.waitForTimeout(1200);
+  const after = await page.evaluate(() => document.getElementById("text").textContent);
+  check(!after.includes("regression probe one"), "Tick on Home > Errors removes it");
+  await page.locator("#subtabs button", { hasText: "Notes" }).click();
+  await page.waitForTimeout(800);
+  const notes = await page.evaluate(() => document.getElementById("homeNotesText")?.textContent || "");
+  check(notes.includes("Notes and to-do"), "Home > Notes shows home/notes.md");
 } finally {
   await browser.close();
   // Leave the log as it was: remove what this test wrote.

@@ -16,8 +16,8 @@
    bar has a Dismiss button; a dismissed log stays quiet, and the next log that has problems shows
    again. If the Node service is not running there is no log to read and the bar stays hidden.
 
-   It also reads the newest error log (errors_<date>.txt, ui/errorReport.js) and, when it has
-   errors, says how many with the latest few, in its own section with its own Dismiss.
+   It also lists the errors not yet ticked, from every error log (ui/errorChecklist.js), how
+   many and the latest few, in its own section with its own Dismiss.
 
    Exports:
      showHomeAlert()
@@ -27,6 +27,7 @@
 
 import { nodeListLogFiles, nodeReadLogFile } from "/ui/nodeLayer.js";
 import { uiState } from "/ui/uiState.js";
+import { readOpenErrors } from "/ui/errorChecklist.js";
 
 const SHOWN = 5;          // how many problems the bar lists
 
@@ -98,19 +99,18 @@ export async function showHomeAlert() {
     }
   }
 
-  const errorLog = list.find((f) => f.name.startsWith("errors_"));
-  if (errorLog) {
-    const errors = parseErrorLog(await readQuietly(errorLog.name));
-    const key = errorLog.name + ":" + errors.length;
-    if (errors.length && uiState.homeAlert.dismissedErrors !== key) {
-      parts.push({
-        title: "The newest error log has " + errors.length + (errors.length === 1 ? " error" : " errors") + " (latest last):",
-        items: errors.slice(-SHOWN),
-        more:  errors.length - SHOWN,
-        log:   errorLog.name,
-        dismiss: () => { uiState.homeAlert.dismissedErrors = key; }
-      });
-    }
+  // Errors not yet ticked, from every error log (ui/errorChecklist.js).
+  // Dismiss quiets this bar for the present count; Home > Errors keeps the list.
+  const open = await readOpenErrors();
+  const key = open.length + ":" + (open.length ? open[open.length - 1].line : "");
+  if (open.length && uiState.homeAlert.dismissedErrors !== key) {
+    parts.push({
+      title: open.length + (open.length === 1 ? " error is" : " errors are") + " not yet ticked (Home > Errors; latest last):",
+      items: open.slice(-SHOWN).map((e) => e.line),
+      more:  open.length - SHOWN,
+      log:   list.find((f) => f.name.startsWith("errors_"))?.name,
+      dismiss: () => { uiState.homeAlert.dismissedErrors = key; }
+    });
   }
 
   bar.innerHTML = "";
