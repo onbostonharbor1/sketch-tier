@@ -43,6 +43,7 @@
      • listIdeabookScripts            the hint scripts in gallery/Ideabook/<category>/scripts/
      • openInEditor                   open a project file in VS Code
      • writeChecklist                 Home > Checklist's file, ./home/checklist.md (homeListRequests.mjs)
+     • listHomeItems                  the Home list: every item with a status (libraryIndex.mjs)
      • listLibrary                    a library's category lists, from its folders (libraryIndex.mjs)
      • listHelpTopics                 the topics of help/Overview, help/Reflections or help/BuildDocs (Home > Help)
 
@@ -83,7 +84,7 @@ import { saveSecondaryObject, readSecondaryObject, archiveSecondaryObject,
 import { listLogFiles, readLogFile, appendErrorLog, openInEditor } from "./logAndEditorRequests.mjs";
 import { listScriptHistory, readScriptHistoryVersion, listIdeabookScripts } from "./scriptHistoryRequests.mjs";
 import { writeChecklist, listHelpTopics } from "./homeListRequests.mjs";
-import { listLibrary } from "./libraryIndex.mjs";
+import { listLibrary, listHomeItems } from "./libraryIndex.mjs";
 
 
 /* ===========================================================
@@ -139,7 +140,8 @@ const HANDLERS = {
   openInEditor:                     openInEditor,
   writeChecklist:                   writeChecklist,
   listHelpTopics:                   listHelpTopics,
-  listLibrary:                      listLibrary
+  listLibrary:                      listLibrary,
+  listHomeItems:                    listHomeItems
 };
 
 export async function dispatchService(requestName, payload = {}) {

@@ -1,12 +1,6 @@
 @echo off
 cd /d "%~dp0"
-echo Starting Sketchpad Maintenance...
-node ./node/maintain_manifests.mjs
-if %ERRORLEVEL% NEQ 0 (
-    echo.
-    echo !!! CRITICAL ERROR DETECTED IN MANIFEST SCRIPT !!!
-    pause
-    exit /b %ERRORLEVEL%
-)
+rem Lists come from the folders now (node/libraryIndex.mjs), so the start-up
+rem manifest rebuild is no longer run. Utilities > Rebuild & Validate still runs it.
 npm run start:sketchpad
 pause

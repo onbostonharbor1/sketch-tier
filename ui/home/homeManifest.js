@@ -21,6 +21,7 @@
      refreshHomeCategoriesFromManifestEdit()
    ============================================================ */
 
+import { nodeDispatch } from "/ui/nodeLayer.js";
 import { manifest }   from "/ui/manifest.js";
 import { fileLayer }  from "/ui/fileLayer.js";
 import {
@@ -62,7 +63,16 @@ export async function loadHomeManifest_async() {
   if (Object.prototype.hasOwnProperty.call(manifest.cache, "home")) {
     data = manifest.cache["home"];
   } else {
-    data = await fileLayer.loadJSON("/home/manifest.json");
+    // The Home list is worked out by the Node service from the folders
+    // (listHomeItems, node/libraryIndex.mjs). Without the service (a
+    // read-only copy) the last home/manifest.json is read instead.
+    try {
+      const r = await nodeDispatch("listHomeItems", {});
+      if (!Array.isArray(r.items)) throw new Error("listHomeItems: no list in the answer");
+      data = r.items;
+    } catch (err) {
+      data = await fileLayer.loadJSON("/home/manifest.json");
+    }
     if (!Array.isArray(data)) {
       throw new Error("Home manifest must be a flat array (got non-array)");
     }

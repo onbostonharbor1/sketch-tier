@@ -10,7 +10,7 @@
     "predev": "node ./node/check_ports.mjs & node ./node/generateHelpManifest.mjs",
     "dev:vite": "vite --port 5173 --strictPort",
     "dev:svc": "node ./node/sketchpadServer.mjs",
-    "// Logic": "sketchpad.bat runs the manifest check once (node ./node/maintain_manifests.mjs) and then launches the environment; the app asks the service for a complete rebuild after any manifest change",
+    "// Logic": "sketchpad.bat launches the environment; category lists and the Home list come from the folders (node/libraryIndex.mjs), so no manifest check runs at start-up; Utilities > Rebuild & Validate still runs node/maintain_manifests.mjs",
     "dev:all": "concurrently -k -n SVC,VITE \"npm run dev:svc\" \"npm run dev:vite\"",
     "dev:sketchpad": "npm run predev && npm run dev:all",
     "open:sketchpad": "wait-on http://localhost:5173/ && start http://localhost:5173/",

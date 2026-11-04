@@ -110,3 +110,35 @@ export async function listLibrary(payload = {}) {
   const items = categories.map((c) => itemsOf(path.join(baseAbs, c), LIBRARIES[basedir]));
   return { request: "listLibrary", status: "ok", categories, items };
 } // end listLibrary
+
+
+/* ===========================================================
+   TASK: listHomeItems -- the Home list, from the same folders
+
+   Home lists every item that has a status (Queue, fix, Examine,
+   favorite, new ...), grouped by status. It used to be home/manifest.json,
+   rebuilt from all the other manifests at start-up and after every
+   change. Now it is worked out here, on request, from the libraries'
+   lists (so an item whose file is gone cannot appear), sorted by title.
+
+   Returns: { request: "listHomeItems", status: "ok",
+              items: [ { file, path: "/patterns/polar/polar1.js", title, status } ] }
+   =========================================================== */
+const HOME_LIBRARIES = ["patterns", "gallery/Scripts", "gallery/Ideabook", "gallery/Patterns",
+                        "utilities/Lab", "utilities/Tools", "figures"];
+
+export async function listHomeItems() {
+  const out = [];
+  for (const basedir of HOME_LIBRARIES) {
+    const baseAbs = path.resolve("./" + basedir);
+    for (const category of categoriesOf(baseAbs)) {
+      for (const entry of itemsOf(path.join(baseAbs, category), LIBRARIES[basedir])) {
+        if (!entry.status) continue;
+        out.push({ file: entry.filename || entry.file || "unknown", path: "/" + basedir + "/" + category + "/" + entry.path,
+                   title: entry.title || entry.filename || "Untitled", status: entry.status });
+      }
+    }
+  }
+  out.sort((a, b) => String(a.title).toLowerCase().localeCompare(String(b.title).toLowerCase()));
+  return { request: "listHomeItems", status: "ok", items: out };
+} // end listHomeItems
