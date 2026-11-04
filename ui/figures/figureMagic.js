@@ -34,6 +34,10 @@
    imports armsOf and armPoint from it. Both are only used inside
    function bodies, after both modules have loaded, so it is safe.
 
+   Marks (points mode): crossings, the intersections that are nail
+   candidates, are a purple ring with a cross; middles, tips and cusps
+   are open black diamonds.
+
    Exports:
      magicCandidates(tabState, layerIndex)
      findFeature(tabState, layerIndex, armId, feature)
@@ -47,6 +51,7 @@ const MAX_PER_KIND = 400;   // more tips or cusps than this: the curve is noise,
 const TIP_STANDOUT = 1.5;   // pixels: a tip must stand this far out from the points around it
 const TIP_SPAN     = 3;     // ... looking this many points either side
 const MARK_SIZE    = 5;     // half-width of the diamond drawn in points mode
+const INTERSECTION_COLOUR = "#a000c8";   // crossings get their own mark: a purple ring with a cross
 
 
 // The arm as a list of canvas points, each with its t along the arm.
@@ -205,6 +210,18 @@ export function drawMagicMarks(tabState) {
   ctx.fillStyle   = "#ffffff";
   for (const c of magicCandidates(tabState, figure.activeLayer)) {
     ctx.beginPath();
+    if (String(c.feature).startsWith("cross")) {
+      // An intersection (a nail candidate, Tier A): a purple ring with a cross in it.
+      ctx.strokeStyle = INTERSECTION_COLOUR;
+      ctx.arc(c.x, c.y, MARK_SIZE, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.moveTo(c.x - MARK_SIZE * 0.7, c.y - MARK_SIZE * 0.7); ctx.lineTo(c.x + MARK_SIZE * 0.7, c.y + MARK_SIZE * 0.7);
+      ctx.moveTo(c.x + MARK_SIZE * 0.7, c.y - MARK_SIZE * 0.7); ctx.lineTo(c.x - MARK_SIZE * 0.7, c.y + MARK_SIZE * 0.7);
+      ctx.stroke();
+      ctx.strokeStyle = "#000000";
+      continue;
+    }
+    // Any other magic point (middle, tip, cusp): an open diamond.
     ctx.moveTo(c.x, c.y - MARK_SIZE); ctx.lineTo(c.x + MARK_SIZE, c.y);
     ctx.lineTo(c.x, c.y + MARK_SIZE); ctx.lineTo(c.x - MARK_SIZE, c.y);
     ctx.closePath();
