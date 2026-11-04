@@ -32,6 +32,7 @@
     "test:ideabook": "node tests/ideabook.mjs",
     "test:shapers": "node --no-warnings tests/shapersConnectors.mjs",
     "dictionary": "node tests/functionDictionary.mjs",
+    "test:controls": "node --no-warnings tests/controlConventions.mjs",
     "build:static": "node scripts/buildStatic.mjs",
     "pixels:save": "node tests/pixelShots.mjs",
     "pixels:compare": "node tests/pixelCompare.mjs",

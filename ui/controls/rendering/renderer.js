@@ -3,6 +3,7 @@
    RENDERER
    ============================================================ */
 
+import { expandSchema } from "../builders/conventions.js";
 import { WIDGET_TYPES } from "../shared/constants.js";
 import { setHiddenControl } from "../widgets/hiddenWidget.js";
 import { setRangeControlUnified } from "../widgets/rangeWidget.js";
@@ -106,7 +107,7 @@ export function renderParameterControls(
     // item.value, already normalized earlier.
     // -------------------------------------------------------
     const schemaSource =
-      sourceInfo.controls || sourceInfo.drawRegistry?.controls || {};
+      expandSchema(sourceInfo.controls || sourceInfo.drawRegistry?.controls || {});   // name-only controls filled (conventions.js)
 
     // -------------------------------------------------------
     // Lookup the schema definition for this specific parameter.

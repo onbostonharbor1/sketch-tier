@@ -33,9 +33,11 @@
  * -------
  * Filtered array of control items that should be visible
  */
+import { expandSchema } from "./conventions.js";
+
 export function filterControlsByActiveGroups(controlItems, sourceInfo) {
   // Get the schema (controls definitions)
-  const schema = sourceInfo.controls || sourceInfo.drawRegistry?.controls || {};
+  const schema = expandSchema(sourceInfo.controls || sourceInfo.drawRegistry?.controls || {});
   
   // Find all controls that trigger group visibility
   const groupTriggers = {};

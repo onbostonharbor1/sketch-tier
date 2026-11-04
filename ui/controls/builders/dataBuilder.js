@@ -4,6 +4,7 @@
    ============================================================ */
 
 import { filterControlsByActiveGroups } from "./groupFilter.js";
+import { expandSchema } from "./conventions.js";
 
 export function buildDrawParameterData(tabState) {
 
@@ -21,7 +22,7 @@ export function buildDrawParameterData(tabState) {
   //
   // ---------------------------------------------------------
   const registry = tabState.drawRegistry;
-  const schema = registry.controls || registry.params || {};
+  const schema = expandSchema(registry.controls || registry.params || {});   // name-only controls filled (conventions.js)
 
   const keys = Object.keys(schema);
   if (keys.length === 0) return [];
@@ -97,7 +98,7 @@ export function buildScriptParameterData(sourceInfo) {
   // ---------------------------------------------------------
   if (!sourceInfo || !sourceInfo.controls) return [];
 
-  const schema = sourceInfo.controls;
+  const schema = expandSchema(sourceInfo.controls);                          // name-only controls filled (conventions.js)
   const keys = Object.keys(schema);
   if (keys.length === 0) return [];
 
