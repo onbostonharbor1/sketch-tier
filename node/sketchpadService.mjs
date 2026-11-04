@@ -43,6 +43,7 @@
      • listIdeabookScripts            the hint scripts in gallery/Ideabook/<category>/scripts/
      • openInEditor                   open a project file in VS Code
      • writeChecklist                 Home > Checklist's file, ./home/checklist.md (homeListRequests.mjs)
+     • listLibrary                    a library's category lists, from its folders (libraryIndex.mjs)
      • listHelpTopics                 the topics of help/Overview, help/Reflections or help/BuildDocs (Home > Help)
 
    Every path built from request text is checked by safePaths.mjs.
@@ -82,6 +83,7 @@ import { saveSecondaryObject, readSecondaryObject, archiveSecondaryObject,
 import { listLogFiles, readLogFile, appendErrorLog, openInEditor } from "./logAndEditorRequests.mjs";
 import { listScriptHistory, readScriptHistoryVersion, listIdeabookScripts } from "./scriptHistoryRequests.mjs";
 import { writeChecklist, listHelpTopics } from "./homeListRequests.mjs";
+import { listLibrary } from "./libraryIndex.mjs";
 
 
 /* ===========================================================
@@ -136,7 +138,8 @@ const HANDLERS = {
   listIdeabookScripts:              listIdeabookScripts,
   openInEditor:                     openInEditor,
   writeChecklist:                   writeChecklist,
-  listHelpTopics:                   listHelpTopics
+  listHelpTopics:                   listHelpTopics,
+  listLibrary:                      listLibrary
 };
 
 export async function dispatchService(requestName, payload = {}) {

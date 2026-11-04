@@ -2,6 +2,12 @@
    ------------------------------------------------------------
    ManifestManager --  New Architecture (Generic Loader)
    ------------------------------------------------------------
+   Lists from folders (2026-11-04): for the libraries in INDEXED the
+   lists come from the Node service's listLibrary
+   (node/libraryIndex.mjs), worked out from the files in the folders,
+   with manifest.json kept only as notes. The steps below are the
+   fallback when there is no service.
+
    Responsibilities:
      - Given a basedir string (e.g. "patterns", "gallery/Ideabook"),
        load manifest data using fileLayer.path helpers.
@@ -31,6 +37,15 @@
 ------------------------------------------------------------ */
 
 import { fileLayer } from "./fileLayer.js";
+import { nodeDispatch } from "./nodeLayer.js";
+
+// Libraries whose lists the Node service works out from the folders
+// (node/libraryIndex.mjs, request listLibrary). Their manifest.json files
+// are now only notes (titles, statuses, order); a file appears whether or
+// not it has an entry. Without the service (a read-only copy) the lists
+// are read from the manifest files as before.
+const INDEXED = new Set(["patterns", "gallery/Scripts", "gallery/Ideabook", "gallery/Patterns",
+                         "utilities/Lab", "utilities/Tools", "figures", "drawRegistry"]);
 import { timed }     from "/ui/instrument.js";
 export class ManifestManager {
 
@@ -92,7 +107,20 @@ export class ManifestManager {
 
     console.log(`-> Cache MISS for '${basedir}' - loading from disk...`);
 
-    // 2) Try directoryRegistry.json
+    // 2) A library the service lists from its folders.
+    if (INDEXED.has(basedir)) {
+      try {
+        const r = await nodeDispatch("listLibrary", { basedir });
+        if (!Array.isArray(r.items) || !Array.isArray(r.categories)) throw new Error("listLibrary: no lists in the answer");
+        this.cache[basedir] = r.items;
+        this.registryCache[basedir] = r.categories;
+        return r.items;
+      } catch (err) {
+        console.warn("ManifestManager: no listLibrary for '" + basedir + "', reading manifest files", err);
+      }
+    }
+
+    // 3) Try directoryRegistry.json
     const dirRegPath = fileLayer.path.directoryRegistry(basedir);
     const hasDirReg  = await fileLayer.exists(dirRegPath);
 

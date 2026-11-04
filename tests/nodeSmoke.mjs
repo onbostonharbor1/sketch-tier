@@ -120,7 +120,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
-  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "listIdeabookScripts", "openInEditor", "writeChecklist", "listHelpTopics", "archiveItem", "writePatternFromDrawRegistry",
+  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "listIdeabookScripts", "openInEditor", "writeChecklist", "listHelpTopics", "listLibrary", "archiveItem", "writePatternFromDrawRegistry",
   "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "writeThumbnail", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {
@@ -383,6 +383,37 @@ check("no .tmp files left behind by the writers", strayTmp.length === 0, strayTm
 const big = await rawRequest(JSON.stringify({ requestName: "listLogFiles", payload: { pad: "x".repeat(51 * 1024 * 1024) } }));
 check("oversized body is refused (413 or closed)", big.status === 413 || big.status === 0, "status " + big.status);
 check("service still answers", (await call("listLogFiles", {})).status === 200);
+
+/* listLibrary (node/libraryIndex.mjs): lists come from the folders.
+   A scratch library: a category in directoryRegistry.json, one that is
+   not, one that must be skipped (images); a file with a manifest entry,
+   one without, and an entry whose file is gone. */
+{
+  const lib = fs.mkdtempSync(path.join(os.tmpdir(), "sp-library-"));
+  const mk = (rel, text = "") => { fs.mkdirSync(path.dirname(path.join(lib, rel)), { recursive: true }); fs.writeFileSync(path.join(lib, rel), text); };
+  mk("patterns/directoryRegistry.json", JSON.stringify(["second", "first"]));
+  mk("patterns/first/a.js"); mk("patterns/first/b.js"); mk("patterns/first/notes.txt");
+  mk("patterns/first/manifest.json", JSON.stringify([{ filename: "b", path: "b.js", title: "Bee", status: "fix" },
+                                                      { filename: "gone", path: "gone.js", title: "Gone" }]));
+  mk("patterns/second/c.js"); mk("patterns/third/d.js"); mk("patterns/images/thumb_x.png");
+  const { listLibrary } = await import(pathToFileURL(path.join(nodeDir, "libraryIndex.mjs")).href);
+  const here = process.cwd();
+  process.chdir(lib);
+  try {
+    const r = await listLibrary({ basedir: "patterns" });
+    check("listLibrary: registry order first, then other folders, images skipped", JSON.stringify(r.categories) === '["second","first","third"]', JSON.stringify(r.categories));
+    const first = r.items[1];
+    check("listLibrary: a listed file keeps its notes (title, status)", first[0] && first[0].title === "Bee" && first[0].status === "fix", JSON.stringify(first));
+    check("listLibrary: a file with no entry appears, titled by its name", first.some((e) => e.path === "a.js" && e.title === "a.js"), JSON.stringify(first));
+    check("listLibrary: an entry whose file is gone is left out; other kinds of file are not items", first.length === 2, JSON.stringify(first));
+    let refused = false;
+    try { await listLibrary({ basedir: "../etc" }); } catch (e) { refused = true; }
+    check("listLibrary: refuses a folder that is not a library", refused);
+  } finally {
+    process.chdir(here);
+    fs.rmSync(lib, { recursive: true, force: true });
+  }
+}
 
 server.kill();
 fs.rmSync(base, { recursive: true, force: true });
