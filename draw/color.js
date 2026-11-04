@@ -1,3 +1,5 @@
+/* calculateTintAndShade: a lighter (tint) and a darker (shade) version of a colour, percentage of the way to
+   white and to black. */
 export function calculateTintAndShade(color, percentage) {
 
     let hexColor;
@@ -69,6 +71,7 @@ export function calculateTintAndShade(color, percentage) {
 } // end calculateTintAndShade
 
 
+/* colourNameToHex: a CSS colour name ("aliceblue") as its hex code, or false if the name is not known. */
 export function colourNameToHex(color) {
     color = color.toLowerCase();
 

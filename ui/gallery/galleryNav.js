@@ -58,6 +58,7 @@ const SUBTAB_RESULTS  = "gallery-results";
 /* ============================================================
    buildGallerySubtabs()
    ============================================================ */
+/* buildGallerySubtabs: the Gallery subtab bar: Ideabook, Patterns, Scripts. */
 export function buildGallerySubtabs() {
 
   const container = document.getElementById("subtabs");
@@ -102,6 +103,7 @@ export function buildGallerySubtabs() {
 /* ============================================================
    buildSubtabButton(tabId, label, onClick)
    ============================================================ */
+/* buildSubtabButton: one subtab button. */
 function buildSubtabButton(tabId, label, onClick) {
 
   const li  = document.createElement("li");
@@ -123,6 +125,7 @@ function buildSubtabButton(tabId, label, onClick) {
 /* ============================================================
    ensureResultsSubtab(domain)
    ============================================================ */
+/* ensureResultsSubtab: adds the Results subtab (the item being viewed) if it is not there. */
 export function ensureResultsSubtab(domain) {
 
   const container = document.getElementById("subtabs");
@@ -169,6 +172,7 @@ export function ensureResultsSubtab(domain) {
 /* ============================================================
    activateGallerySubtab(subtabId)
    ============================================================ */
+/* activateGallerySubtab: marks one Gallery subtab as active. */
 export function activateGallerySubtab(subtabId) {
 
   const buttons = document.querySelectorAll(".gallery-subtabs .nav-link");
@@ -182,6 +186,7 @@ export function activateGallerySubtab(subtabId) {
 /* ============================================================
    clearGalleryCaption()
    ============================================================ */
+/* clearGalleryCaption: empties the caption bar. */
 export function clearGalleryCaption() {
   const captionDiv = document.getElementById("caption");
   if (captionDiv) captionDiv.innerHTML = "";
@@ -191,6 +196,7 @@ export function clearGalleryCaption() {
 /* ============================================================
    showIdeabookCategories()
    ============================================================ */
+/* showIdeabookCategories: the Ideabook view: a frame per category of pictures. */
 export async function showIdeabookCategories() {
 
   clearDivs();
@@ -225,6 +231,7 @@ export async function showIdeabookCategories() {
 /* ============================================================
    showPatternsCategories()
    ============================================================ */
+/* showPatternsCategories: the gallery Patterns view: a frame per category of pictures. */
 export async function showPatternsCategories() {
 
   clearDivs();
@@ -259,6 +266,7 @@ export async function showPatternsCategories() {
 /* ============================================================
    showScriptsCategories()
    ============================================================ */
+/* showScriptsCategories: the gallery Scripts view: a frame per category of scripts. */
 export async function showScriptsCategories() {
 
   clearDivs();

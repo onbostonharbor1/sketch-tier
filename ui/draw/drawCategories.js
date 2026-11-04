@@ -35,6 +35,7 @@ import { getIdsWithSecondaries } from "./drawTabState.js";
 /* ============================================================
    setDrawText()
    ============================================================ */
+/* setDrawText: shows the Draw categories in #text. */
 export function setDrawText() {
   renderDrawCategories();
 } // end setDrawText
@@ -43,6 +44,7 @@ export function setDrawText() {
 /* ============================================================
    collectRegistryEntries()
    ============================================================ */
+/* collectRegistryEntries: every registry object that is not a template, as { key, name, category, entry }. */
 export function collectRegistryEntries() {
 
   return Object.entries(window.drawRegistry || {}).filter(([, entry]) => !entry.template).map(([key, entry]) => ({
@@ -58,6 +60,7 @@ export function collectRegistryEntries() {
 /* ============================================================
    groupEntriesByCategory(list)
    ============================================================ */
+/* groupEntriesByCategory: the entries grouped by category, categories and entries in alphabetical order. */
 export function groupEntriesByCategory(list = []) {
 
   const grouped = {};
@@ -79,6 +82,7 @@ export function groupEntriesByCategory(list = []) {
 /* ============================================================
    renderDrawCategories()
    ============================================================ */
+/* renderDrawCategories: the Draw categories view: a frame per category with each object's picture or name. */
 export function renderDrawCategories() {
 
   const idsWithSecondaries = getIdsWithSecondaries();

@@ -29,6 +29,7 @@ import { readJsonFileSync, writeJsonFileSync, writeFileAtomicSync, assertDirecto
 /* ============================================================
    createFigure(payload)
    ============================================================ */
+/* createFigure: writes a new figure file from a figure name, a category (made if new) and its objects. */
 export async function createFigure(payload = {}) {
   try {
     const { figureName, category, isNewCategory, objects } = payload;

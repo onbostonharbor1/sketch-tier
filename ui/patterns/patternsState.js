@@ -34,6 +34,7 @@ export function getCurrentCategory() {
   return currentCategory;
 }
 
+/* getCurrentIndex: the position of the pattern shown in its category. */
 export function getCurrentIndex() {
   return currentIndex;
 }
@@ -46,6 +47,7 @@ export function setCurrentCategory(category) {
   currentCategory = category;
 }
 
+/* setCurrentIndex: records the position of the pattern shown. */
 export function setCurrentIndex(index) {
   currentIndex = index;
 }

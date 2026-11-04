@@ -18,6 +18,8 @@ PIPELINE:
 import { toRadians } from "/draw/drawUtilities.js";
 import { pointAtArcLength } from "/draw/drawEllipse.js";
 
+/* createNodes: the points (nodes) round an object's ellipse or circle, from its settings: how many, rotation,
+   x and y scale, spacing bias and jitter. */
 export function createNodes(thing) {
     const {
         numNodes, rotate, xScale, yScale,

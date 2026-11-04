@@ -33,6 +33,7 @@ import { openEditManifestDialog } from "/ui/editManifestDialog.js";
 /* ============================================================
    updateUtilitiesCaption(options)
    ============================================================ */
+/* updateUtilitiesCaption: the caption for the utility shown: its category and title, and the menu. */
 export function updateUtilitiesCaption({ title, path, subtab, category, manifestPath, entryPath, status }) {
 
   const finalTitle =
@@ -78,6 +79,7 @@ export function updateUtilitiesCaption({ title, path, subtab, category, manifest
 /* ============================================================
    getUtilitiesCaptionMenuItems(info)
    ============================================================ */
+/* getUtilitiesCaptionMenuItems: the caption menu for a utility (Help, Show Script, Edit Manifest, Archive ...). */
 export async function getUtilitiesCaptionMenuItems(info) {
 
   if (!info) throw new Error("getUtilitiesCaptionMenuItems: info missing");
@@ -96,6 +98,7 @@ export async function getUtilitiesCaptionMenuItems(info) {
 /* ============================================================
    editUtilitiesManifestItem(info)
    ============================================================ */
+/* editUtilitiesManifestItem: opens Edit Manifest for the utility shown (title, status). */
 async function editUtilitiesManifestItem(info) {
 
   if (!info)              throw new Error("editUtilitiesManifestItem: info missing");
@@ -127,6 +130,7 @@ async function editUtilitiesManifestItem(info) {
 /* ============================================================
    archiveUtilitiesItem(info)
    ============================================================ */
+/* archiveUtilitiesItem: moves the utility shown to its archive folder, after asking. */
 async function archiveUtilitiesItem(info) {
 
   if (!info)              throw new Error("archiveUtilitiesItem: info missing");

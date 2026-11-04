@@ -31,6 +31,8 @@ import { readJsonFileSync, writeJsonFileSync, writeFileAtomicSync } from "./serv
 // the systems this runs on), plus control characters.
 const BAD_NAME_CHARS = /[<>:"|?*\u0000-\u001f]/;
 
+/* assertFileName: refuses a name that cannot be a file name on Windows (< > : " | ? *, or a leading or
+   trailing dot or space). */
 export function assertFileName(value, label) {
   assertSimpleName(value, label);
   if (BAD_NAME_CHARS.test(value)) {
@@ -46,6 +48,8 @@ export function assertFileName(value, label) {
 /* ============================================================
    saveFigure(payload)
    ============================================================ */
+/* saveFigure: writes figures/<category>/<name>.json atomically; refuses to overwrite unless asked (see the
+   header). */
 export async function saveFigure(payload = {}) {
 
   const { category, name, figure, overwrite } = payload;

@@ -93,6 +93,7 @@ export const GalleryController = {
 /* ============================================================
    ensureGalleryCacheLoaded()
    ============================================================ */
+/* ensureGalleryCacheLoaded: reads the lists of the three Gallery areas (Ideabook, Patterns, Scripts). */
 export async function ensureGalleryCacheLoaded() {
 
   const domains = [DOMAIN_IDEABOOK, DOMAIN_PATTERNS, DOMAIN_SCRIPTS];
@@ -106,6 +107,7 @@ export async function ensureGalleryCacheLoaded() {
 /* ============================================================
    getGalleryCache()
    ============================================================ */
+/* getGalleryCache: the three Gallery areas' lists, each as { category: [entries] }. */
 export function getGalleryCache() {
   return {
     [DOMAIN_IDEABOOK]: manifest.getCategoryMap(`gallery/${DOMAIN_IDEABOOK}`),
@@ -118,6 +120,7 @@ export function getGalleryCache() {
 /* ============================================================
    initGalleryTab(restored)
    ============================================================ */
+/* initGalleryTab: starts the Gallery tab: reads the lists and builds the subtabs and the first view. */
 export async function initGalleryTab(restored) {
 
   if (!uiState.gallery)
@@ -165,6 +168,7 @@ export async function initGalleryTab(restored) {
 /* ============================================================
    restoreGalleryTab()
    ============================================================ */
+/* restoreGalleryTab: shows the Gallery tab again as it was left. */
 export async function restoreGalleryTab() {
 
   if (!uiState.gallery?.saved) return initGalleryTab(false);

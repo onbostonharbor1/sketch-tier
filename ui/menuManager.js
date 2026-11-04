@@ -15,16 +15,19 @@ let outsideHandler = null;
 let escHandler = null;
 let ready = false;
 
+/* initMenuManager: marks the menu manager ready. */
 export function initMenuManager() {
   ready = true;
 } // end initMenuManager
 
+/* ensureReady: throws if the menu manager has not been started. */
 function ensureReady() {
   if (!ready) {
     throw new Error("menuManager: not initialized (call initMenuManager first)");
   }
 } // end ensureReady
 
+/* ensureArray: value if it is an array; throws otherwise. */
 function ensureArray(value, msg = "menuManager: expected array") {
   if (!Array.isArray(value)) {
     throw new Error(`${msg}. Received: ${typeof value}`);
@@ -33,6 +36,7 @@ function ensureArray(value, msg = "menuManager: expected array") {
 } // end ensureArray
 
 
+/* validateItems: checks that each menu item has a label and an onClick, and throws if not. */
 function validateItems(items) {
   ensureArray(items, "menuManager: items must be an array");
 
@@ -50,6 +54,7 @@ function validateItems(items) {
   return items;
 } // end validateItems
 
+/* createMenuItem: one menu item. */
 function createMenuItem(label, onClick, disabled = false) {
   if (typeof label !== "string") {
     throw new Error("createMenuItem: label must be string");
@@ -57,6 +62,7 @@ function createMenuItem(label, onClick, disabled = false) {
   return { label, onClick, disabled };
 } // end createMenuItem
 
+/* positionMenu: places the menu just below the button that opened it. */
 function positionMenu(anchor, menuEl) {
   const rect = anchor.getBoundingClientRect();
   const scrollLeft = window.pageXOffset;
@@ -67,6 +73,7 @@ function positionMenu(anchor, menuEl) {
   menuEl.style.top = `${rect.bottom + scrollTop + 4}px`;
 } // end positionMenu
 
+/* close: removes the open menu and stops listening for clicks outside it. */
 function close() {
   if (menuEl && menuEl.parentNode) {
     menuEl.parentNode.removeChild(menuEl);
@@ -83,6 +90,8 @@ function close() {
   }
 } // end close
 
+/* open: shows a menu of items below an anchor element; a click on an item runs it, a click elsewhere closes
+   the menu. */
 function open(items, anchor) {
   ensureReady();
 
@@ -139,6 +148,7 @@ function open(items, anchor) {
   document.addEventListener("keydown", escHandler);
 } // end open
 
+/* clear: closes any open menu. */
 function clear() {
   close();
 } // end clear

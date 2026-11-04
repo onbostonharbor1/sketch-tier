@@ -7,6 +7,7 @@ import { CONTROL_CLASSES } from "../shared/constants.js";
 import { buildDrawParameterData} from   "/ui/controls/builders/dataBuilder.js";
 import { renderParameterControls } from "/ui/controls/rendering/renderer.js";
 
+/* setRangeControlUnified: a slider, either with a header row (rangeHeader) or the plain kind. */
 export function setRangeControlUnified(field, label, def, value, info, key, tabId) {
 
   if (def.rangeHeader === true) {
@@ -101,6 +102,7 @@ export function setRangeHeaderControl(field, _label, def, value, info, key, tabI
   input.step = String(step);
   input.value = String(value);
 
+  /* clampValue: v kept within the slider's range. */
   function clampValue(v) {
     const lo = parseFloat(input.min);
     const hi = parseFloat(input.max);
@@ -109,6 +111,7 @@ export function setRangeHeaderControl(field, _label, def, value, info, key, tabI
     return v;
   } // end clampValue
 
+  /* applyValue: sets the slider, its readout and the parameter to a new value (kept in range), then redraws. */
   function applyValue(newVal) {
 
     const clamped = clampValue(newVal);
@@ -191,6 +194,7 @@ export function setRangeHeaderControl(field, _label, def, value, info, key, tabI
 
 
 
+/* setRangeControl: a slider with its minimum, maximum and current value shown. */
 export function setRangeControl(field, label, def, value, info, key, tabId) {
 
   const wrapper = document.createElement("div");
@@ -222,6 +226,7 @@ export function setRangeControl(field, label, def, value, info, key, tabId) {
   input.id = tabId + "-" + key;
   input.className = "ctrl-range";
 
+  /* clampValue: v kept within the slider's range. */
   function clampValue(v) {
     const min = parseFloat(input.min);
     const max = parseFloat(input.max);
@@ -230,6 +235,7 @@ export function setRangeControl(field, label, def, value, info, key, tabId) {
     return v;
   } // end clampValue
 
+  /* applyValue: sets the slider, its readout and the parameter to a new value (kept in range), then redraws. */
   function applyValue(newVal) {
 
     const clamped = clampValue(newVal);

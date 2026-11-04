@@ -68,6 +68,7 @@ export function lineDiff(oldText, newText) {
 /* ------------------------------------------------------------
    openScriptHistory(scriptPath, label)
    ------------------------------------------------------------ */
+/* openScriptHistory: the side panel of a script's saved versions. */
 export function openScriptHistory(scriptPath, label) {
   showOffcanvas({
     title: "Script history: " + label,
@@ -76,6 +77,7 @@ export function openScriptHistory(scriptPath, label) {
 } // end openScriptHistory
 
 
+/* fillPanel: reads the script's saved versions from VS Code's history and lists them, each with Run and Compare. */
 async function fillPanel(body, scriptPath) {
   body.innerHTML = "<p>Reading VS Code's saved versions...</p>";
 
@@ -170,6 +172,7 @@ async function run(scriptPath, text) {
 } // end run
 
 
+/* showDiff: shows two texts line by line, removed lines in red and added lines in green. */
 function showDiff(box, title, oldText, newText) {
   const lines = lineDiff(oldText, newText);
   box.innerHTML = "";
@@ -199,6 +202,7 @@ function showDiff(box, title, oldText, newText) {
 } // end showDiff
 
 
+/* lineSpan: one line of a comparison, in a colour. */
 function lineSpan(text, color, background = "") {
   const s = document.createElement("div");
   s.textContent = text;
@@ -207,12 +211,14 @@ function lineSpan(text, color, background = "") {
   return s;
 } // end lineSpan
 
+/* para: a paragraph holding text. */
 function para(text) {
   const p = document.createElement("p");
   p.textContent = text;
   return p;
 } // end para
 
+/* button: a button with text that runs onClick. */
 function button(text, onClick) {
   const b = document.createElement("button");
   b.type = "button";

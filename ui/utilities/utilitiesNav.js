@@ -38,6 +38,8 @@ const CSS_CLASS  = "utilities-subtabs";
 /* ============================================================
    buildUtilitiesAdapter()
    ============================================================ */
+/* buildUtilitiesAdapter: the description of the Utilities subtabs (Tools, Lab, Result) for the shared subtab
+   builder. */
 function buildUtilitiesAdapter() {
   return {
     cssClass: CSS_CLASS,
@@ -80,6 +82,7 @@ function buildUtilitiesAdapter() {
 /* ============================================================
    setUtilitySubtabs()
    ============================================================ */
+/* setUtilitySubtabs: builds the Utilities subtab bar. */
 export async function setUtilitySubtabs() {
   buildSubtabBar(buildUtilitiesAdapter());
 } // end setUtilitySubtabs
@@ -88,6 +91,7 @@ export async function setUtilitySubtabs() {
 /* ============================================================
    activateUtilitySubtab(tabId)
    ============================================================ */
+/* activateUtilitySubtab: marks one Utilities subtab as active. */
 export function activateUtilitySubtab(tabId) {
   activateSubtab(CSS_CLASS, tabId);
 } // end activateUtilitySubtab
@@ -96,6 +100,7 @@ export function activateUtilitySubtab(tabId) {
 /* ============================================================
    switchUtilityTab(tabId)
    ============================================================ */
+/* switchUtilityTab: shows one Utilities subtab and remembers it. */
 export async function switchUtilityTab(tabId) {
 
   if (!tabId) throw new Error("switchUtilityTab: tabId missing");

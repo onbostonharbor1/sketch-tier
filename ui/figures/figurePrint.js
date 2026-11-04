@@ -217,6 +217,7 @@ export function setPrintSize(tabId) {
   return true;
 } // end setPrintSize
 
+/* setNailSize: asks for the nail diameter and clearance, in the print units, and keeps them in millimetres. */
 export function setNailSize(tabId) {
   const ts = uiState.figures.tabs[tabId];
   const now = ts.figure.nail || DEFAULT_NAIL;
@@ -271,6 +272,7 @@ function bothUnits(mm) {
    ============================================================ */
 const NAIL_COLOURS = ["#d00000", "#008000", "#ff8c00", "#0040ff", "#d4b000"];
 
+/* oneSheetSVG: see the comment block above. */
 export function oneSheetSVG(tabState, colourCycle = false) {
   const figure = tabState.figure;
   const s      = figure.scale;

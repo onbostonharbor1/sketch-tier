@@ -144,6 +144,7 @@ const HANDLERS = {
   listHomeItems:                    listHomeItems
 };
 
+/* dispatchService: runs the request named, with its payload, through the table above. */
 export async function dispatchService(requestName, payload = {}) {
   if (typeof requestName !== "string" || requestName.trim() === "") {
     throw new Error(`dispatchService: invalid requestName: ${String(requestName)}`);

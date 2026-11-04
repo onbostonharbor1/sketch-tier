@@ -5,6 +5,7 @@
 
 import { CONTROL_CLASSES } from "../shared/constants.js";
 
+/* setDefaultControl: a text box (or the input type the control names), the control used when no other fits. */
 export function setDefaultControl(field, label, def, value, info, key, tabId) {
   const input = document.createElement("input");
   input.type = def.type || "text";

@@ -47,6 +47,8 @@ const ANIMATED = /requestAnimationFrame|setInterval/;
 /* ------------------------------------------------------------
    listThumbnailTargets(sets)
    ------------------------------------------------------------ */
+/* listThumbnailTargets: every item that should have a thumbnail, in the sets chosen (Patterns, Gallery, Draw,
+   Figures). */
 export async function listThumbnailTargets(sets = THUMB_SETS) {
 
   const targets = [];
@@ -117,6 +119,7 @@ export async function listThumbnailTargets(sets = THUMB_SETS) {
 } // end listThumbnailTargets
 
 
+/* fetchJson: a JSON file's contents, or null if it cannot be read. */
 async function fetchJson(url) {
   try {
     const res = await fetch(url, { cache: "no-store" });
@@ -266,6 +269,7 @@ function prepareSharedCanvas() {
 } // end prepareSharedCanvas
 
 
+/* loadImage: a picture loaded into an Image, when it has loaded. */
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();

@@ -55,6 +55,7 @@ export async function rebuildAllManifests() {
 
 } // end rebuildAllManifests
 
+/* formatRebuildReportShared: a rebuild's report as text for the panel: problems first, then what was added. */
 export function formatRebuildReportShared(report) {
 
   if (!report) throw new Error("formatRebuildReportShared: report missing");

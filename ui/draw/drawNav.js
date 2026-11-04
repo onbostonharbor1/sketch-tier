@@ -61,6 +61,7 @@ const DEFAULT_DRAW_SUBTAB = "tab-categories";
 /* ============================================================
    setDrawSubtabs()
    ============================================================ */
+/* setDrawSubtabs: builds the Draw subtab bar: Categories, then a subtab for each open object. */
 export function setDrawSubtabs() {
 
   const el = document.getElementById("subtabs");
@@ -93,6 +94,7 @@ export function setDrawSubtabs() {
 /* ============================================================
    addDrawSubtab(item)
    ============================================================ */
+/* addDrawSubtab: opens an object in its own subtab (or switches to it if already open) and draws it. */
 export function addDrawSubtab(item) {
 
   clearDivs();
@@ -170,6 +172,7 @@ export function addDrawSubtab(item) {
 /* ============================================================
    deleteTab(tabId)
    ============================================================ */
+/* deleteTab: closes an object's subtab and shows its neighbour. */
 export function deleteTab(tabId) {
 
   const bar  = document.querySelector("#subtabs ul");
@@ -191,6 +194,7 @@ export function deleteTab(tabId) {
 /* ============================================================
    switchTab(tabId)
    ============================================================ */
+/* switchTab: makes a subtab the active one and draws what it holds. */
 export function switchTab(tabId) {
 
   const bar = document.querySelector("#subtabs ul");
@@ -231,6 +235,7 @@ export function switchTab(tabId) {
 /* ============================================================
    markTabDirty(tabId)
    ============================================================ */
+/* markTabDirty: marks a subtab as changed since it was opened (a mark on its label). */
 export function markTabDirty(tabId) {
 
   const info = uiState.draw.tabs[tabId];
@@ -250,6 +255,7 @@ export function markTabDirty(tabId) {
 /* ============================================================
    markTabClean(tabId)
    ============================================================ */
+/* markTabClean: clears a subtab's changed mark. */
 export function markTabClean(tabId) {
 
   const info = uiState.draw.tabs[tabId];
@@ -267,6 +273,7 @@ export function markTabClean(tabId) {
 /* ============================================================
    validateOpenSecondaryTabs()
    ============================================================ */
+/* validateOpenSecondaryTabs: closes any open saved-settings subtab whose file has gone (archived or deleted). */
 export async function validateOpenSecondaryTabs() {
 
   const tabs   = uiState.draw.tabs;
@@ -312,6 +319,8 @@ export async function validateOpenSecondaryTabs() {
 /* ============================================================
    updateSecondariesDiscovery()
    ============================================================ */
+/* updateSecondariesDiscovery: asks the service which objects have saved settings, so their category entries
+   can say so. */
 export async function updateSecondariesDiscovery() {
 
   try {
@@ -327,6 +336,7 @@ export async function updateSecondariesDiscovery() {
 /* ============================================================
    showSecondaryOffcanvas(primaryId)
    ============================================================ */
+/* showSecondaryOffcanvas: the side panel listing an object's saved settings; choosing one opens it. */
 export async function showSecondaryOffcanvas(primaryId) {
 
   try {
@@ -362,6 +372,8 @@ export async function showSecondaryOffcanvas(primaryId) {
 /* ============================================================
    loadSecondaryObjectInTab(primaryId, item, list, index)
    ============================================================ */
+/* loadSecondaryObjectInTab: reads one saved setting and opens it in a subtab as a copy of its object with
+   those settings. */
 export async function loadSecondaryObjectInTab(primaryId, item, list, index) {
 
   const content = await loadSecondary(primaryId, item.path);

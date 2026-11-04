@@ -57,6 +57,8 @@ const CSS_CLASS     = "home-subtabs";
 /* ============================================================
    buildHomeAdapter()
    ============================================================ */
+/* buildHomeAdapter: the description of Home's subtabs (id, label, what a click does) for the shared subtab
+   builder. */
 function buildHomeAdapter() {
   return {
     cssClass: CSS_CLASS,
@@ -118,6 +120,7 @@ function buildHomeAdapter() {
 /* ============================================================
    setHomeSubtabs()
    ============================================================ */
+/* setHomeSubtabs: builds Home's subtab bar. */
 export function setHomeSubtabs() {
   const saved = uiState.home?.saved;
   if (!saved) throw new Error("setHomeSubtabs: uiState.home.saved missing");
@@ -128,6 +131,7 @@ export function setHomeSubtabs() {
 /* ============================================================
    activateHomeSubtabButton(viewKey)
    ============================================================ */
+/* activateHomeSubtabButton: marks the subtab for a view as active. */
 export function activateHomeSubtabButton(viewKey) {
   const activeId = VIEW_IDS[viewKey] || CATEGORIES_ID;
   activateSubtab(CSS_CLASS, activeId);
@@ -137,6 +141,8 @@ export function activateHomeSubtabButton(viewKey) {
 /* ============================================================
    switchHomeView(viewKey)
    ============================================================ */
+/* switchHomeView: shows one of Home's views (Categories, Results, Errors, Checklist, Help, Notes) and
+   remembers it. */
 export async function switchHomeView(viewKey) {
 
   const saved = uiState.home?.saved;
@@ -200,6 +206,7 @@ export async function switchHomeView(viewKey) {
 /* ============================================================
    renderHomeCategoriesIfReady()
    ============================================================ */
+/* renderHomeCategoriesIfReady: shows the Home categories if the list has been read, otherwise says it is loading. */
 export function renderHomeCategoriesIfReady() {
 
   const grouped = getHomeManifestGrouped();
@@ -219,6 +226,7 @@ export function renderHomeCategoriesIfReady() {
 /* ============================================================
    renderHomeCategories(grouped)
    ============================================================ */
+/* renderHomeCategories: the Home categories view: a frame per status. */
 export function renderHomeCategories(grouped) {
   const frames = buildHomeCategoryDescriptor(grouped);
   renderCategories("text", frames);
@@ -228,6 +236,8 @@ export function renderHomeCategories(grouped) {
 /* ============================================================
    buildHomeCategoryDescriptor(grouped)
    ============================================================ */
+/* buildHomeCategoryDescriptor: the frames for the categories view: one per status, A to Z, each item with its
+   picture or name and what a click opens. */
 function buildHomeCategoryDescriptor(grouped) {
 
   const statuses = Object.keys(grouped).sort((a, b) =>
@@ -310,6 +320,7 @@ function buildHomeCategoryDescriptor(grouped) {
 /* ============================================================
    launchTabViaSetUI(tabKey)
    ============================================================ */
+/* launchTabViaSetUI: switches to another main tab (used to open an item there). */
 function launchTabViaSetUI(tabKey) {
   if (!tabKey) throw new Error("launchTabViaSetUI: tabKey missing");
 

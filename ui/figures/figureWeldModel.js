@@ -33,6 +33,7 @@ export const EPS = 0.5;
 /* ------------------------------------------------------------
    pointByN(figure, n)
    ------------------------------------------------------------ */
+/* pointByN: the figure's point (disc) with number n, or null. */
 export function pointByN(figure, n) {
   return figure.points.find((p) => p.n === n) || null;
 } // end pointByN

@@ -36,6 +36,7 @@ export function getHomeResultsRenderToken() { return homeResultsRenderToken; }
    ============================================================ */
 export function setHomeManifestGrouped(value) { homeManifestGrouped = value; }
 
+/* incrementHomeResultsRenderToken: counts one more render, so a slow earlier one can tell it is out of date. */
 export function incrementHomeResultsRenderToken() {
   homeResultsRenderToken += 1;
   return homeResultsRenderToken;

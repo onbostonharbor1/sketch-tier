@@ -6,6 +6,7 @@
 import { CONTROL_CLASSES } from "../shared/constants.js";
 import { rebuildControls } from "../rendering/rebuild.js";
 
+/* setSelectControl: a drop-down list of the options; choosing one sets the parameter and redraws. */
 export function setSelectControl(field, label, def, value, info, key, tabId) {
   const select = document.createElement("select");
   select.id = tabId + "-" + key;

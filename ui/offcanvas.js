@@ -84,10 +84,12 @@ export function showPanel() {
   document.addEventListener("keydown", onEscape);
 }
 
+/* onEscape: Escape closes the side panel. */
 function onEscape(evt) {
   if (evt.key === "Escape") hideOffcanvas();
 }
 
+/* hideOffcanvas: slides the side panel out and removes its backdrop. */
 export function hideOffcanvas() {
   const panel = document.getElementById(PANEL_ID);
   if (!panel || !panel.classList.contains("show")) return;

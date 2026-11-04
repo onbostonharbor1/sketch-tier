@@ -56,6 +56,7 @@ export function loadThumbnailSettings() {
   }
 } // end loadThumbnailSettings
 
+/* saveThumbnailSettings: keeps the thumbnail settings in the browser (on or off, size). */
 function saveThumbnailSettings() {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(uiState.thumbnails));
@@ -65,6 +66,7 @@ function saveThumbnailSettings() {
 } // end saveThumbnailSettings
 
 
+/* setThumbnailsOn: turns pictures in the category lists on or off. */
 export function setThumbnailsOn(on) {
   uiState.thumbnails.on = !!on;
   saveThumbnailSettings();
@@ -101,18 +103,22 @@ function markListsForRedraw() {
    ------------------------------------------------------------ */
 const enc = encodeURIComponent;
 
+/* patternsThumb: where a pattern's thumbnail picture is. */
 export function patternsThumb(category, name) {
   return "/patterns/" + enc(category) + "/images/thumb_" + enc(name) + ".png";
 }
 
+/* galleryThumb: where a gallery item's thumbnail picture is. */
 export function galleryThumb(domain, category, name) {
   return "/gallery/" + enc(domain) + "/" + enc(category) + "/images/thumb_" + enc(name) + ".png";
 }
 
+/* figureThumb: where a figure's thumbnail picture is. */
 export function figureThumb(category, name) {
   return "/figures/" + enc(category) + "/images/thumb_" + enc(name) + ".png";
 }
 
+/* drawThumb: where a Draw object's thumbnail picture is. */
 export function drawThumb(key) {
   return "/drawRegistry/" + enc(key) + "/images/thumb_" + enc(key) + ".png";
 }

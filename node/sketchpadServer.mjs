@@ -77,6 +77,8 @@ const ALLOWED_HOSTS   = new Set(["localhost:" + PORT, "127.0.0.1:" + PORT]);
 /* Largest request body accepted (thumbnail and PNG uploads are base64). */
 const MAX_BODY_BYTES = 50 * 1024 * 1024;
 
+/* isRequestAllowed: true when a request comes from Sketchpad's own page (or from this computer with no
+   Origin), and names this service as its host. */
 function isRequestAllowed(req) {
   const origin = req.headers.origin;
   if (origin !== undefined && !ALLOWED_ORIGINS.has(origin)) return false;

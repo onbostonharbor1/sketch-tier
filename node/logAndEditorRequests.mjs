@@ -154,6 +154,7 @@ const EDITOR_COMMANDS = {
 };
 
 
+/* openInEditor: the request (see the header above). */
 export async function openInEditor(payload = {}) {
 
   const editor = payload.editor;

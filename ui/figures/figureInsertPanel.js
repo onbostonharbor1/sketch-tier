@@ -25,6 +25,8 @@ const SMALL = 96;    // pixels: each picture in the grid
 const LARGE = 300;   // pixels: the preview at the top
 
 
+/* openInsertPanel: the Insert an object side panel: a picture of every object, a larger preview on hover,
+   click to insert. */
 export function openInsertPanel(tabId) {
   showOffcanvas({
     title: "Insert an object",

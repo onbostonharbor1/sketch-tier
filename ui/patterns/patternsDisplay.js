@@ -32,6 +32,7 @@ import { addPatternSubtab }                     from "./patternsNav.js";
 /* ============================================================
    renderPatternThumbGrid(category)
    ============================================================ */
+/* renderPatternThumbGrid: the pictures of one Patterns category. */
 export function renderPatternThumbGrid(category) {
 
   if (!category) throw new Error("renderPatternThumbGrid: category missing");
@@ -70,6 +71,7 @@ export function renderPatternThumbGrid(category) {
 /* ============================================================
    showSelectedPattern(category, index)
    ============================================================ */
+/* showSelectedPattern: runs one pattern of a category on the canvas and sets the caption. */
 export async function showSelectedPattern(category, index) {
 
   setCurrentCategory(category);
@@ -131,6 +133,7 @@ export async function showSelectedPattern(category, index) {
 /* ============================================================
    onPrev()
    ============================================================ */
+/* onPrev: shows the pattern before the current one (the first wraps to the last). */
 export function onPrev() {
 
   const category = getCurrentCategory();
@@ -158,6 +161,7 @@ export function onPrev() {
 /* ============================================================
    onNext()
    ============================================================ */
+/* onNext: shows the pattern after the current one (the last wraps to the first). */
 export function onNext() {
 
   const category = getCurrentCategory();

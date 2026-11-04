@@ -104,6 +104,7 @@ export function showHelp(text) {
   overlayManager.show("help", html);
 } // end showHelp
 
+/* hideHelp: hides the help overlay. */
 export function hideHelp() {
   overlayManager.hide("help");
 } // end hideHelp
@@ -115,6 +116,7 @@ export function openOverlay(html) {
   overlayManager.show("help", html);  // panel overlay
 } // end openOverlay
 
+/* closeOverlay: hides the help overlay. */
 export function closeOverlay() {
   overlayManager.hide("help");
 } // end closeOverlay

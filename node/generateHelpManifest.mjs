@@ -48,18 +48,22 @@ if (!fs.statSync(HELP_ROOT).isDirectory()) {
   throw new Error("generateHelpManifest: HELP_ROOT is not a directory: " + HELP_ROOT);
 }
 
+/* isHtmlFile: true for a .html file name. */
 function isHtmlFile(name) {
   return name.toLowerCase().endsWith(".html");
 } // end isHtmlFile
 
+/* isSkippableDir: folders never scanned (node_modules, .git). */
 function isSkippableDir(name) {
   return name === "node_modules" || name === ".git";
 } // end isSkippableDir
 
+/* sortCaseInsensitive: compares two names ignoring upper and lower case, for sorting. */
 function sortCaseInsensitive(a, b) {
   return a.toLowerCase().localeCompare(b.toLowerCase());
 } // end sortCaseInsensitive
 
+/* scanDir: one folder of help/ as the manifest shape: its page names, or an object of its subfolders. */
 function scanDir(absDir, relDir) {
 
   const entries = fs.readdirSync(absDir, { withFileTypes: true });

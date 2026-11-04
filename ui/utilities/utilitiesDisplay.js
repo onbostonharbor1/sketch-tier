@@ -35,6 +35,7 @@ import {
 /* ============================================================
    setUtilityCategories(which)
    ============================================================ */
+/* setUtilityCategories: the categories view of Tools or Lab: a frame per category. */
 export async function setUtilityCategories(which) {
 
   const textDiv = document.getElementById("text");
@@ -78,6 +79,7 @@ export async function setUtilityCategories(which) {
 /* ============================================================
    onUtilityItemClick(item)
    ============================================================ */
+/* onUtilityItemClick: runs the utility clicked in a categories frame. */
 export async function onUtilityItemClick(item) {
 
   if (!item)          throw new Error("onUtilityItemClick: item missing");
@@ -110,6 +112,7 @@ export async function onUtilityItemClick(item) {
 /* ============================================================
    runUtilityEntry(subtab, category, entry)
    ============================================================ */
+/* runUtilityEntry: loads and runs one utility script, with its caption and controls. */
 export async function runUtilityEntry(subtab, category, entry) {
 
   if (!subtab)       throw new Error("runUtilityEntry: subtab missing");
@@ -182,6 +185,7 @@ export async function runUtilityEntry(subtab, category, entry) {
 /* ============================================================
    displayUtilityResult(html)
    ============================================================ */
+/* displayUtilityResult: shows a utility's result (HTML) in #text. */
 export function displayUtilityResult(html) {
 
   const textDiv = document.getElementById("text");

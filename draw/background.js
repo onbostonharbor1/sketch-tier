@@ -1,6 +1,7 @@
 /////////////////////////////////////////////////////////////////
 // background
 /////////////////////////////////////////////////////////////////
+/* background: fills the shared canvas with a colour and, if grid is true, draws a light grid over it. */
 export function background (color="lightblue", grid=false) {
     let canvas = document.getElementById("sharedCanvas");
     let width          = canvas.width;
@@ -105,6 +106,7 @@ export function drawSpeckledRadialGradient(width, height, opts) {
   const dy = Math.max(cy, height - cy);
   const maxR = Math.hypot(dx, dy);
 
+  /* clamp01: v kept between 0 and 1. */
   function clamp01(v) {
     if (v < 0) return 0;
     if (v > 1) return 1;

@@ -54,6 +54,7 @@ export function getFiguresRegistry() {
   return figuresRegistry;
 }
 
+/* getCurrentTabId: the figure subtab now shown. */
 export function getCurrentTabId() {
   return currentTabId;
 }
@@ -66,6 +67,7 @@ export function setFiguresRegistry(registry) {
   figuresRegistry = registry;
 }
 
+/* setCurrentTabId: records the figure subtab now shown. */
 export function setCurrentTabId(tabId) {
   currentTabId = tabId;
 }

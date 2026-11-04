@@ -52,6 +52,7 @@ export function drawEulerSpiral(thing) {
 //////////////////////////////////////////////////////////////////
 // drawFermatSpiral
 //////////////////////////////////////////////////////////////////
+/* drawFermatSpiral: a Fermat spiral (radius grows with the square root of the angle), from scale, turns and gap. */
 export function drawFermatSpiral(thing) {
 	let scaleFactor = thing.scaleFactor;
 	let numTurns    = thing.numTurns;
@@ -130,6 +131,8 @@ export function drawLogarithmicSpiral(thing) {
 //////////////////////////////////////////////////////////////////
 // drawPureSpiral
 //////////////////////////////////////////////////////////////////
+/* drawPureSpiral: an Archimedean spiral drawn as a smooth line: radius grows by spread for every radian, up to
+   maxAngle. */
 export function drawPureSpiral(thing) {
 	let spread      = thing.spread;
 	let maxAngle    = thing.maxAngle;
@@ -158,6 +161,8 @@ export function drawPureSpiral(thing) {
 //////////////////////////////////////////////////////////////////
 // drawPureSpiralA
 //////////////////////////////////////////////////////////////////
+/* drawPureSpiralA: an Archimedean spiral drawn as short straight steps, 60 to a turn, gap apart, for
+   numRotations turns. */
 export function drawPureSpiralA(thing) {
 	ctx.strokeStyle  = thing.color;
 	ctx.lineWidth    = thing.lineWidth;
@@ -184,6 +189,7 @@ export function drawPureSpiralA(thing) {
 //////////////////////////////////////////////////////////////////
 // drawPureSpiralB
 //////////////////////////////////////////////////////////////////
+/* drawPureSpiralB: points along a spiral, 10 degrees apart, drawn as dots (ptsToDraw of them). */
 export function drawPureSpiralB(thing) {
 	ctx.strokeStyle = thing.color;
 	ctx.lineWidth   = thing.lineWidth;
@@ -206,6 +212,8 @@ export function drawPureSpiralB(thing) {
 //////////////////////////////////////////////////////////////////
 // drawSpiral
 //////////////////////////////////////////////////////////////////
+/* drawSpiral: lines between points stepping round a set of containers (rings) at the given intervals: the
+   general spiral routine used by spiral scripts. */
 export function drawSpiral(s) {
 	let interval, j, k;
     let intrvalStep = [];

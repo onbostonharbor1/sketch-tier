@@ -35,6 +35,7 @@ import {
 /* ============================================================
    renderHomeResults()
    ============================================================ */
+/* renderHomeResults: shows the item chosen on Home: a script runs on the canvas, a picture is shown. */
 export async function renderHomeResults() {
 
   const saved = uiState.home?.saved;
@@ -86,6 +87,7 @@ export async function renderHomeResults() {
 /* ============================================================
    renderHomeJsEntryToCanvas(entry, token)
    ============================================================ */
+/* renderHomeJsEntryToCanvas: runs a script item on the canvas. */
 async function renderHomeJsEntryToCanvas(entry, token) {
 
   const padDiv = document.getElementById("sketchpad");
@@ -112,6 +114,7 @@ async function renderHomeJsEntryToCanvas(entry, token) {
 /* ============================================================
    renderHomeImageEntryToText(entry, myToken)
    ============================================================ */
+/* renderHomeImageEntryToText: shows a picture item in #text. */
 async function renderHomeImageEntryToText(entry, myToken) {
 
   const textDiv = document.getElementById("text");
@@ -149,6 +152,7 @@ async function renderHomeImageEntryToText(entry, myToken) {
 /* ============================================================
    showHomeResultsError(where, err)
    ============================================================ */
+/* showHomeResultsError: a message in the canvas area saying the item could not be shown. */
 function showHomeResultsError(where, err) {
 
   const padDiv = document.getElementById("sketchpad");
@@ -172,6 +176,7 @@ export function isJsPath(p) {
   return p.toLowerCase().endsWith(".js");
 } // end isJsPath
 
+/* isImagePath: true for a picture file (png, jpg, jpeg, webp, gif). */
 export function isImagePath(path) {
   const dot = path.lastIndexOf(".");
   if (dot < 0) return false;
@@ -179,6 +184,7 @@ export function isImagePath(path) {
   return ext === "png" || ext === "jpg" || ext === "webp" || ext === "jpeg";
 } // end isImagePath
 
+/* deriveHomeOriginFromPath: which tab an item belongs to, from its path (Patterns, Gallery, Utilities, Figures). */
 export function deriveHomeOriginFromPath(path) {
   if (typeof path !== "string" || !path.length) return "Unknown";
   const p = path.toLowerCase();

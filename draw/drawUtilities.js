@@ -85,6 +85,8 @@ function createPrintNodes(thing) {
   return nodes;
 }
 
+/* convertParabPtsToLines: each parabola given as 3 or 4 points turned into its two lines (a 3-point corner has
+   its middle point doubled). */
 function convertParabPtsToLines(parabs) {
   let converted = [];
   for (let parab of parabs) {
@@ -97,6 +99,7 @@ function convertParabPtsToLines(parabs) {
   return converted;
 }
 
+/* drawManyParabs: draws each parabola of a list (3-point corners have their middle point doubled first). */
 export function drawManyParabs(thing, parabs) {
   for (let parab of parabs) {
     if (parab.length == 3)
@@ -106,6 +109,7 @@ export function drawManyParabs(thing, parabs) {
 }
 
 
+/* drawParabs: draws the stitch lines of each parabola, leaving out the last thing.truncate lines. */
 function drawParabs(thing, parabs) {
   for (let parab of parabs) {
    if (parab.length == 3) parab.splice(1, 0, parab[1]);
@@ -137,6 +141,7 @@ function displayPoint(pt, color = "red") {
   ctx.fill();
 }
 
+/* drawCircle: a stroked circle (not filled), mapped through the layer transform in Figures. */
 function drawCircle(midpoint, radius, color = "black", width = 1) {
   ctx.save();
   ctx.strokeStyle = color;
@@ -148,6 +153,7 @@ function drawCircle(midpoint, radius, color = "black", width = 1) {
   ctx.restore();
 } // end drawCircle
 
+/* drawNodes: joins the nodes in order round the ring, the last back to the first: the outline of the shape. */
 function drawNodes(thing,nodes) {
   const { color, lineWidth } = thing;
   const len = nodes.length;
@@ -231,6 +237,7 @@ function drawManyLines(s) {
 } // end drawManyLines
 
 
+/* drawLines: draws each Line of a list; with close, also joins the last line's end to the first line's start. */
 function drawLines(thing, lines, close = false) {
     const { color, lineWidth } = thing;
 
@@ -381,6 +388,8 @@ function drawALine(color = "blue", lineWidth = 1, line) {
 } // end drawALine
 
 
+/* drawLine: the one way registry objects draw a line (see the header above for the cases it accepts, Final
+   mode, the layer transform and stepping). */
 function drawLine(arg1, arg2, arg3 = "blue", arg4 = 1) {
 
     let pt1, pt2;
@@ -480,14 +489,17 @@ function drawLine(arg1, arg2, arg3 = "blue", arg4 = 1) {
 /////////////////////////////////////////////////////////////////
 // midpoint
 /////////////////////////////////////////////////////////////////
+/* midpoint: the point half way between a and b. */
 function midpoint(a, b) {
     return new Point((a.x + b.x)/2, (a.y + b.y)/2);
 }
+/* _m: the point half way between a and b (short name for midpoint). */
 function _m(a, b) {
     return new Point((a.x + b.x)/2, (a.y + b.y)/2);
 }
 
 
+/* printCircNum: a number in a small circle at pt (in Final mode it only counts, drawState.ctr). */
 function printCircNum(pt, num = 9999) {
   if (drawState.final) {
      drawState.ctr++;
@@ -506,6 +518,7 @@ function printCircNum(pt, num = 9999) {
   ctx.restore();
 }
 
+/* printText: text drawn at pt. */
 function printText(text, pt) {
 
   if (!ctx) throw new Error("printText: ctx is null (canvas not initialized / ctx getter failing)");
@@ -527,6 +540,7 @@ function printText(text, pt) {
 } // end printText
 
 
+/* printTitle: sets the drawing's title (drawState.title). */
 function printTitle(text = "No Title") {
   drawState.title = text;
   //   updateOverlayTitle(); // Sync overlay if present
@@ -582,6 +596,7 @@ function ptsOnLine(thing, line) {
 
   // --- DEFLECTION HELPER ---
   const angleRad = toRadians(angle);
+  /* deflectPoint: the point distance away from origin in the direction angle (radians). */
   function deflectPoint(origin, angle, distance) {
     return new Point(
       origin.x + distance * Math.cos(angle),
@@ -627,6 +642,7 @@ function ptsOnLine(thing, line) {
   return ptsOnStraightLine(start, end, numSteps);
 }
 
+/* getPreviousIndex: the index before i in a ring of length items (0 wraps to the last). */
 function getPreviousIndex(i, length) {
   return i === 0 ? length - 1 : i - 1;
 }
@@ -710,6 +726,7 @@ function numbersToPoints(coords) {
 } // end numbersToPoints
 
 
+/* comparePoints: true when two points are the same to two decimal places. */
 function comparePoints(pt1,pt2) {
   if (pt1.x.toFixed(2) == pt2.x.toFixed(2)) {
 	  if (pt1.y.toFixed(2) == pt2.y.toFixed(2)) {
@@ -719,6 +736,7 @@ function comparePoints(pt1,pt2) {
   return false;
 }
 
+/* getLineEquation: the equation of the line through two points, as text ("y = mx + b", or "x = c" when vertical). */
 function getLineEquation(pt1, pt2) {
 
   if (pt2.x - pt1.x === 0) {  // vertical line
@@ -733,6 +751,7 @@ function getLineEquation(pt1, pt2) {
 } // end getLineEquation
 
 
+/* setPt: adds a point to drawState.pts, draws its number unless draw is false, and returns its index. */
 function setPt(pt,draw=true) {
     drawState.pts.push(pt);
 	  if (draw)

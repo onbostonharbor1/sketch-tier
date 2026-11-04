@@ -57,6 +57,7 @@ export function drawWeldMarks(tabState) {
 } // end drawWeldMarks
 
 
+/* drawPlusMark: a weld mark: a white disc with a plus in the given colour. */
 function drawPlusMark(x, y, color) {
   ctx.save();
   ctx.beginPath();

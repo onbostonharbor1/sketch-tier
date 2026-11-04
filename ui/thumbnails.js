@@ -18,6 +18,7 @@ export function markSelectedThumbnail(actionDivId, selectedIndex) {
 } // end markSelectedThumbnail
 
 
+/* renderThumbnailGrid: a grid of pictures in a region, each running onClick when clicked. */
 export function renderThumbnailGrid(targetId, items, buildSrc, onClick) {
   const target = document.getElementById(targetId);
   if (!target)

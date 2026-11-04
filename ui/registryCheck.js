@@ -35,6 +35,8 @@ import { resetCanvas }      from "/draw/drawState.js";
 const OPTIONAL_FUNCTIONS = ["infrastructure", "decompose", "center", "refreshElements"];
 
 
+/* checkRegistryEntry: every problem with one registry object (missing name, params, init, update or draw ...),
+   as sentences. */
 export function checkRegistryEntry(key, entry) {
   const problems = [];
   const need = (cond, msg) => { if (!cond) problems.push(msg); };
@@ -92,6 +94,7 @@ export function checkRegistryEntry(key, entry) {
 } // end checkRegistryEntry
 
 
+/* checkDrawRegistry: every problem in the whole draw registry, each naming its object. */
 export function checkDrawRegistry(registry) {
   const problems = [];
   if (!registry || !Object.keys(registry).length) return ["the draw registry is empty"];

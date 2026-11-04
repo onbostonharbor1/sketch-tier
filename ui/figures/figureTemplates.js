@@ -149,6 +149,7 @@ const guideRuler = {
 const TEMPLATES = { guideRectangle, guideCircle, guideRuler };
 
 
+/* registerTemplates: adds the template objects to the draw registry (for Figures only). */
 export function registerTemplates() {
   if (!window.drawRegistry) return;
   for (const [key, entry] of Object.entries(TEMPLATES)) {
@@ -157,6 +158,7 @@ export function registerTemplates() {
 } // end registerTemplates
 
 
+/* isTemplate: true for a template object. */
 export function isTemplate(entry) {
   return !!(entry && entry.template);
 } // end isTemplate

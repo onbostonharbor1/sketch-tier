@@ -73,6 +73,7 @@ import { armInteractor, disarmInteractor } from "/ui/interactor.js";
 /* ===========================================================
    loadScriptModule(path)
 =========================================================== */
+/* loadScriptModule: imports a script file as a module, fresh each time, so it runs as saved. */
 export async function loadScriptModule(path) {
 
   if (typeof path !== "string" || path.trim() === "") {
@@ -187,6 +188,7 @@ function normalizeScriptInfo(mod) {
 /* ===========================================================
    attachCanvasToRegion(regionId)
 =========================================================== */
+/* attachCanvasToRegion: moves the shared canvas into a region of the page. */
 function attachCanvasToRegion(regionId) {
 
   if (!regionId) throw new Error("attachCanvasToRegion: regionId missing");
@@ -208,6 +210,7 @@ function attachCanvasToRegion(regionId) {
 /* ===========================================================
    clearCanvasBackground(color = "#ffffff")
 =========================================================== */
+/* clearCanvasBackground: fills the canvas with one colour (white unless given). */
 function clearCanvasBackground(color = "#ffffff") {
 
   const canvas = window.drawCanvas;

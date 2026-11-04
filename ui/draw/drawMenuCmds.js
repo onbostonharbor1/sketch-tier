@@ -173,6 +173,7 @@ export async function getDrawCaptionMenuItems(entry) {
 /* ============================================================
    clearDrawCaption()
    ============================================================ */
+/* clearDrawCaption: empties the caption bar. */
 export function clearDrawCaption() {
   const el = document.getElementById("caption");
   if (el) el.innerHTML = "";
@@ -225,6 +226,8 @@ export function buildDrawMenuItems(menuContext) {
 /* ============================================================
    createPatternFromActiveDrawObject(menuContext)
    ============================================================ */
+/* createPatternFromActiveDrawObject: writes the open Draw object, with its present settings, as a pattern
+   script (Save as Pattern). */
 export async function createPatternFromActiveDrawObject(menuContext) {
 
   if (!menuContext) throw new Error("createPatternFromActiveDrawObject: menuContext missing");
@@ -258,6 +261,7 @@ export async function createPatternFromActiveDrawObject(menuContext) {
 /* ============================================================
    copyActiveDrawObject()
    ============================================================ */
+/* copyActiveDrawObject: opens a copy of the open object in a new subtab, with the same settings (Copy Object). */
 export function copyActiveDrawObject() {
 
   const tabId = uiState.draw.activeSubtab;
@@ -298,6 +302,7 @@ export function copyActiveDrawObject() {
 /* ============================================================
    resetActiveDrawObject()
    ============================================================ */
+/* resetActiveDrawObject: puts the open object's settings back to its defaults (Reset Parameters). */
 export async function resetActiveDrawObject() {
 
   const tabId = uiState.draw.activeSubtab;
@@ -340,6 +345,7 @@ export async function resetActiveDrawObject() {
 /* ============================================================
    createPngFromActiveDrawObject(menuContext)
    ============================================================ */
+/* createPngFromActiveDrawObject: saves the canvas as a PNG in the Gallery (Save as PNG). */
 export async function createPngFromActiveDrawObject(menuContext) {
 
   if (!menuContext) throw new Error("createPngFromActiveDrawObject: menuContext missing");
@@ -401,6 +407,7 @@ export async function saveActiveDrawObjectAsSecondary(menuContext) {
 } // end saveActiveDrawObjectAsSecondary
 
 
+/* saveActiveSecondaryObject: saves the open saved-settings object (a secondary) with its present settings. */
 export async function saveActiveSecondaryObject(menuContext) {
 
   const tabId = uiState.draw.activeSubtab;
@@ -441,6 +448,7 @@ export async function saveActiveSecondaryObject(menuContext) {
 } // end saveActiveSecondaryObject
 
 
+/* archiveActiveSecondaryObject: moves the open saved-settings object to its archive folder, after asking. */
 export async function archiveActiveSecondaryObject(menuContext) {
 
   const tabId = uiState.draw.activeSubtab;
@@ -460,6 +468,7 @@ export async function archiveActiveSecondaryObject(menuContext) {
 /* ============================================================
    wireDrawCommandsButton()
    ============================================================ */
+/* wireDrawCommandsButton: the Commands button opens the Draw Maintenance panel. */
 export function wireDrawCommandsButton() {
 
   setCommandsButtonHandler(() => {

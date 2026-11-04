@@ -66,6 +66,8 @@ export function openEditManifestDialog(spec) {
 /* ============================================================
     validateEditManifestSpec(spec)
 =========================================================== */
+/* validateEditManifestSpec: checks that an Edit Manifest request names the manifest, the field to match and
+   the entry, and throws if not. */
 function validateEditManifestSpec(spec) {
 
   if (!spec) throw new Error("validateEditManifestSpec: spec missing");
@@ -283,6 +285,8 @@ function wireEditManifestHandlers(spec, resolve) {
 
 } // end wireEditManifestHandlers
 
+/* applyEditManifest: sends the edited fields to the service, which writes them to the manifest, then runs the
+   complete rebuild. */
 async function applyEditManifest(spec, resolve) {
 
   if (!spec) throw new Error("applyEditManifest: spec missing");
@@ -366,6 +370,7 @@ async function applyEditManifest(spec, resolve) {
 /* ============================================================
     closeFormsOverlay()
 =========================================================== */
+/* closeFormsOverlay: closes the dialog overlay. */
 function closeFormsOverlay() {
 
   const container = document.getElementById("overlayContainer");
@@ -379,6 +384,7 @@ function closeFormsOverlay() {
 /* ============================================================
     escapeAttr(s)
 =========================================================== */
+/* escapeAttr: text made safe for an HTML attribute. */
 function escapeAttr(s) {
   return escapeHtml(s);
 } // end escapeAttr

@@ -63,6 +63,7 @@ export const UtilityTabSpec = {
 /* ============================================================
    ensureUtilitiesCacheLoaded()
    ============================================================ */
+/* ensureUtilitiesCacheLoaded: reads the Tools and Lab lists. */
 async function ensureUtilitiesCacheLoaded() {
   await manifest.get("utilities/Tools");
   await manifest.get("utilities/Lab");
@@ -72,6 +73,7 @@ async function ensureUtilitiesCacheLoaded() {
 /* ============================================================
    getUtilitiesCache()
    ============================================================ */
+/* getUtilitiesCache: the Tools and Lab lists, each as { category: [entries] }. */
 export function getUtilitiesCache() {
   return {
     Tools: manifest.getCategoryMap("utilities/Tools"),
@@ -83,6 +85,7 @@ export function getUtilitiesCache() {
 /* ============================================================
    initUtilityTab(restored)
    ============================================================ */
+/* initUtilityTab: starts the Utilities tab: reads the lists and builds the subtabs and the first view. */
 export async function initUtilityTab(restored = false) {
 
   clearDivs();
@@ -157,6 +160,7 @@ export async function initUtilityTab(restored = false) {
 /* ============================================================
    restoreUtilityTab()
    ============================================================ */
+/* restoreUtilityTab: shows the Utilities tab again as it was left. */
 async function restoreUtilityTab() {
 
   setCommandsButtonLabel("Utilities Commands");
@@ -188,6 +192,7 @@ async function restoreUtilityTab() {
 /* ============================================================
    saveUtilityState()
    ============================================================ */
+/* saveUtilityState: the Utilities tab's remembered state (subtab, category, item). */
 export function saveUtilityState() {
 
   const s = {
@@ -208,6 +213,7 @@ export function saveUtilityState() {
 /* ============================================================
    refreshUtilitiesFromManifestEdit()
    ============================================================ */
+/* refreshUtilitiesFromManifestEdit: reads the Utilities and Home lists again after an edit. */
 export async function refreshUtilitiesFromManifestEdit() {
 
   manifest.invalidate("utilities/Tools");
@@ -251,6 +257,7 @@ export async function refreshUtilitiesFromManifestEdit() {
 /* ============================================================
    buildUtilitiesOffcanvasHtml()
    ============================================================ */
+/* buildUtilitiesOffcanvasHtml: the buttons of the Utilities Maintenance panel. */
 function buildUtilitiesOffcanvasHtml() {
   return `
     <div class="cmdButtonRow">
@@ -279,6 +286,7 @@ function buildUtilitiesOffcanvasHtml() {
 /* ============================================================
    wireUtilitiesCommandsButton()
    ============================================================ */
+/* wireUtilitiesCommandsButton: the Commands button opens the Utilities Maintenance panel. */
 export function wireUtilitiesCommandsButton() {
 
   setCommandsButtonHandler(() => {
@@ -349,6 +357,7 @@ export async function loadCategory(categoryName) {
   await switchUtilityTab("tab-tools");
 } // end loadCategory
 
+/* runUtilityItem: not used: utilities run through onUtilityItemClick (throws if called). */
 export async function runUtilityItem(name) {
   throw new Error("runUtilityItem is not wired; items run via onUtilityItemClick.");
 } // end runUtilityItem

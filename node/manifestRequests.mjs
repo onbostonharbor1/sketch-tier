@@ -385,6 +385,7 @@ function resolveManifestPathAllowed(allowedRoots, manifestPathInput, tag) {
 } // end resolveManifestPathAllowed
 
 
+/* walkFindManifests: every manifest.json under a folder, node_modules skipped. */
 function walkFindManifests(dir, out) {
 
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -408,6 +409,7 @@ function walkFindManifests(dir, out) {
 } // end walkFindManifests
 
 
+/* makeRootedPath: an entry's file as a path from the project root ("/patterns/circles/circle.js"). */
 function makeRootedPath(manifestDirAbs, entry) {
 
   const rel = entry.path || entry.filename || entry.file;

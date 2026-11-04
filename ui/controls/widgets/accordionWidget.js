@@ -6,6 +6,7 @@
 import { CONTROL_CLASSES } from "../shared/constants.js";
 import { buildSingleControl } from "../rendering/renderer.js";
 
+/* setAccordionControl: an accordion (sections that open and close) holding buttons or items, for one control. */
 export function setAccordionControl(field, label, def, value, info, key, tabId) {
 
   if (!field) throw new Error("setAccordionControl: field missing");

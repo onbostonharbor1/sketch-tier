@@ -127,6 +127,7 @@ export async function listLibrary(payload = {}) {
 const HOME_LIBRARIES = ["patterns", "gallery/Scripts", "gallery/Ideabook", "gallery/Patterns",
                         "utilities/Lab", "utilities/Tools", "figures"];
 
+/* listHomeItems: the request (see the header above). */
 export async function listHomeItems() {
   const out = [];
   for (const basedir of HOME_LIBRARIES) {

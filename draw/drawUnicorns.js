@@ -5,6 +5,7 @@ import { Line, Point }                               from "/classes/classes.js";
 //////////////////////////////////////////////////////////////////
 // crossHair
 //////////////////////////////////////////////////////////////////
+/* crossHair: a grey cross 40 pixels wide over each point, to mark it. */
 export function crossHair(points, color="gray") {
 	for (let i=0; i < points.length; i++) {
 	    drawLine(new Point(points[i].x-20, points[i].y),
@@ -20,6 +21,7 @@ export function crossHair(points, color="gray") {
 // drawCycloid
 /////////////////////////////////////////////////////////////////
 
+/* drawCycloid: Cycloid: the ring of nodes joined by the times-table rule, numCycloids loops. */
 export function drawCycloid(thing) {
     const nodes = createNodes(thing);
     const { numNodes, numCycloids, color, lineWidth } = thing;
@@ -46,6 +48,7 @@ export function drawCycloid(thing) {
 /////////////////////////////////////////////////////////////////
 // drawMysticRose
 /////////////////////////////////////////////////////////////////
+/* drawMysticRose: Mystic Rose: every node joined to every other node. */
 export function drawMysticRose(thing){
     let nodes = createNodes(thing);
     // Every pair of nodes is joined once. (The earlier nested loop drew
@@ -58,6 +61,7 @@ export function drawMysticRose(thing){
     }
 } // end drawMysticRose
 
+/* drawRadiate: Radiate: lines from one point (radialPt) to evenly spaced points along a line. */
 export function drawRadiate(thing){
 	let line = new Line(thing.start, thing.end);
 	thing.nodes  = ptsOnLine(thing,line);

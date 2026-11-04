@@ -119,6 +119,7 @@ function renderScaffoldGuides(entry) {
 /**
  * setDrawSketchpad(item)
  */
+/* setDrawSketchpad: makes the item's subtab active and draws it. */
 export function setDrawSketchpad(item) {
   const tabId = "tab-" + item.name.replace(/\s+/g, "-").toLowerCase();
   uiState.draw.activeSubtab = tabId;
@@ -128,6 +129,7 @@ export function setDrawSketchpad(item) {
 /**
  * clearCanvas()
  */
+/* clearCanvas: wipes the shared canvas. */
 export function clearCanvas() {
   if (!ctx) return;
   ctx.clearRect(0, 0, window.drawCanvas.width, window.drawCanvas.height);

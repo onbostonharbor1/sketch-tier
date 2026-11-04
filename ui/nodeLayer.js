@@ -85,11 +85,13 @@ export async function nodeDispatch(requestName, payload = {}) {
 
 
 
+/* nodeListLogFiles: the newest files in utilities/logfiles. */
 export async function nodeListLogFiles(limit = 10) {
   return await nodeDispatch("listLogFiles", { limit });
 } // end nodeListLogFiles
 
 
+/* nodeReadLogFile: the text of one log file. */
 export async function nodeReadLogFile(name) {
   return await nodeDispatch("readLogFile", { name });
 } // end nodeReadLogFile
@@ -107,11 +109,13 @@ export async function nodeListIdeabookScripts(category) {
 } // end nodeListIdeabookScripts
 
 
+/* nodeReadScriptHistoryVersion: one saved version of a script, from VS Code's history. */
 export async function nodeReadScriptHistoryVersion(path, id) {
   return await nodeDispatch("readScriptHistoryVersion", { path, id });
 } // end nodeReadScriptHistoryVersion
 
 
+/* nodeRebuildAndValidateManifests: asks the service for a complete rebuild of the manifests (Rebuild & Validate). */
 export async function nodeRebuildAndValidateManifests() {
   return await nodeDispatch("manifestMaintenance", {});
 } // end nodeRebuildAndValidateManifests

@@ -40,6 +40,7 @@ const PATTERN_ID    = "patterns-pattern";
 /* ============================================================
    setPatternsSubtabs()
    ============================================================ */
+/* setPatternsSubtabs: the Patterns subtab bar: Categories, and the Pattern subtab when one is open. */
 export function setPatternsSubtabs() {
 
   const container = document.getElementById("subtabs");
@@ -96,6 +97,7 @@ export function setPatternsSubtabs() {
 /* ============================================================
    addPatternSubtab(category)
    ============================================================ */
+/* addPatternSubtab: adds (or relabels) the subtab for the pattern being shown. */
 export function addPatternSubtab(category) {
 
   const bar = document.querySelector("#subtabs ul");
@@ -145,6 +147,7 @@ export function addPatternSubtab(category) {
 /* ============================================================
    showCategoryList()
    ============================================================ */
+/* showCategoryList: the Patterns categories view: a frame per category. */
 export async function showCategoryList() {
 
   const textDiv   = document.getElementById("text");
@@ -193,6 +196,7 @@ export async function showCategoryList() {
 /* ============================================================
    clearPatternsCaption()
    ============================================================ */
+/* clearPatternsCaption: empties the caption bar. */
 export function clearPatternsCaption() {
   const captionDiv = document.getElementById("caption");
   if (captionDiv) captionDiv.innerHTML = "";

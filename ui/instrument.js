@@ -60,11 +60,13 @@ export async function timed(label, work) {
 } // end timed
 
 
+/* setInstrumenting: turns timing on or off. */
 export function setInstrumenting(on) {
   uiState.instrument.on = !!on;
 } // end setInstrumenting
 
 
+/* clearTimings: forgets every timing taken. */
 export function clearTimings() {
   uiState.instrument.entries.length = 0;
 } // end clearTimings

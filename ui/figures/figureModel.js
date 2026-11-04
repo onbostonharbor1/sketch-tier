@@ -191,6 +191,8 @@ export function upgradeFigureV1(figure) {
 const ROLES = ["stitch", "guide", "scaffold", "image"];
 const POINT_KINDS = ["anchored", "free", "handle"];
 
+/* checkFigureFormat: every problem found in a figure's data, as sentences (empty when sound); used when a
+   figure file is opened. */
 export function checkFigureFormat(figure) {
   const problems = [];
   const need = (cond, msg) => { if (!cond) problems.push(msg); };

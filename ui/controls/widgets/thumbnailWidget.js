@@ -7,6 +7,7 @@ import { CONTROL_CLASSES } from "../shared/constants.js";
 import { buildDrawParameterData } from "/ui/controls/builders/dataBuilder.js";
 import { renderParameterControls } from "/ui/controls/rendering/renderer.js";
 
+/* setThumbnailGridControl: a grid of small pictures, one per option; clicking one chooses it. */
 export function setThumbnailGridControl(field, label, def, value, info, key, tabId) {
 
   const options = def.options || [];

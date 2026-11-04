@@ -103,6 +103,8 @@ function renderPattern(thing, nodes) {
         return nodes;
     }
 
+    /* adjustStartEnd: where the stitching starts and ends on the ring of nodes, after the start skip and end
+       skip settings; returns the new start, end and length. */
     function adjustStartEnd(nodes, thing, start, end, length) {
         if (thing.startSkip > 0) {
             start = thing.startSkip;
@@ -173,6 +175,7 @@ function renderPattern(thing, nodes) {
 /////////////////////////////////////////////////////////////////
 // drawInCircle
 /////////////////////////////////////////////////////////////////
+/* drawInCircle: In Circle, which is In Ellipse with both axes set from the radius. */
 export function drawInCircle(thing) {
     thing.ellipse = { a: thing.radius*2, b: thing.radius*2 };
     drawInEllipse(thing);
@@ -181,6 +184,7 @@ export function drawInCircle(thing) {
 /////////////////////////////////////////////////////////////////
 // drawInEllipse
 /////////////////////////////////////////////////////////////////
+/* drawInEllipse: makes the ring of nodes for the object and stitches them (renderPattern). */
 export function drawInEllipse(thing) {
     let nodes = createNodes(thing);
     renderPattern(thing, nodes);

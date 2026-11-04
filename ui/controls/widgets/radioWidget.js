@@ -6,6 +6,7 @@
 import { CONTROL_CLASSES } from "../shared/constants.js";
 import { rebuildControls } from "../rendering/rebuild.js";
 
+/* setRadioControl: a group of radio buttons, one per option; choosing one sets the parameter and redraws. */
 export function setRadioControl(field, label, def, value, info, key, tabId) {
 
   if (!def.options || !Array.isArray(def.options) || def.options.length === 0) {

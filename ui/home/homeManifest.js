@@ -40,6 +40,7 @@ const HOME_VIEW_RESULTS    = "results";
 /* ============================================================
    loadHomeManifest()
    ============================================================ */
+/* loadHomeManifest: loadHomeManifest_async without waiting for it; a failure is reported. */
 export function loadHomeManifest() {
   loadHomeManifest_async().catch((err) => {
     console.error("Home manifest load FAILED", err);
@@ -93,6 +94,7 @@ export async function loadHomeManifest_async() {
 /* ============================================================
    groupHomeEntriesByStatus(list)
    ============================================================ */
+/* groupHomeEntriesByStatus: the Home list grouped by status ({ Queue: [...], fix: [...] }). */
 export function groupHomeEntriesByStatus(list) {
 
   const grouped = {};
@@ -118,6 +120,7 @@ export function groupHomeEntriesByStatus(list) {
 /* ============================================================
    refreshHomeCategoriesFromManifestEdit()
    ============================================================ */
+/* refreshHomeCategoriesFromManifestEdit: reads the Home list again after an edit and shows it. */
 export async function refreshHomeCategoriesFromManifestEdit() {
 
   manifest.invalidate("home");

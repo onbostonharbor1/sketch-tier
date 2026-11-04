@@ -14,6 +14,7 @@
 
 import { CONTROL_CLASSES } from "../shared/constants.js";
 
+/* setColorControl: a colour control (the browser's colour picker); a new colour sets the parameter and redraws. */
 export function setColorControl(field, label, def, value, info, key, tabId) {
 
   field.appendChild(label);

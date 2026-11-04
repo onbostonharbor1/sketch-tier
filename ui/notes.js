@@ -16,6 +16,7 @@
 const PATH_LINE = /^[\w.\/\\-]+\.m?js$/;
 const RULE_LINE = /^[=\-*_#\s]*$/;
 
+/* extractHeaderNotes: the header comment at the top of a file's text, for the Notes popup. */
 export function extractHeaderNotes(text) {
 
   if (typeof text !== "string") return "";

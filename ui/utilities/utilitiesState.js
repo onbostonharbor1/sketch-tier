@@ -36,8 +36,11 @@ let hasRunUtility   = false;
    Getters
    ============================================================ */
 export function getCurrentDomain()   { return currentDomain;   }
+// getCurrentCategory: the Utilities category shown.
 export function getCurrentCategory() { return currentCategory; }
+// getCurrentList: the list being stepped through.
 export function getCurrentList()     { return currentList;     }
+// getCurrentIndex: the position in that list.
 export function getCurrentIndex()    { return currentIndex;    }
 export function getHasRunUtility()   { return hasRunUtility;   }
 
@@ -46,8 +49,11 @@ export function getHasRunUtility()   { return hasRunUtility;   }
    Setters
    ============================================================ */
 export function setCurrentDomain(domain)     { currentDomain   = domain;   }
+// setCurrentCategory: records the category shown.
 export function setCurrentCategory(category) { currentCategory = category; }
+// setCurrentList: records the list being stepped through.
 export function setCurrentList(list)         { currentList     = list;     }
+// setCurrentIndex: records the position in that list.
 export function setCurrentIndex(index)       { currentIndex    = index;    }
 export function setHasRunUtility(value)      { hasRunUtility   = !!value;  }
 

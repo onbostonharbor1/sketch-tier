@@ -29,6 +29,7 @@ import path from "path";
 export const MANIFEST_FOLDERS_ALL       = ["home", "patterns", "gallery", "utilities", "figures"];
 export const MANIFEST_FOLDERS_ORIGINALS = ["patterns", "gallery", "utilities", "figures"];
 
+/* manifestRoots: the absolute paths of the folders that may hold manifests. */
 export function manifestRoots(folders = MANIFEST_FOLDERS_ALL) {
   return folders.map(name => path.resolve("./" + name));
 }

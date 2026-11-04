@@ -42,8 +42,11 @@ let currentIndex    = 0;
    Getters
    ============================================================ */
 export function getGalleryCache()    { return galleryCache;    }
+// getCurrentDomain: the Gallery area shown (Ideabook, Patterns or Scripts).
 export function getCurrentDomain()   { return currentDomain;   }
+// getCurrentCategory: the category shown.
 export function getCurrentCategory() { return currentCategory; }
+// getCurrentList: the list being stepped through with Prev and Next.
 export function getCurrentList()     { return currentList;     }
 export function getCurrentIndex()    { return currentIndex;    }
 
@@ -52,8 +55,11 @@ export function getCurrentIndex()    { return currentIndex;    }
    Setters
    ============================================================ */
 export function setGalleryCache(value)    { galleryCache    = value; }
+// setCurrentDomain: records the Gallery area shown.
 export function setCurrentDomain(value)   { currentDomain   = value; }
+// setCurrentCategory: records the category shown.
 export function setCurrentCategory(value) { currentCategory = value; }
+// setCurrentList: records the list being stepped through.
 export function setCurrentList(value)     { currentList     = value; }
 export function setCurrentIndex(value)    { currentIndex    = value; }
 
@@ -61,6 +67,7 @@ export function setCurrentIndex(value)    { currentIndex    = value; }
 /* ============================================================
    resetGalleryState()
    ============================================================ */
+/* resetGalleryState: forgets the area, category, list and position. */
 export function resetGalleryState() {
   galleryCache    = null;
   currentDomain   = null;

@@ -35,6 +35,7 @@ const SHOWN = 5;          // how many problems the bar lists
 /* ------------------------------------------------------------
    parseMaintenanceSummary(text)
    ------------------------------------------------------------ */
+/* parseMaintenanceSummary: the problems listed at the top of a manifest check log. */
 export function parseMaintenanceSummary(text) {
 
   const lines = String(text).split(/\r?\n/);

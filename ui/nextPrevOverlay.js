@@ -32,6 +32,7 @@ let currentOnNext = null;
 /* ============================================================
    ensureOverlayElement()
 ============================================================ */
+/* ensureOverlayElement: finds the Prev and Next overlay in the page, once. */
 function ensureOverlayElement() {
 
   if (overlayEl) return;
@@ -127,6 +128,7 @@ export function enableNextPrevOverlay(spec) {
 /* ============================================================
    disableNextPrevOverlay()
 ============================================================ */
+/* disableNextPrevOverlay: hides the Prev and Next overlay and forgets its handlers. */
 export function disableNextPrevOverlay() {
 
   ensureOverlayElement();

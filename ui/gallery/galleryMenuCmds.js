@@ -57,6 +57,7 @@ const DOMAIN_SCRIPTS = "Scripts";
 /* ============================================================
    updateGalleryCaption(domain, categoryLabel)
    ============================================================ */
+/* updateGalleryCaption: the caption for the item shown: its category and title, Prev and Next, and the menu. */
 export function updateGalleryCaption(domain, categoryLabel) {
 
   const item = uiState.gallery.activeItem;
@@ -143,6 +144,7 @@ export function updateGalleryCaption(domain, categoryLabel) {
 /* ============================================================
    getGalleryCaptionMenuItems(info)
    ============================================================ */
+/* getGalleryCaptionMenuItems: the caption menu for a Gallery item (Help, Show Script, Edit Manifest, Archive ...). */
 export async function getGalleryCaptionMenuItems(info) {
 
   if (!info) throw new Error("getGalleryCaptionMenuItems: info missing");
@@ -162,6 +164,7 @@ export async function getGalleryCaptionMenuItems(info) {
 /* ============================================================
    showGalleryScriptSource(info)
    ============================================================ */
+/* showGalleryScriptSource: shows a gallery script's source text. */
 function showGalleryScriptSource(info) {
 
   if (!info) throw new Error("showGalleryScriptSource: info missing");
@@ -180,6 +183,7 @@ function showGalleryScriptSource(info) {
 /* ============================================================
    editGalleryManifestItem(info)
    ============================================================ */
+/* editGalleryManifestItem: opens Edit Manifest for the item shown (title, status). */
 async function editGalleryManifestItem(info) {
 
   if (!info)              throw new Error("editGalleryManifestItem: info missing");
@@ -210,6 +214,7 @@ async function editGalleryManifestItem(info) {
 /* ============================================================
    archiveGalleryItem(info)
    ============================================================ */
+/* archiveGalleryItem: moves the item shown to its archive folder, after asking. */
 export async function archiveGalleryItem(info) {
 
   if (!window.confirm(`Archive "${info.title || info.filename}"?`)) return;
@@ -251,6 +256,7 @@ export async function archiveGalleryItem(info) {
 /* ============================================================
    refreshGalleryFromManifestEdit()
    ============================================================ */
+/* refreshGalleryFromManifestEdit: forgets the Gallery and Home lists and reads them again, after an edit. */
 export async function refreshGalleryFromManifestEdit() {
 
   manifest.invalidate("gallery/Ideabook");
@@ -303,6 +309,7 @@ export async function refreshGalleryFromManifestEdit() {
 /* ============================================================
    buildGalleryOffcanvasHtml()
    ============================================================ */
+/* buildGalleryOffcanvasHtml: the buttons of the Gallery Maintenance panel. */
 function buildGalleryOffcanvasHtml() {
   return `
     <div class="cmdButtonRow">
@@ -324,6 +331,7 @@ function buildGalleryOffcanvasHtml() {
 /* ============================================================
    wireGalleryCommandsButton()
    ============================================================ */
+/* wireGalleryCommandsButton: the Commands button opens the Gallery Maintenance panel. */
 export function wireGalleryCommandsButton() {
 
   setCommandsButtonHandler(() => {

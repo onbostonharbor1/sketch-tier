@@ -22,8 +22,10 @@ import fs from "fs";
 import path from "path";
 import { writeFileAtomicSync } from "./serviceFileHelpers.mjs";
 
-const MAX_CHARS = 1000000;        // a list, not a book
+const MAX_CHARS = 1000000;                                   // writeChecklist: a list, not a book
+const HELP_FOLDERS = ["Overview", "Reflections", "BuildDocs"]; // listHelpTopics: the folders Home > Help shows
 
+/* writeChecklist: the request (see the header above). */
 export async function writeChecklist(payload = {}) {
   const text = payload.text;
   if (typeof text !== "string") throw new Error("writeChecklist: text missing");
@@ -46,8 +48,6 @@ export async function writeChecklist(payload = {}) {
    Returns:  { request: "listHelpTopics", status: "ok",
                topics: [ { path: "/help/Overview/Tabs/draw.html", title, group: "Tabs" } ] }
    =========================================================== */
-const HELP_FOLDERS = ["Overview", "Reflections", "BuildDocs"];
-
 export async function listHelpTopics(payload = {}) {
   const folder = payload.folder;
   if (!HELP_FOLDERS.includes(folder)) throw new Error("listHelpTopics: folder must be one of " + HELP_FOLDERS.join(", "));

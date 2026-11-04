@@ -18,6 +18,8 @@ import { setAccordionControl } from "../widgets/accordionWidget.js";
 import { setThumbnailGridControl } from "../widgets/thumbnailWidget.js";
 import { setNumberControl }        from "../widgets/numberWidget.js";
 
+/* renderParameterControls: builds the controls listed in controlData into the tab's controls area (and its
+   interface area for interface controls). */
 export function renderParameterControls(
   sourceInfo,
   controlData,

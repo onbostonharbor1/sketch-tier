@@ -5,6 +5,7 @@
 
 import { CONTROL_CLASSES } from "../shared/constants.js";
 
+/* setCheckboxControl: a checkbox control; ticking it sets the parameter and redraws. */
 export function setCheckboxControl(field, label, def, value, info, key, tabId) {
   const input = document.createElement("input");
   input.type = "checkbox";

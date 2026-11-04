@@ -43,6 +43,7 @@ import { hideOffcanvas } from "/ui/offcanvas.js";
 /* ============================================================
    clearHomeCaption()
    ============================================================ */
+/* clearHomeCaption: empties the caption bar. */
 export function clearHomeCaption() {
   const el = document.getElementById("caption");
   if (!el) throw new Error("clearHomeCaption: #caption not found");
@@ -53,6 +54,7 @@ export function clearHomeCaption() {
 /* ============================================================
    setHomeCaption(titleText)
    ============================================================ */
+/* setHomeCaption: the caption bar with just a title. */
 export function setHomeCaption(titleText) {
   setCaptionBar({
     targetId: "caption",
@@ -67,6 +69,8 @@ export function setHomeCaption(titleText) {
 /* ============================================================
    setHomeCaptionForResult(entry)
    ============================================================ */
+/* setHomeCaptionForResult: the caption for an item opened from Home: where it comes from, its title, Prev and
+   Next, and the menu. */
 export function setHomeCaptionForResult(entry) {
 
   if (!entry)                    throw new Error("setHomeCaptionForResult: entry missing");
@@ -130,6 +134,7 @@ export function setHomeCaptionForResult(entry) {
 /* ============================================================
    getHomeCaptionMenuItems(info)
    ============================================================ */
+/* getHomeCaptionMenuItems: the caption menu for an item opened from Home (Help, Show Script, Edit Manifest ...). */
 export async function getHomeCaptionMenuItems(info) {
 
   if (!info) throw new Error("getHomeCaptionMenuItems: info missing");
@@ -147,6 +152,7 @@ export async function getHomeCaptionMenuItems(info) {
 /* ============================================================
    editHomeManifestItem(homeItem)
    ============================================================ */
+/* editHomeManifestItem: opens Edit Manifest for the item shown (title, status). */
 export async function editHomeManifestItem(homeItem) {
 
   if (!homeItem)              throw new Error("editHomeManifestItem: homeItem missing");
@@ -176,6 +182,7 @@ export async function editHomeManifestItem(homeItem) {
 /* ============================================================
    buildHomeOffcanvasHtml()
    ============================================================ */
+/* buildHomeOffcanvasHtml: the buttons of the Home Maintenance panel. */
 function buildHomeOffcanvasHtml() {
   return `
     <div class="cmdButtonRow">
@@ -197,6 +204,7 @@ function buildHomeOffcanvasHtml() {
 /* ============================================================
    wireHomeCommandsButton()
    ============================================================ */
+/* wireHomeCommandsButton: the Commands button opens the Home Maintenance panel. */
 export function wireHomeCommandsButton() {
 
   setCommandsButtonHandler(() => {

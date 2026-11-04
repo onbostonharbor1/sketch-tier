@@ -61,6 +61,8 @@ import { Line, Point, StringThing }       from "../classes/classes.js";
 import {  drawLines, drawParabs, drawNodes,
 	 ptsOnLine, stitcher, getPreviousIndex }            from "./drawUtilities.js";
 
+/* createArms: the points along each line (the arms that get stitched), each trimmed by the truncate and
+   shorten settings. */
 function createArms(thing, lines) {
   const arms = [];
   for (let i = 0; i < lines.length; i++) {
@@ -71,6 +73,7 @@ function createArms(thing, lines) {
   return arms;
 }
 
+/* createLinesFromNodesMiddle: a line from the middle to each node: the spokes of a star. */
 function createLinesFromNodesMiddle(nodes, midpoint) {
   const lines = [];
   for (let i = 0; i < nodes.length; i++) {
@@ -79,6 +82,7 @@ function createLinesFromNodesMiddle(nodes, midpoint) {
   return lines;
 }
 
+/* createLinesFromNodesOuter: a line from each node to the next, round the ring: the sides of a polygon. */
 function createLinesFromNodesOuter(nodes) {
   const lines = [];
   for (let i = 0; i < nodes.length; i++) {
@@ -88,6 +92,7 @@ function createLinesFromNodesOuter(nodes) {
   return lines;
 }
 
+/* createParab: two arms stitched point for point (stitcher), the shorter arm first. */
 function createParab(arm1, arm2) {
   if (arm1.length > arm2.length) {
     [arm1, arm2] = [arm2, arm1];
@@ -115,15 +120,19 @@ function createParabs(thing, arms1, arms2) {
   return parabs;
 }
 
+/* drawManyParabs: draws each stitched parabola of a list. */
 function drawManyParabs(thing, parabs) {
   parabs.forEach((parab) => drawParab(thing, parab));
 }
 
+/* drawAParab: stitches the corner made by two lines (line1 start to end, then line2) and draws it. */
 function drawAParab(thing, line1, line2) {
   const pts = [line1.start, line1.end, line2.start, line2.end];
   return drawParab(thing, pts);  // thread return value up
 }
 
+/* changeLine: an arm with points removed: truncate drops points from the start, shorten from the end, always
+   leaving at least two. */
 function changeLine(arm, truncate = 0, shorten = 0) {
   const minLength = 2;
   const available = Math.max(0, arm.length - minLength);
@@ -172,6 +181,7 @@ function changeLine(arm, truncate = 0, shorten = 0) {
 
 
 
+/* drawCircularParabola: Circular Parabola: arms taken round the ring of nodes, each stitched to the next. */
 function drawCircularParabola(thing) {
 
   const numSteps = thing.numSteps;
@@ -194,6 +204,7 @@ function drawCircularParabola(thing) {
   // Confining circle
   drawNodes(thing, nodes);
 
+  /* buildWrappedArm: steps+1 nodes of the ring from startIndex, wrapping past the last node to the first. */
   function buildWrappedArm(circleNodes, startIndex, steps) {
     const arm = [];
     for (let k = 0; k <= steps; k++) {
@@ -227,6 +238,7 @@ function drawCircularParabola(thing) {
 
 } // end drawCircularParabola
 
+/* drawInnerStar: a star of stitched corners between neighbouring spokes (lines from the middle to each node). */
 function drawInnerStar(thing) {
   const nodes = createNodes(thing);
   const lines = createLinesFromNodesMiddle(nodes, thing.midpoint);
@@ -240,6 +252,7 @@ function drawInnerStar(thing) {
   //  displayPoint(thing.midpoint);
 }
 
+/* drawInverseStar: Inverse Star: each spoke stitched to a side of the polygon, so the curves bow outward. */
 function drawInverseStar(thing) {
   const nodes = createNodes(thing);
   const linesInner = createLinesFromNodesMiddle(nodes, thing.midpoint);
@@ -323,6 +336,7 @@ function inverseStarParabolas(thing) {
 } // end inverseStarParabolas
 
 
+/* drawRegularPolygon: a regular polygon with a stitched corner between each pair of neighbouring sides. */
 function drawRegularPolygon(thing) {
   const nodes = createNodes(thing);
   const lines = createLinesFromNodesOuter(nodes);
@@ -363,6 +377,8 @@ function drawRegularPolygonCorner(thing) {
   drawParabs(thing, parabs);
 }
 
+/* drawRegularPolygonTouch: a regular polygon whose stitched curves touch across the middle (an even number of
+   sides is used). */
 function drawRegularPolygonTouch(thing) {
   const nodes = createNodes(thing);
   const lines = createLinesFromNodesOuter(nodes);

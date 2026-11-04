@@ -51,6 +51,7 @@ const DOMAIN_SCRIPTS = "Scripts";
 /* ============================================================
    showGalleryResultsImages(domain, category, startIndex)
    ============================================================ */
+/* showGalleryResultsImages: shows one picture of a category, from startIndex, with Prev and Next. */
 export async function showGalleryResultsImages(domain, category, startIndex) {
 
   clearDivs();
@@ -108,6 +109,7 @@ export async function showGalleryResultsImages(domain, category, startIndex) {
 /* ============================================================
    showGalleryResultsScripts(category, index)
    ============================================================ */
+/* showGalleryResultsScripts: runs one script of a category on the canvas, with Prev and Next. */
 export async function showGalleryResultsScripts(category, index) {
 
   clearDivs();
@@ -144,6 +146,7 @@ export async function showGalleryResultsScripts(category, index) {
 /* ============================================================
    showPrevGalleryItem(domain)
    ============================================================ */
+/* showPrevGalleryItem: shows the item before the current one (the first wraps to the last). */
 export async function showPrevGalleryItem(domain) {
 
   const list = getCurrentList();
@@ -180,6 +183,7 @@ export async function showPrevGalleryItem(domain) {
 /* ============================================================
    showNextGalleryItem(domain)
    ============================================================ */
+/* showNextGalleryItem: shows the item after the current one (the last wraps to the first). */
 export async function showNextGalleryItem(domain) {
 
   const list = getCurrentList();
@@ -213,6 +217,7 @@ export async function showNextGalleryItem(domain) {
 /* ============================================================
    showGalleryImage(domain, category, entry)
    ============================================================ */
+/* showGalleryImage: puts one picture in #text. */
 export function showGalleryImage(domain, category, entry) {
 
   const text = document.getElementById("text");
@@ -240,6 +245,7 @@ export function showGalleryImage(domain, category, entry) {
 /* ============================================================
    showGalleryScript(category, entry)
    ============================================================ */
+/* showGalleryScript: loads and runs one gallery script, with its controls. */
 async function showGalleryScript(category, entry) {
 
   if (!category)        throw new Error("showGalleryScript: category missing");
@@ -343,6 +349,7 @@ export async function toggleIdeabookScript(category) {
 /* ============================================================
    normalizeGalleryEntryPath(category, entry)
    ============================================================ */
+/* normalizeGalleryEntryPath: an entry's file as a path from the project root. */
 export function normalizeGalleryEntryPath(category, entry) {
 
   let p = entry.path || entry.filename;

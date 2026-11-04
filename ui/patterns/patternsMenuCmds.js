@@ -97,6 +97,7 @@ export function updatePatternsCaption(category, item, helpKey) {
 /* ============================================================
    createPatternThumbnail(info)
    ============================================================ */
+/* createPatternThumbnail: saves the canvas as the pattern's thumbnail picture. */
 export async function createPatternThumbnail(info) {
 
   const canvas = document.querySelector("#sketchpad canvas");
@@ -130,6 +131,7 @@ export async function createPatternThumbnail(info) {
 /* ============================================================
    archivePatternsItem(info)
    ============================================================ */
+/* archivePatternsItem: moves the pattern shown to its archive folder, after asking, and shows the next one. */
 export async function archivePatternsItem(info) {
 
   const confirm = window.confirm(`Archive "${info.title || info.filename}"?`);
@@ -190,6 +192,7 @@ export async function archivePatternsItem(info) {
 /* ============================================================
    showPatternScript(info)
    ============================================================ */
+/* showPatternScript: shows the pattern script's source text. */
 export async function showPatternScript(info) {
   if (!info || !info.isScript) return;
   const label = info.filename || info.title || "(untitled)";
@@ -200,6 +203,7 @@ export async function showPatternScript(info) {
 /* ============================================================
    editPatternsManifestItem(info)
    ============================================================ */
+/* editPatternsManifestItem: opens Edit Manifest for the pattern shown (title, status). */
 export async function editPatternsManifestItem(info) {
 
   const ok = await openEditManifestDialog({
@@ -234,6 +238,8 @@ export async function editPatternsManifestItem(info) {
 /* ============================================================
    getPatternsCaptionMenuItems(info)
    ============================================================ */
+/* getPatternsCaptionMenuItems: the caption menu for a pattern (Help, Show Script, Script history, Edit
+   Manifest, Archive ...). */
 export async function getPatternsCaptionMenuItems(info) {
   if (!info) throw new Error("getPatternsCaptionMenuItems: info missing");
 
@@ -252,6 +258,7 @@ export async function getPatternsCaptionMenuItems(info) {
 /* ============================================================
    buildPatternsOffcanvasHtml()
    ============================================================ */
+/* buildPatternsOffcanvasHtml: the buttons of the Patterns Maintenance panel. */
 function buildPatternsOffcanvasHtml() {
   return `
     <div class="cmdButtonRow">
@@ -276,6 +283,7 @@ function buildPatternsOffcanvasHtml() {
 /* ============================================================
    wirePatternsCommandsButton()
    ============================================================ */
+/* wirePatternsCommandsButton: the Commands button opens the Patterns Maintenance panel. */
 export function wirePatternsCommandsButton() {
 
   setCommandsButtonHandler(() => {

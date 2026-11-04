@@ -139,6 +139,8 @@ function activatePointPicker(points, config = {}) {
     const controller = new AbortController();
     const { signal } = controller;
 
+    /* getCanvasCoords: where a mouse event is, in canvas pixels (allowing for the canvas being shown larger or
+       smaller). */
     function getCanvasCoords(event) {
         const rect = canvas.getBoundingClientRect();
         const scaleX = canvas.width / rect.width;
@@ -156,6 +158,7 @@ function activatePointPicker(points, config = {}) {
         const t = settings.getTransform ? settings.getTransform() : null;
         return applyTransform(t, pt);
     }
+    /* toObject: canvas coordinates as the armed object's own coordinates (back through its layer transform). */
     function toObject(x, y) {
         const t = settings.getTransform ? settings.getTransform() : null;
         return inverseTransform(t, x, y);

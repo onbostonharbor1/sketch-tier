@@ -12,6 +12,7 @@
 ------------------------------------------------------------ */
 import { showPanel } from "/ui/offcanvas.js";
 
+/* showScriptOffcanvas: the side panel showing a script's source text. */
 export function showScriptOffcanvas(scriptPath, titleText) {
 
   if (!scriptPath) throw new Error("showScriptOffcanvas: scriptPath missing");

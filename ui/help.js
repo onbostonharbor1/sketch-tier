@@ -15,6 +15,7 @@ import { buildHelpJsTreeData, initHelpJsTree, onHelpTreeNodeSelected,
 
 export let helpManifest = null;
 
+/* loadHelpManifest: the help tree (help/manifest.json), read once and kept. */
 export async function loadHelpManifest() {
   if (helpManifest !== null) return helpManifest;  // cached
 

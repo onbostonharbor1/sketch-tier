@@ -47,6 +47,7 @@ function setActiveTab(tabKey) {
   });
 }
 
+/* mapTabIdToKey: a tab button's id as the tab's name ("draw-tab" gives "draw"). */
 function mapTabIdToKey(tabId) {
   const map = {
     "home-tab":      "home",
@@ -59,6 +60,7 @@ function mapTabIdToKey(tabId) {
   return map[tabId] || null;
 }
 
+/* applyTheme: sets the page's colour theme for the tab. */
 function applyTheme(tabKey) {
   const wrapper = document.getElementById("wrapper");
   if (!wrapper) throw new Error("applyTheme: #wrapper missing");
@@ -94,6 +96,7 @@ async function restoreTab(tabKey) {
   await spec.restore();
 }
 
+/* initTab: clears the page and starts a tab (restored true after a rebuild). */
 async function initTab(tabKey, restored = false) {
   const spec = TabRegistry[tabKey];
   if (!spec || !spec.init) {
@@ -106,6 +109,7 @@ async function initTab(tabKey, restored = false) {
 /* ============================================================
    activateTab(tabKey)
 =========================================================== */
+/* activateTab: shows a tab by the decision order: needsUpdate, then init; else saved, then restore; else init. */
 async function activateTab(tab) {
   let tabKey = tab;
 
@@ -147,6 +151,7 @@ async function activateTab(tab) {
 let activationChain = Promise.resolve();
 let latestTicket    = 0;
 
+/* setUI: switches tab; a newer click replaces one still waiting, and switches run one at a time. */
 export function setUI(tab) {
   const ticket = ++latestTicket;
 
@@ -174,6 +179,7 @@ async function activateWithReport(tab) {
 } // end activateWithReport
 
 
+/* runSetUI: the work of one tab switch, noting each stage so a failure can say where it stopped. */
 async function runSetUI(tab, progress) {
   progress.stage = "disable overlays";
   disableAllNextPrevOverlays();
@@ -225,6 +231,8 @@ function handleTabChange(eventOrId) {
 }
 /* --------------------------- */
 
+/* onDomContentLoaded: start-up: menus, overlays, canvas layers, the registry check, the tab buttons, then the
+   Home tab. */
 async function onDomContentLoaded() {
   initMenuManager();
   initOverlay();

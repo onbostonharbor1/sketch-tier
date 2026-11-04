@@ -4,6 +4,8 @@ import { drawLine } from '/draw/drawUtilities.js';
 //////////////////////////////////////////////////////////////////
 // drawRabbitPursuitCurve
 //////////////////////////////////////////////////////////////////
+/* drawRabbitPursuitCurve: the fox-and-rabbit pursuit curve: the fox always runs towards where the rabbit is
+   now, and its path is drawn step by step. */
 export function drawRabbitPursuitCurve(thing) {
 	  let rabbitStart = thing.rabbitStart;
 	  let foxStart    = thing.foxStart;

@@ -16,7 +16,8 @@
    The comment used is the block (slash-star ... star-slash) or the run of // lines ending
    on the line just above the function (a blank line in between is allowed).
    Lines made only of = - * characters, and a line repeating the function's
-   own name, are skipped, so the first real sentence is shown.
+   own name, are skipped, so the first real sentence is shown. If there is
+   no comment above, a comment written first inside the function is used.
 
    Run: npm run dictionary
    ============================================================ */
@@ -62,6 +63,24 @@ function commentAbove(lines, i) {
 } // end commentAbove
 
 
+/* commentInside: a comment written as the first thing inside the function
+   (older code puts its description there), or [] if there is none. */
+function commentInside(lines, i) {
+  let j = i + 1;
+  while (j < lines.length && lines[j].trim() === "") j++;
+  if (j >= lines.length) return [];
+  const t = lines[j].trim();
+  if (t.startsWith("/*")) {
+    const out = [];
+    while (j < lines.length) { out.push(lines[j]); if (lines[j].includes("*/")) break; j++; }
+    return out.map((l) => l.replace(/\/\*+|\*+\//g, "").replace(/^\s*\*\s?/, "").trim()).filter((l) => !l.startsWith("@"));
+  }
+  const out = [];
+  while (j < lines.length && lines[j].trim().startsWith("//")) { out.push(lines[j].trim().replace(/^\/\/+\s?/, "")); j++; }
+  return out;
+} // end commentInside
+
+
 /* summaryOf: the first sentence worth reading from a comment. */
 function summaryOf(comment, name) {
   const useful = comment.filter((l) => l !== "" && !/^[=\-*_#\s]+$/.test(l) && !new RegExp("^" + name + "\\s*(\\(|$)").test(l));
@@ -81,8 +100,9 @@ for (const folder of FOLDERS) {
     lines.forEach((line, i) => {
       const m = DECL.exec(line);
       if (!m) return;
-      entries.push({ name: m[1], where: path.relative(ROOT, file).split(path.sep).join("/") + ":" + (i + 1),
-                     summary: summaryOf(commentAbove(lines, i), m[1]) });
+      let summary = summaryOf(commentAbove(lines, i), m[1]);
+      if (summary === "(no comment)") summary = summaryOf(commentInside(lines, i), m[1]);
+      entries.push({ name: m[1], where: path.relative(ROOT, file).split(path.sep).join("/") + ":" + (i + 1), summary });
     });
   }
 }

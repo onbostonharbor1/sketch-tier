@@ -28,6 +28,7 @@ export function isRegistryEntry(obj) {
 } // end isRegistryEntry
 
 
+/* makeDrawInstance: a private copy of a registry object with its own params (see the header). */
 export function makeDrawInstance(entry, params = null) {
   if (!entry) throw new Error("makeDrawInstance: no registry object");
   const inst    = Object.create(entry);

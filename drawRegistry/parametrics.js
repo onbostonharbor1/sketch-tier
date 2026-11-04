@@ -69,6 +69,8 @@ window.drawRegistry_parametrics = {
 
     init() {
         const self = this;
+        /* setVariantAndRedraw: switch the Parametrics curve to another variant (Four Circles, Four Ended ...)
+           and draw it again. */
         function setVariantAndRedraw(newVariant) {
             self.update({ variant: newVariant });
             self.draw();
@@ -130,6 +132,8 @@ window.drawRegistry_parametrics = {
 // Distance in pixels from the centre handle to the size handle at zoom 1.
 const SIZE_ARM = 150;
 
+/* buildCurveFromParams: the settings the parametric drawing code needs, gathered from the object's params
+   (centre, zoom, colour, line width, intersections ...). */
 function buildCurveFromParams(p) {
     const common = {
         centerAt: p.center,

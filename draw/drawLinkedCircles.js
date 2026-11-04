@@ -42,6 +42,7 @@ export function circlePoints(center, radius, numPoints) {
   return pts;
 }
 
+/* buildAllToAllPairs: every pair of circle numbers once, for the all-to-all link style. */
 function buildAllToAllPairs(n) {
   const pairs = [];
 
@@ -54,6 +55,8 @@ function buildAllToAllPairs(n) {
   return pairs;
 } // end buildAllToAllPairs
 
+/* buildCirclePairs: which circles are linked, by link style: pairwise (each to the next), ring (pairwise and
+   the last back to the first) or all to all. */
 function buildCirclePairs(n, mode) {
   if (mode === "allToAll") {
     return buildAllToAllPairs(n);

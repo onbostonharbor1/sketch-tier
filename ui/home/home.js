@@ -75,6 +75,7 @@ export const HomeTabSpec = {
 /* ============================================================
    ensureHomeSavedState()
    ============================================================ */
+/* ensureHomeSavedState: makes sure Home's remembered state exists, starting on Categories. */
 export function ensureHomeSavedState() {
 
   if (!uiState.home)
@@ -95,6 +96,7 @@ export function ensureHomeSavedState() {
 /* ============================================================
    initHomeTab(restored)
    ============================================================ */
+/* initHomeTab: starts the Home tab: subtabs, caption, the alert bar and the Home list. */
 export function initHomeTab(restored = false) {
 
   resetHomeState();
@@ -130,6 +132,7 @@ export function initHomeTab(restored = false) {
 /* ============================================================
    restoreHomeTab()
    ============================================================ */
+/* restoreHomeTab: shows the Home tab again in the view it was left in. */
 function restoreHomeTab() {
 
   clearDivs();
@@ -148,6 +151,7 @@ function restoreHomeTab() {
 /* ============================================================
    saveHomeState()
    ============================================================ */
+/* saveHomeState: Home's remembered state (the view and the item open). */
 export function saveHomeState() {
   ensureHomeSavedState();
   return uiState.home.saved;
@@ -157,6 +161,7 @@ export function saveHomeState() {
 /* ============================================================
    clearHomeLocalState()
    ============================================================ */
+/* clearHomeLocalState: forgets Home's working values (the grouped list and the render count). */
 export function clearHomeLocalState() {
   resetHomeState();
 } // end clearHomeLocalState
@@ -174,12 +179,14 @@ function setHomeText(message) {
   el.appendChild(div);
 } // end setHomeText
 
+/* setHomeAction: empties #action (Home has no controls). */
 function setHomeAction() {
   const el = document.getElementById("action");
   if (!el) throw new Error("setHomeAction: #action not found");
   el.innerHTML = "";
 } // end setHomeAction
 
+/* setHomeSketchpad: empties the canvas area and hides it. */
 function setHomeSketchpad() {
   const el = document.getElementById("sketchpad");
   if (!el) throw new Error("setHomeSketchpad: #sketchpad not found");

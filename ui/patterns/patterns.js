@@ -79,6 +79,7 @@ export const PatternsController = {
 /* ============================================================
    ensurePatternsManifestLoaded()
    ============================================================ */
+/* ensurePatternsManifestLoaded: reads the Patterns lists. */
 export async function ensurePatternsManifestLoaded() {
   await manifest.get("patterns");
 } // end ensurePatternsManifestLoaded
@@ -87,6 +88,7 @@ export async function ensurePatternsManifestLoaded() {
 /* ============================================================
    initPatternsTab(restored)
    ============================================================ */
+/* initPatternsTab: starts the Patterns tab: reads the lists and builds the subtabs and the categories view. */
 export async function initPatternsTab(restored) {
 
   if (!uiState.patterns) uiState.patterns = {};
@@ -130,6 +132,7 @@ export async function initPatternsTab(restored) {
 /* ============================================================
    restorePatternsTab()
    ============================================================ */
+/* restorePatternsTab: shows the Patterns tab again as it was left. */
 export async function restorePatternsTab() {
 
   const saved = uiState.patterns?.saved;
@@ -172,6 +175,7 @@ export async function restorePatternsTab() {
 /* ============================================================
    savePatternsState()
    ============================================================ */
+/* savePatternsState: the Patterns tab's remembered state (view, category, item). */
 export function savePatternsState() {
 
   if (!uiState.patterns || !uiState.patterns.saved) {
@@ -194,6 +198,7 @@ export function savePatternsState() {
 /* ============================================================
    rehydratePatternsState()
    ============================================================ */
+/* rehydratePatternsState: brings back the Patterns state kept in the browser session, if any. */
 export function rehydratePatternsState() {
 
   const saved = sessionStorage.getItem("sketchpad.patterns.saved");

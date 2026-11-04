@@ -114,6 +114,8 @@ export const DrawController = {
 /* ============================================================
    initDrawTab(restored)
    ============================================================ */
+/* initDrawTab: starts the Draw tab (fresh, or restored after a rebuild): finds saved settings, builds the
+   subtabs and shows the categories or the open object. */
 export function initDrawTab(restored = false) {
 
   if (!uiState.draw.tabs) uiState.draw.tabs = {};
@@ -160,6 +162,7 @@ export function initDrawTab(restored = false) {
 /* ============================================================
    restoreDrawTab()
    ============================================================ */
+/* restoreDrawTab: shows the Draw tab again as it was left, handling a launch from Home if one is waiting. */
 function restoreDrawTab() {
 
   disarmInteractor();
@@ -192,6 +195,7 @@ function restoreDrawTab() {
 /* ============================================================
    saveDrawState()
    ============================================================ */
+/* saveDrawState: keeps each open Draw subtab's object key and settings, so the tab can be restored. */
 export function saveDrawState() {
 
   const shallowTabs = {};
@@ -234,6 +238,8 @@ export function saveDrawState() {
 /* ============================================================
    consumeLaunchIfForDraw()
    ============================================================ */
+/* consumeLaunchIfForDraw: the waiting launch request (from Home or Figures) if it is for the Draw tab, cleared
+   once read; null otherwise. */
 function consumeLaunchIfForDraw() {
 
   if (!uiState.launch)         throw new Error("consumeLaunchIfForDraw: uiState.launch missing");
@@ -255,6 +261,7 @@ function consumeLaunchIfForDraw() {
 /* ============================================================
    clearLaunch()
    ============================================================ */
+/* clearLaunch: empties the launch request. */
 function clearLaunch() {
 
   uiState.launch.pending     = false;
