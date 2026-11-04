@@ -136,3 +136,44 @@ Each step is a phase on its own branch, reviewed and merged by Barry, in this or
   work, not a bolt-on.
 - **A24 needs Windows testing on Barry's PC:** Node's file watching misbehaves on Windows and in OneDrive-synced
   folders.
+
+## 5. Status on 4 November 2026 (branch `claude/tier-a`)
+
+Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and whose fix isn't simple, and say so.
+
+**Built 4 Nov:**
+
+| Item | What | Commit |
+|---|---|---|
+| (new) | Runs in a GitHub Codespace (from the iPad): the page reaches the Node service through Vite (`/dispatch`, `vite.config.js`), `.devcontainer/` | 5b66767 (also on `claude/codespaces`) |
+| (new) | Home > Checklist: things to check, with checkboxes, Show all, Purge ticked, Add item (`home/checklist.md`) | 26516f5 |
+| A25 | Home > Errors: Show all and Purge ticked | 26516f5 |
+| A19, A20, A21, A23 | Inches for print size and nail size (switchable to mm); clearance 3/16 in for new figures; one-sheet true-size SVG with the nail colour cycle; spacing never blocks printing (already so) | de9b798 |
+| A8 | Clipping shapers: `inside`, `outside`, `isInside` | (clipping commit) |
+| A34 | Sweep over two settings (grid), typed value lists | (sweep commit) |
+| A35 | Regression report: overlay, flicker, difference; `tests/regression/tolerance.json` | (regression commit) |
+| A36 | Function dictionary: `npm run dictionary` writes `docs/FUNCTIONS.md` (742 functions, 322 without a comment) | (dictionary commit) |
+| A6 | Intersections have their own mark in points mode (purple ring with a cross) | 41ad0c1 |
+| A32, A33 | Controls by name alone (conventions table) and control groups (`style`) | ec06239 |
+| A15 | Choosing a layer draws it on top without changing the saved order; Keep this layer on top | 7197a32 |
+
+**Deferred: each can go wrong, and the fix isn't simple.**
+
+| Item | Why deferred | What it needs |
+|---|---|---|
+| A24 library index, A26 Workbench | Changes how every tab gets its lists; Node's file watching misbehaves on Windows and in OneDrive folders; manifests must be migrated | Your go, and testing on the PC |
+| A12 undo, A18 crash recovery | Every place that changes a figure must go through a few known functions first; a missed one makes undo lie | A phase of its own: first list every such place |
+| A11 welds as groups, A13 visualization pass | Rewrites working weld code and the marks drawn over figures | Your decision: one stored value, or kept-equal copies |
+| A30 one commands table | Touches every tab's menu file | Its own phase, with the tab tests before and after |
+| A4 curve library, A5 shape palette | New registry objects, and registry names are permanent API | Your list of curves and shapes, and their names |
+| A7 simplified-curve overlay | Unclear which curves and where it shows | Your spec |
+| A16 templates (beyond guide layers), A22 draggable alignment marks | Not yet specified | Your spec (what a template holds; what a mark looks like) |
+| A27 core / keeper / test tag | The tagging is yours | Your list |
+| A29 clickable badges | Belongs with the library index (A24) | After A24 |
+| A31 settings page | Which values come first | Your list |
+| A3 stepping in Figures and scripts | Built for Draw; Figures needs its own controls | A small phase |
+| Comment standard | 322 functions have no comment above them (`docs/FUNCTIONS.md`) | Your go for a comments-only sweep |
+
+**Not applicable in V1.** A28 duplicate ids: registry keys can't be duplicated in V1's hand-kept list.
+
+**Waiting for Barry's spec.** A Home subtab that views the HTML notes and information in the help area.

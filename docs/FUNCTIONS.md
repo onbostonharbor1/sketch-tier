@@ -2,7 +2,7 @@
 
 Made by `npm run dictionary` from the comments above each function (tests/functionDictionary.mjs). Do not edit by hand: change the comment, then run it again.
 
-742 functions in ui, draw, classes, drawRegistry, node; 322 without a comment above them.
+745 functions in ui, draw, classes, drawRegistry, node; 323 without a comment above them.
 
 | Function | Where | What it does |
 |---|---|---|
@@ -71,7 +71,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `buildControlsIfPresent` | ui/scriptRunner.js:238 | Builds parameter controls ONLY if scriptInfo exists AND caller requests controls. |
 | `buildCurveFromParams` | drawRegistry/parametrics.js:133 | (no comment) |
 | `buildDrawMenuItems` | ui/draw/drawMenuCmds.js:201 | Legacy descriptor format used by older callers. |
-| `buildDrawParameterData` | ui/controls/builders/dataBuilder.js:8 | (no comment) |
+| `buildDrawParameterData` | ui/controls/builders/dataBuilder.js:9 | (no comment) |
 | `buildEditManifestHtml` | ui/editManifestDialog.js:94 | buildEditManifestHtml - TABLE LAYOUT (REFINED) |
 | `buildFigureScript` | node/createFigureService.mjs:166 | Generates the ES module source for a figure file. |
 | `buildFullHelpHtmlDocument` | ui/helpEditor.js:29 | Builds a complete HTML document for saving. |
@@ -85,8 +85,8 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `buildHomeOffcanvasHtml` | ui/home/homeMenuCmds.js:179 | (no comment) |
 | `buildParameterControls` | ui/controls/controlsCore.js:59 | UNIVERSAL ENTRY POINT (ROUTER) This function determines which environment is active (Draw tab, Scripts tab, etc.) and delegates to the |
 | `buildPatternsOffcanvasHtml` | ui/patterns/patternsMenuCmds.js:255 | (no comment) |
-| `buildScriptParameterData` | ui/controls/builders/dataBuilder.js:92 | SCRIPTS TAB DATA BUILDER ENVIRONMENT: Scripts / Tools tab only. |
-| `buildSingleControl` | ui/controls/rendering/renderer.js:159 | - Add a new case: "radio" |
+| `buildScriptParameterData` | ui/controls/builders/dataBuilder.js:93 | SCRIPTS TAB DATA BUILDER ENVIRONMENT: Scripts / Tools tab only. |
+| `buildSingleControl` | ui/controls/rendering/renderer.js:160 | - Add a new case: "radio" |
 | `buildSubtabBar` | ui/resultsViewController.js:64 | Builds the subtab bar inside #subtabs from the adapter's tab definitions. |
 | `buildSubtabButton` | ui/gallery/galleryNav.js:105 | (no comment) |
 | `buildSubtabButton` | ui/resultsViewController.js:127 | Creates a single <li><button> subtab element. |
@@ -158,13 +158,13 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `createPngFromActiveDrawObject` | ui/draw/drawMenuCmds.js:343 | (no comment) |
 | `createPrintNodes` | draw/drawUtilities.js:67 | CREATE PRINT NODES |
 | `crossHair` | draw/drawUnicorns.js:8 | (no comment) |
-| `crossing` | ui/figures/figureMagic.js:66 | Where segments p1-p2 and p3-p4 cross, as { u, v } (fractions along each), or null. |
-| `crossings` | ui/figures/figureMagic.js:113 | Every crossing of one arm of the layer with the arms of every visible layer, named by the other arm and counted along this arm. |
-| `curveFeatures` | ui/figures/figureMagic.js:77 | Tips and cusps of one list arm, in order along it. |
+| `crossing` | ui/figures/figureMagic.js:71 | Where segments p1-p2 and p3-p4 cross, as { u, v } (fractions along each), or null. |
+| `crossings` | ui/figures/figureMagic.js:118 | Every crossing of one arm of the layer with the arms of every visible layer, named by the other arm and counted along this arm. |
+| `curveFeatures` | ui/figures/figureMagic.js:82 | Tips and cusps of one list arm, in order along it. |
 | `deactivateCentroid` | ui/figures/figureCentroid.js:365 | Removes all four listeners with one abort. |
 | `deactivatePointsInput` | ui/figures/figurePointer.js:340 | Removes every points-mode listener (one abort) and hides the interaction layer. |
 | `deflectPoint` | draw/drawUtilities.js:585 | (no comment) |
-| `deleteLayer` | ui/figures/figureLayers.js:340 | Deletes the active layer. |
+| `deleteLayer` | ui/figures/figureLayers.js:356 | Deletes the active layer. |
 | `deletePoint` | ui/figures/figurePoints.js:345 | Removes the point. |
 | `deleteTab` | ui/draw/drawNav.js:173 | (no comment) |
 | `deriveHomeOriginFromPath` | ui/home/homeResults.js:182 | (no comment) |
@@ -198,7 +198,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `drawLinesWithin` | draw/drawUtilities.js:335 | PURPOSE - Draw many straight line segments between points in an array. |
 | `drawLinkedCircles` | draw/drawLinkedCircles.js:77 | (no comment) |
 | `drawLogarithmicSpiral` | draw/drawSpirals.js:103 |  drawLogarithmicSpiral    r is the radius from the origin. |
-| `drawMagicMarks` | ui/figures/figureMagic.js:196 | In points mode, a small open diamond on every magic point of the active layer, so it is visible where a click will land on one. |
+| `drawMagicMarks` | ui/figures/figureMagic.js:201 | In points mode, a small open diamond on every magic point of the active layer, so it is visible where a click will land on one. |
 | `drawManyLines` | draw/drawUtilities.js:200 | PURPOSE Draw a set of straight-line connections between points in an array, using a configurable skip pattern. |
 | `drawManyParabs` | draw/drawRegular.js:118 | (no comment) |
 | `drawManyParabs` | draw/drawUtilities.js:100 | (no comment) |
@@ -252,15 +252,16 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `everyNth` | draw/shapers.js:93 | every nth point, beginning at index `start`. |
 | `executeScriptToCanvas` | ui/scriptRunner.js:283 | Execute a module into the shared canvas. |
 | `executeScriptToText` | ui/scriptRunner.js:354 | Executes a script module and displays its output as text in the DOM. |
+| `expandSchema` | ui/controls/builders/conventions.js:61 | a new schema object (the one given is not changed). |
 | `extendWithArms` | draw/drawEllipse.js:90 | (no comment) |
 | `extractBodyInnerHtml` | ui/helpTree.js:25 | Returns the HTML found BETWEEN <body> ... |
 | `extractHeaderNotes` | ui/notes.js:19 | (no comment) |
 | `fetchJson` | ui/thumbnailMaker.js:120 | (no comment) |
 | `figureThumb` | ui/thumbnailSettings.js:112 | (no comment) |
 | `fillPanel` | ui/scriptHistory.js:79 | (no comment) |
-| `filterControlsByActiveGroups` | ui/controls/builders/groupFilter.js:36 | GROUP VISIBILITY FILTER ENVIRONMENT: Used by both buildDrawParameterData and buildScriptParameterData |
+| `filterControlsByActiveGroups` | ui/controls/builders/groupFilter.js:38 | (no comment) |
 | `findCandidate` | ui/figures/figurePoints.js:170 | The infrastructure point nearest to (x, y) within radius, or null. |
-| `findFeature` | ui/figures/figureMagic.js:184 | Where the named feature is now on that arm, as t, or null if the object no longer has it (the other layer moved away, say). |
+| `findFeature` | ui/figures/figureMagic.js:189 | Where the named feature is now on that arm, as t, or null if the object no longer has it (the other layer moved away, say). |
 | `findHandleIndex` | ui/figures/figureWeldMove.js:100 | Matching by position (to a millionth of a pixel) rather than by name works for every object without a table of field names: an arm's a and b are the object's... |
 | `findHistory` | node/scriptHistoryRequests.mjs:71 | The history folder and entries for one file, or null when VS Code has none. |
 | `findMissingThumbnails` | ui/thumbnailMaker.js:171 | Asks for each picture file. |
@@ -334,7 +335,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `initPatternsTab` | ui/patterns/patterns.js:90 | (no comment) |
 | `initTab` | ui/setUI.js:97 | (no comment) |
 | `initUtilityTab` | ui/utilities/utilities.js:86 | (no comment) |
-| `insertLayer` | ui/figures/figureLayers.js:136 | Appends a new layer at the top of the stack with the object's default parameters, makes it active, and redraws. |
+| `insertLayer` | ui/figures/figureLayers.js:137 | Appends a new layer at the top of the stack with the object's default parameters, makes it active, and redraws. |
 | `insertTemplate` | ui/figures/figureTemplates.js:190 | choice is a value from TEMPLATE_CHOICES. |
 | `inside` | draw/shapers.js:230 | only the points inside the shape (nails within a boundary, or a pattern trimmed to a frame). |
 | `inverseStarParabolas` | draw/drawRegular.js:304 | The parabolas drawInverseStar draws, as data instead of pixels (Break apart, v1-finish item 7), in the same shape as regularPolygonParabolas(). |
@@ -349,6 +350,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `isSavedFigure` | ui/figures/figuresSave.js:258 | True when this figure has been saved or opened from a file, so a file for it exists (until Archive moves it away). |
 | `isSkippableDir` | node/generateHelpManifest.mjs:55 | (no comment) |
 | `isTemplate` | ui/figures/figureTemplates.js:160 | (no comment) |
+| `keepLayerOnTop` | ui/figures/figureLayers.js:334 | Moves the active layer to the front of drawOrder, so it stays on top after another layer is chosen and in the saved figure. |
 | `launchDetached` | node/logAndEditorRequests.mjs:207 | Starts a command detached from this service. |
 | `launchTabViaSetUI` | ui/home/homeNav.js:301 | (no comment) |
 | `layerTransform` | ui/figures/figurePoints.js:153 | The transform of layer number i of the figure, or null. |
@@ -358,7 +360,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `listFilesByExt` | node/maintain_manifests.mjs:399 | Lists files in a directory that match a specific extension, with exclusion support. |
 | `listIdeabookScripts` | node/scriptHistoryRequests.mjs:141 | TASK: listIdeabookScripts The hint scripts of one Ideabook category: the .js files in gallery/Ideabook/<category>/scripts/. |
 | `listImageFiles` | node/maintain_manifests.mjs:407 | Lists image files in a directory based on standard web extensions. |
-| `listInsertableObjects` | ui/figures/figureLayers.js:105 | Registry objects for the Insert pulldown: [{ key, name }], sorted by name. |
+| `listInsertableObjects` | ui/figures/figureLayers.js:106 | Registry objects for the Insert pulldown: [{ key, name }], sorted by name. |
 | `listLogFiles` | node/logAndEditorRequests.mjs:36 | TASK: listLogFiles DESCRIPTION Returns newest N log files from ./utilities/logfiles. |
 | `listScriptHistory` | node/scriptHistoryRequests.mjs:100 | TASK: listScriptHistory Payload:  { path: "/patterns/circles/circle.js" } Returns:  { request, status: "ok", root, found, versions: [ { id, timestamp, iso, s... |
 | `listSecondaries` | ui/draw/secondaryObjects.js:54 | Returns the manifest array for a given primary ID. |
@@ -375,7 +377,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `loadSecondary` | ui/draw/secondaryObjects.js:79 | Fetches the JSON content of a secondary object. |
 | `loadSecondaryObjectInTab` | ui/draw/drawNav.js:365 | (no comment) |
 | `loadThumbnailSettings` | ui/thumbnailSettings.js:45 | Called once when this file loads (below). |
-| `magicCandidates` | ui/figures/figureMagic.js:153 | Every magic point on the layer's infrastructure, as candidates { layer, arm, t, x, y, feature }. |
+| `magicCandidates` | ui/figures/figureMagic.js:158 | Every magic point on the layer's infrastructure, as candidates { layer, arm, t, x, y, feature }. |
 | `main` | node/check_ports.mjs:20 | (no comment) |
 | `makeArchiveItem` | ui/menuCmds.js:154 | Returns an Archive menu item. |
 | `makeDrawInstance` | ui/draw/drawInstance.js:31 | (no comment) |
@@ -423,7 +425,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `normalizeScriptInfo` | ui/scriptRunner.js:169 | Ensure scriptInfo vocabulary consistency: - scriptInfo.parameters <-> scriptInfo.params |
 | `noteBounds` | draw/drawTransform.js:182 | caller has asked for bounds by setting drawState.bounds. |
 | `numbersToPoints` | draw/drawUtilities.js:677 | PURPOSE - Normalize mixed “index-or-point” inputs into actual Point objects. |
-| `offsetParams` | ui/figures/figureLayers.js:279 | Shifts whatever positions a registry object keeps: its points, midpoint, center or start. |
+| `offsetParams` | ui/figures/figureLayers.js:280 | Shifts whatever positions a registry object keeps: its points, midpoint, center or start. |
 | `onDomContentLoaded` | ui/setUI.js:228 | (no comment) |
 | `onEscape` | ui/offcanvas.js:87 | (no comment) |
 | `oneSheetSVG` | ui/figures/figurePrint.js:274 | (no comment) |
@@ -459,7 +461,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `pointByN` | ui/figures/figureWeldModel.js:36 | (no comment) |
 | `pointPickerDotId` | ui/controls/shared/helpers.js:9 | Generate a unique dot ID for point picker overlays |
 | `polyline` | draw/connectors.js:140 | each point joined to the next. |
-| `polyline` | ui/figures/figureMagic.js:54 | The arm as a list of canvas points, each with its t along the arm. |
+| `polyline` | ui/figures/figureMagic.js:59 | The arm as a list of canvas points, each with its t along the arm. |
 | `positionMenu` | ui/menuManager.js:60 | (no comment) |
 | `prepareCategoryFolder` | node/writerRequests.mjs:22 | Finds <rootDir>/<category>, makes its images/ folder if it is missing, and checks its manifest.json exists. |
 | `prepareSharedCanvas` | ui/thumbnailMaker.js:255 | Puts the shared canvas in #sketchpad on a white page, as running a script does. |
@@ -488,7 +490,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `readSecondaryObject` | node/secondaryRequests.mjs:225 | TASK: readSecondaryObject |
 | `rebuildAllManifests` | ui/rebuildSync.js:44 | The complete rebuild (Barry's rule): after anything changes a manifest -- Edit Manifest, Archive, saving a figure, Create Pattern, Create Gallery PNG -- the ... |
 | `rebuildControls` | ui/controls/rendering/rebuild.js:33 | CONTROL PANEL REBUILD TRIGGER PURPOSE: Provides a self-contained rebuild mechanism for dynamic |
-| `rebuildInstances` | ui/figures/figureLayers.js:244 | For a figure that was read from a file (Phase 10): makes one live object per saved layer, in the same order, the way insertLayer() makes one. |
+| `rebuildInstances` | ui/figures/figureLayers.js:245 | For a figure that was read from a file (Phase 10): makes one live object per saved layer, in the same order, the way insertLayer() makes one. |
 | `redrawFigure` | ui/figures/figureDraw.js:64 | Clears the canvas and draws every visible layer, bottom to top. |
 | `reflowNotes` | ui/notes.js:72 | Header notes are hard-wrapped for the editor. |
 | `refreshGalleryFromManifestEdit` | ui/gallery/galleryMenuCmds.js:254 | (no comment) |
@@ -515,7 +517,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `renderHomeNotes` | ui/home/homeNotes.js:21 | the two buttons and the file's text as it stands. |
 | `renderHomeResults` | ui/home/homeResults.js:38 | (no comment) |
 | `renderLayerPanel` | ui/figures/figureLayerPanel.js:44 | Layer numbers go in the gray strip left of the canvas (#figure-sidebar); a hidden layer's number is grayed and struck through. |
-| `renderParameterControls` | ui/controls/rendering/renderer.js:20 | (no comment) |
+| `renderParameterControls` | ui/controls/rendering/renderer.js:21 | (no comment) |
 | `renderPattern` | draw/drawEllipse.js:19 | INTERNAL EXECUTION ENGINE Consolidated logic for drawing patterns within a set of nodes. |
 | `renderPatternThumbGrid` | ui/patterns/patternsDisplay.js:35 | (no comment) |
 | `renderScaffoldGuides` | ui/draw/drawRunner.js:87 | Renders the dashed scaffolding for the active drawing's primary arm. |
@@ -572,10 +574,11 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `saveSecondaryObject` | node/secondaryRequests.mjs:24 | TASK: saveSecondaryObject Saves one set of Draw settings (a secondary object) as JSON plus a thumbnail under drawRegistry/<primaryId>/, and adds it to that |
 | `saveThumbnailSettings` | ui/thumbnailSettings.js:59 | (no comment) |
 | `saveUtilityState` | ui/utilities/utilities.js:191 | (no comment) |
+| `saysNothing` | ui/controls/builders/conventions.js:53 | true when a control gives no widget of its own, so the table may fill it. |
 | `scaled` | draw/shapers.js:127 | every point moved toward or away from centre c by factor k. |
 | `scanDir` | node/generateHelpManifest.mjs:63 | (no comment) |
 | `scriptFile` | node/scriptHistoryRequests.mjs:51 | An app path ("/patterns/circles/circle.js") as a file in the repo. |
-| `selectLayer` | ui/figures/figureLayers.js:306 | Makes a layer active (a click on its number in the strip). |
+| `selectLayer` | ui/figures/figureLayers.js:307 | Makes a layer active (a click on its number in the strip). |
 | `sendCorsPreflight` | node/sketchpadServer.mjs:307 | DESCRIPTION Responds to browser CORS preflight for POST /dispatch. |
 | `sendJson` | node/sketchpadServer.mjs:284 | DESCRIPTION Writes a JSON response with the given HTTP status and includes dev CORS headers for localhost UI access. |
 | `sendSave` | ui/figures/figuresSave.js:101 | One round trip. |
@@ -623,7 +626,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `setHomeText` | ui/home/home.js:168 | Region builder stubs |
 | `setIdsWithSecondaries` | ui/draw/drawTabState.js:43 | Setter |
 | `setInstrumenting` | ui/instrument.js:63 | (no comment) |
-| `setLayerVisible` | ui/figures/figureLayers.js:376 | The Show checkbox in the caption bar. |
+| `setLayerVisible` | ui/figures/figureLayers.js:392 | The Show checkbox in the caption bar. |
 | `setNailSize` | ui/figures/figurePrint.js:220 | (no comment) |
 | `setNumberControl` | ui/controls/widgets/numberWidget.js:22 | (no comment) |
 | `setPatternsSubtabs` | ui/patterns/patternsNav.js:43 | (no comment) |
@@ -734,7 +737,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `wireFiguresCommandsButton` | ui/figures/figuresCommands.js:65 | The Commands button at the top left opens a slide-in panel ("offcanvas", a Bootstrap term) with two buttons: Rebuild & Validate  asks the Node service to reb... |
 | `wireGalleryCommandsButton` | ui/gallery/galleryMenuCmds.js:327 | (no comment) |
 | `wireHomeCommandsButton` | ui/home/homeMenuCmds.js:200 | (no comment) |
-| `wireInstance` | ui/figures/figureLayers.js:205 | Attaches the callbacks that interactor.js and the weld code use to one layer's live object. |
+| `wireInstance` | ui/figures/figureLayers.js:206 | Attaches the callbacks that interactor.js and the weld code use to one layer's live object. |
 | `wirePatternsCommandsButton` | ui/patterns/patternsMenuCmds.js:279 | (no comment) |
 | `wireUtilitiesCommandsButton` | ui/utilities/utilities.js:282 | (no comment) |
 | `writeChecklist` | node/homeListRequests.mjs:23 | (no comment) |

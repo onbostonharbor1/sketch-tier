@@ -40,3 +40,40 @@ tell me what the terminal shows.
 
 **C2. The PC after the Codespaces change.** Start as usual. Save a figure, Utilities > Show Logs, Regenerate
 thumbnails: all still work. Failure: "did not answer" messages while the Node service window is running.
+
+**T6. Inches and one-sheet SVG** (de9b798). Figures: a figure with discs. Caption menu: **Print size...** asks in inches
+(type 8). **Nail size...** asks in inches; a new figure shows clearance 0.187 (3/16). **Print units: inches (switch)**
+changes the questions to millimetres. **Save template as one SVG...**: answer OK for colours. A file downloads; open it
+in a browser or Inkscape: nails in red, green, orange, blue, yellow in turn, and a 100 mm line at the top. Print it at
+actual size and measure the line. Cancel instead gives black nails. **Print template...** still gives sheets. Failure:
+wrong size; the line isn't 100 mm.
+
+**T7. Sweep over two settings.** Draw > Cycloid > Sweep a setting... Choose a second setting with 2 pictures: a grid,
+first setting across and second down, each labelled with both values. Click one: both sliders take its values. Type
+"3, 5, 8" in a list box: those values are used instead of From and To.
+
+**T8. Regression report views.** After any intended drawing change, `npm run test:regression`, then open
+`tests/regression/report.html` (through Vite: http://localhost:5173/tests/regression/report.html). Each change shows
+approved, now, an overlay (blue approved, red now, black where they agree), a flicker picture (click to start and stop)
+and a difference picture (changed pixels in red). An item that legitimately varies a little can get its own allowance
+in `tests/regression/tolerance.json`.
+
+**T9. Function dictionary.** `npm run dictionary`, then open `docs/FUNCTIONS.md`: every function alphabetically, with
+file:line and a line about it. "(no comment)" marks the 322 functions still owed a block comment.
+
+**T10. Controls by name alone.** `npm run test:controls`: 6 pass. Read `ui/controls/builders/conventions.js`. In a
+script, `controls: { lineWidth: true, style: "group" }` gives a line-width slider and colour, line width and
+transparency, with no further definition. Nothing existing changed (the regression test passes).
+
+**T11. Intersections mark.** Figures: two crossing lines, Points Mode. The crossing is a purple ring with a cross;
+middles are still open black diamonds. Clicking either still places a disc there.
+
+**T12. Layer order.** Figures with three layers: click layer 1; it's drawn on top. Click layer 2; layer 2 is drawn on top
+and layer 1 drops back to where it was. Choose layer 1, caption menu **Keep this layer on top**, then click layer 2:
+layer 1 stays above the others below layer 2. Save and reopen: the kept order is saved; clicks never changed the file.
+
+**T13. Clipping shapers.** `npm run test:shapers`: 22 pass. `inside(points, shape)` keeps the points inside a closed
+shape, and `outside` those outside, for nails within a boundary or a hole in a pattern.
+
+**T14. The deferred list.** `docs/TIERS.md` section 5 lists what wasn't built and what each item needs from you.
+

@@ -106,6 +106,11 @@ path), say so and let him decide.
 - `npm run test:history` tests Script history (VS Code's saved versions of a script; `ui/scriptHistory.js`).
 - `npm run test:shapers` tests `draw/shapers.js` (point-array operations) and `draw/connectors.js` (ways of stitching) in Node.
   Both are pure: arrays in, arrays or [a, b] pairs out, no drawing; draw pairs with `drawPairs` (`draw/drawUtilities.js`).
+- `npm run test:controls` tests controls declared by name alone (`ui/controls/builders/conventions.js`).
+- `npm run dictionary` writes `docs/FUNCTIONS.md`, the alphabetical function dictionary, from the comments; run it
+  after adding or renaming functions.
+- Home > Checklist shows `home/checklist.md` (things for Barry to check). Add a line there for every hand check a phase
+  needs, with its details in that phase's `docs/CHECKLIST_*.md`.
 - `npm run test:ideabook` tests the Ideabook Run script button and runs every hint script.
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);
