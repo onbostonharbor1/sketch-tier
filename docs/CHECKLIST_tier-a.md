@@ -59,7 +59,7 @@ and a difference picture (changed pixels in red). An item that legitimately vari
 in `tests/regression/tolerance.json`.
 
 **T9. Function dictionary.** `npm run dictionary`, then open `docs/FUNCTIONS.md`: every function alphabetically, with
-file:line and a line about it. "(no comment)" marks the 322 functions still owed a block comment.
+file:line and a line about it. "(no comment)" marks the functions still owed a block comment.
 
 **T10. Controls by name alone.** `npm run test:controls`: 6 pass. Read `ui/controls/builders/conventions.js`. In a
 script, `controls: { lineWidth: true, style: "group" }` gives a line-width slider and colour, line width and

@@ -149,10 +149,10 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 | (new) | Home > Checklist: things to check, with checkboxes, Show all, Purge ticked, Add item (`home/checklist.md`) | 26516f5 |
 | A25 | Home > Errors: Show all and Purge ticked | 26516f5 |
 | A19, A20, A21, A23 | Inches for print size and nail size (switchable to mm); clearance 3/16 in for new figures; one-sheet true-size SVG with the nail colour cycle; spacing never blocks printing (already so) | de9b798 |
-| A8 | Clipping shapers: `inside`, `outside`, `isInside` | (clipping commit) |
-| A34 | Sweep over two settings (grid), typed value lists | (sweep commit) |
-| A35 | Regression report: overlay, flicker, difference; `tests/regression/tolerance.json` | (regression commit) |
-| A36 | Function dictionary: `npm run dictionary` writes `docs/FUNCTIONS.md` (742 functions, 322 without a comment) | (dictionary commit) |
+| A8 | Clipping shapers: `inside`, `outside`, `isInside` | a104c2e |
+| A34 | Sweep over two settings (grid), typed value lists | a5be4d8 |
+| A35 | Regression report: overlay, flicker, difference; `tests/regression/tolerance.json` | fba0b39 |
+| A36 | Function dictionary: `npm run dictionary` writes `docs/FUNCTIONS.md` (745 functions, 323 without a comment) | d86f215 |
 | A6 | Intersections have their own mark in points mode (purple ring with a cross) | 41ad0c1 |
 | A32, A33 | Controls by name alone (conventions table) and control groups (`style`) | ec06239 |
 | A15 | Choosing a layer draws it on top without changing the saved order; Keep this layer on top | 7197a32 |
@@ -172,7 +172,7 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 | A29 clickable badges | Belongs with the library index (A24) | After A24 |
 | A31 settings page | Which values come first | Your list |
 | A3 stepping in Figures and scripts | Built for Draw; Figures needs its own controls | A small phase |
-| Comment standard | 322 functions have no comment above them (`docs/FUNCTIONS.md`) | Your go for a comments-only sweep |
+| Comment standard | 323 functions have no comment above them (`docs/FUNCTIONS.md`) | Your go for a comments-only sweep |
 
 **Not applicable in V1.** A28 duplicate ids: registry keys can't be duplicated in V1's hand-kept list.
 
