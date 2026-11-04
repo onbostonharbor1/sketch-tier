@@ -192,3 +192,14 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 - **A27 tags:** explained to Barry; waiting for his answer.
 - **Comment sweep:** explained to Barry; waiting for his answer.
 
+## 7. Done 4 November (later)
+
+- **A24 library index:** built (0eb4a8e, d47f9a0). Lists and the Home list come from the folders; manifest.json files are
+  notes only; no start-up rebuild. Needs no file watcher (a reload shows new files). Barry: none of Sketchpad is on
+  OneDrive.
+- **A26 Workbench:** Home > Categories, now fed from the folders, is the workbench (items by status). Renaming it is cosmetic.
+- **Home > Help** (Barry's spec): Design, Reflections, Build Documents; New reflection and Edit (d62487e).
+- **Comment sweep:** done (1e9a6be).
+- **Still before the next tier:** A12 undo, A18 crash recovery, A3 stepping in Figures.
+- **Waiting for Barry's go:** A4 curve library and A5 shape palette (naming rule settled); A27 tags (explained).
+

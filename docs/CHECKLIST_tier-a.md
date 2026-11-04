@@ -77,3 +77,23 @@ shape, and `outside` those outside, for nails within a boundary or a hole in a p
 
 **T14. The deferred list.** `docs/TIERS.md` section 5 lists what wasn't built and what each item needs from you.
 
+## 4 November, later
+
+**H. Home > Help** (d62487e). Home > **Help**: contents tree left, page right. Three groups with counts. **Design** is the
+Help browser's Overview, by subfolder. **Reflections** are your own topics, by title: **New reflection...** asks for a
+title, creates `help/Reflections/<title>.html` and opens the help editor (the one the Help browser uses); **Edit**
+edits a chosen reflection (greyed for the other groups). **Build Documents** are the docs/ documents A to Z: Markdown
+converted to HTML, PDFs shown in a frame (not copied: they stay in docs/). After a docs/ change run
+`npm run help:builddocs`. The Help browser shows the two new folders too. Failure: a group empty while the Node
+service is running; an unformatted Markdown page; a reflection not listed after it was made.
+
+**L. Lists from the folders** (0eb4a8e, d47f9a0). Every list (Patterns, Gallery, Utilities, Figures, Draw saved settings)
+and the Home list come from the files in the folders (`node/libraryIndex.mjs`). manifest.json files are now only notes:
+titles, statuses, order. Checks: the lists look as before (they were compared item by item and are identical); a new
+file appears on reload without a manifest edit; a removed file leaves without breaking anything; Edit Manifest, Save
+figure and Archive still work; `sketchpad.bat` no longer runs the manifest maintenance at start-up (Rebuild & Validate
+still does). Failure: a category or item missing; a status not shown on Home. Undo: `git revert d47f9a0 0eb4a8e`.
+
+**K. Comments** (1e9a6be). A comment above every function (299 added, comments only). `npm run dictionary` lists them in
+`docs/FUNCTIONS.md`. Read a few files you know and tell me any comment that is wrong or unclear.
+
