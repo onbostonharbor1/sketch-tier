@@ -2411,6 +2411,19 @@ if (!sweep.keys.includes("complexity") || sweep.values.length !== 9 || sweep.val
     || JSON.stringify(sweep.stepped) !== "[64,112,160,204,252,300]") {
   problems.push("[sweep] " + JSON.stringify(sweep));
 }
+// Tier A: Sweep over two settings, a 2 x 2 grid, and typed lists.
+const sweep2 = await page.evaluate(async () => {
+  const m = await import("/ui/draw/drawSweep.js");
+  const info = uiState.draw.tabs[uiState.draw.activeSubtab];
+  const keys = m.sweepableSettings(info).map((x) => x.key);
+  const rows = m.sweepGrid(info, keys[0], [m.sweepableSettings(info)[0].min, m.sweepableSettings(info)[0].max],
+                           keys[1], [m.sweepableSettings(info)[1].min, m.sweepableSettings(info)[1].max], 40);
+  return { rows: rows.length, cols: rows[0].length, distinct: new Set(rows.flat().map((p) => p.src)).size,
+           list: m.parseValueList("3, 5 8,,x 13"), empty: m.parseValueList("  ") };
+});
+if (sweep2.rows !== 2 || sweep2.cols !== 2 || sweep2.distinct < 3 || JSON.stringify(sweep2.list) !== "[3,5,8,13]" || sweep2.empty.length !== 0) {
+  problems.push("[sweep two settings] " + JSON.stringify(sweep2));
+}
 // The panel: Sweep, then click the third picture.
 await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click();
 await page.waitForTimeout(400);
@@ -2519,4 +2532,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, sweep over two settings, no errors");
