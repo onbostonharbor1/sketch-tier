@@ -120,7 +120,7 @@ check("foreign Host is refused",    (await call("listLogFiles", {}, { Host: "evi
 
 /* ---- 3. every request name, empty payload: never a 500 ---- */
 const NAMES = ["writePatternThumbnail", "createFigure", "editManifestEntry",
-  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "listIdeabookScripts", "openInEditor", "archiveItem", "writePatternFromDrawRegistry",
+  "listLogFiles", "readLogFile", "appendErrorLog", "listScriptHistory", "readScriptHistoryVersion", "listIdeabookScripts", "openInEditor", "writeChecklist", "archiveItem", "writePatternFromDrawRegistry",
   "writeHelpFile", "writeGalleryPatternPng", "saveFigure", "writeThumbnail", "saveSecondaryObject", "archiveSecondaryObject", "getSecondaryManifest",
   "getPrimaryObjectsWithSecondaries", "readSecondaryObject", "manifestMaintenance"];
 for (const n of NAMES) {

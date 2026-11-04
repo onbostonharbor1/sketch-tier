@@ -65,8 +65,11 @@ export const uiState = {
     // Minimal “restore contract” object for Home.
     // null means “cold start”.
     needsUpdate: false,
+    // Home > Errors and Home > Checklist: also show the items already ticked.
+    showAllErrors: false,
+    showAllChecks: false,
     saved: {
-      view: "categories",     // "categories" | "results"
+      view: "categories",     // "categories" | "results" | "errors" | "checklist" | "notes"
       activeStatus: null,     // status string (or null)
       activeIndex: null,      // index within activeStatus group (or null)
       activeEntry: null       // manifest entry object (or null)

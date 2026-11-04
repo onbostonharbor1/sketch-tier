@@ -1,0 +1,43 @@
+# Things to check
+
+Shown on Home > Checklist, where each line has a checkbox. One item per line, in the form `- [ ] text`
+(ticked: `- [x] text`). The details of each check are in the docs/CHECKLIST file named at the end of its line.
+
+## v1-finish (merged into claude1)
+- [ ] F1 Figure files (item 1) (docs/CHECKLIST_v1-finish.md)
+- [ ] F2 Settings stay private (item 2) (docs/CHECKLIST_v1-finish.md)
+- [ ] F3 Scripts in any order (item 3) (docs/CHECKLIST_v1-finish.md)
+- [ ] F4 Magic points (item 4) (docs/CHECKLIST_v1-finish.md)
+- [ ] F5 Print aids (item 5) (docs/CHECKLIST_v1-finish.md)
+- [ ] F6 Templates (item 6) (docs/CHECKLIST_v1-finish.md)
+- [ ] F7 Break apart Inverse Star (item 7) (docs/CHECKLIST_v1-finish.md)
+- [ ] F8 Parametrics handles (item 8) (docs/CHECKLIST_v1-finish.md)
+- [ ] F9 Sweep (item 9) (docs/CHECKLIST_v1-finish.md)
+- [ ] F10 Insert by picture (item 10) (docs/CHECKLIST_v1-finish.md)
+- [ ] F11 Pursuit (temp) (item 11) (docs/CHECKLIST_v1-finish.md)
+- [ ] F12 Survey (item 12) (docs/CHECKLIST_v1-finish.md)
+- [ ] F13 Regression test (item 14) (docs/CHECKLIST_v1-finish.md)
+
+## Errors and Script history (merged)
+- [ ] E1 Error bar (docs/CHECKLIST_v1-errors.md)
+- [ ] E2 Error log (docs/CHECKLIST_v1-errors.md)
+- [ ] E3 Start-up summary (docs/CHECKLIST_v1-errors.md)
+- [ ] E4 A failing figure layer (docs/CHECKLIST_v1-errors.md)
+- [ ] E5 Validate Draw Registry (docs/CHECKLIST_v1-errors.md)
+- [ ] E6 Figure files (docs/CHECKLIST_v1-errors.md)
+- [ ] E7 Script history (docs/CHECKLIST_v1-errors.md)
+
+## Ideabook scripts (merged)
+- [ ] I1 The button (docs/CHECKLIST_ideabook-scripts.md)
+- [ ] I2 The hints (docs/CHECKLIST_ideabook-scripts.md)
+- [ ] I3 The shared routines (docs/CHECKLIST_ideabook-scripts.md)
+- [ ] I4 The pursuit engine (docs/CHECKLIST_ideabook-scripts.md)
+
+## Tier A and Codespaces (claude/tier-a, claude/codespaces)
+- [ ] T1 Shapers and connectors: npm run test:shapers passes; read draw/shapers.js and draw/connectors.js (docs/CHECKLIST_tier-a.md)
+- [ ] T2 Step through the drawing: Draw > Cycloid > caption menu > Step through the drawing (docs/CHECKLIST_tier-a.md)
+- [ ] T3 Errors as a checklist: Tick in the red bar; Home > Errors; Show all; Purge ticked (docs/CHECKLIST_tier-a.md)
+- [ ] T4 Home > Notes shows home/notes.md; Open in VS Code (docs/CHECKLIST_tier-a.md)
+- [ ] T5 Home > Checklist: tick, Show all, Purge ticked, Add item (docs/CHECKLIST_tier-a.md)
+- [ ] C1 Codespace from the iPad: open the repo in a Codespace; the app opens; Save a figure works (docs/CHECKLIST_tier-a.md)
+- [ ] C2 On the PC, after the Codespaces change: saving, logs and thumbnails still work (docs/CHECKLIST_tier-a.md)

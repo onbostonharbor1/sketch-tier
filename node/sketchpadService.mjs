@@ -42,6 +42,7 @@
      • listScriptHistory, readScriptHistoryVersion   VS Code's saved versions of a script (read only)
      • listIdeabookScripts            the hint scripts in gallery/Ideabook/<category>/scripts/
      • openInEditor                   open a project file in VS Code
+     • writeChecklist                 Home > Checklist's file, ./home/checklist.md (homeListRequests.mjs)
 
    Every path built from request text is checked by safePaths.mjs.
 
@@ -79,6 +80,7 @@ import { saveSecondaryObject, readSecondaryObject, archiveSecondaryObject,
          getSecondaryManifest, getPrimaryObjectsWithSecondaries } from "./secondaryRequests.mjs";
 import { listLogFiles, readLogFile, appendErrorLog, openInEditor } from "./logAndEditorRequests.mjs";
 import { listScriptHistory, readScriptHistoryVersion, listIdeabookScripts } from "./scriptHistoryRequests.mjs";
+import { writeChecklist } from "./homeListRequests.mjs";
 
 
 /* ===========================================================
@@ -131,7 +133,8 @@ const HANDLERS = {
   listScriptHistory:                listScriptHistory,
   readScriptHistoryVersion:         readScriptHistoryVersion,
   listIdeabookScripts:              listIdeabookScripts,
-  openInEditor:                     openInEditor
+  openInEditor:                     openInEditor,
+  writeChecklist:                   writeChecklist
 };
 
 export async function dispatchService(requestName, payload = {}) {

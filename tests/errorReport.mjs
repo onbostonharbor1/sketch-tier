@@ -14,7 +14,8 @@
         drawing only through drawLine).
      7. Check Figure Files runs, and checkFigureFormat names a figure's
         broken references (a layer not in the registry, a bad drawOrder).
-     8. The error checklist: Tick in the bar, Home > Errors, Home > Notes.
+     8. The error checklist: Tick in the bar, Home > Errors (tick, Show all, Purge), Home > Notes.
+     9. Home > Checklist: tick, Add item, Show all, Purge ticked (home/checklist.md is restored).
    The error log written here is removed at the end if this test created it.
 
    Needs the app and the Node service running (npm run dev:all).
@@ -162,10 +163,48 @@ try {
   await page.waitForTimeout(1200);
   const listed = await page.evaluate(() => document.getElementById("text").textContent);
   check(listed.includes("regression probe one") && !listed.includes("regression probe tick"), "Home > Errors lists open errors, not ticked ones");
-  await page.locator("#homeErrorsList li", { hasText: "regression probe one" }).first().locator("button").click();
+  await page.locator("#homeErrorsList li", { hasText: "regression probe one" }).first().locator("input[type=checkbox]").check();
   await page.waitForTimeout(1200);
   const after = await page.evaluate(() => document.getElementById("text").textContent);
-  check(!after.includes("regression probe one"), "Tick on Home > Errors removes it");
+  check(!after.includes("regression probe one"), "ticking on Home > Errors removes it");
+  await page.locator("#text .tick-show-all").check();
+  await page.waitForTimeout(1200);
+  check((await page.evaluate(() => document.getElementById("text").textContent)).includes("regression probe one"), "Show all shows it again, ticked");
+  page.once("dialog", (d) => d.accept());
+  await page.locator("#text .tick-purge").click();
+  await page.waitForTimeout(1200);
+  check(!(await page.evaluate(() => document.getElementById("text").textContent)).includes("regression probe one"), "Purge ticked removes it even with Show all");
+  check(newLogText().includes("Purged: Uncaught error: regression probe one"), "and writes Purged to the log");
+
+  console.log("9. Home > Checklist");
+  const checklistFile = path.join(ROOT, "home", "checklist.md");
+  const checklistBefore = fs.readFileSync(checklistFile, "utf8");
+  try {
+    fs.writeFileSync(checklistFile, "# Test\n- [ ] alpha check\n- [x] beta check\n");
+    await page.locator("#subtabs button", { hasText: "Checklist" }).click();
+    await page.waitForTimeout(1000);
+    const listText = () => page.evaluate(() => document.getElementById("text").textContent);
+    let t = await listText();
+    check(t.includes("alpha check") && !t.includes("beta check"), "lists unticked items only");
+    await page.locator("#text .tick-add-text").fill("gamma check");
+    await page.locator("#text .tick-add").click();
+    await page.waitForTimeout(1000);
+    check(fs.readFileSync(checklistFile, "utf8").includes("- [ ] gamma check"), "Add item writes a new line to home/checklist.md");
+    await page.locator("#homeChecklistList li", { hasText: "alpha check" }).locator("input").check();
+    await page.waitForTimeout(1000);
+    check(fs.readFileSync(checklistFile, "utf8").includes("- [x] alpha check") && !(await listText()).includes("alpha check"), "ticking writes [x] and hides it");
+    await page.locator("#text .tick-show-all").check();
+    await page.waitForTimeout(1000);
+    t = await listText();
+    check(t.includes("alpha check") && t.includes("beta check"), "Show all shows ticked items");
+    page.once("dialog", (d) => d.accept());
+    await page.locator("#text .tick-purge").click();
+    await page.waitForTimeout(1000);
+    const left = fs.readFileSync(checklistFile, "utf8");
+    check(left === "# Test\n- [ ] gamma check\n", "Purge ticked removes the ticked lines and keeps the rest (" + JSON.stringify(left) + ")");
+  } finally {
+    fs.writeFileSync(checklistFile, checklistBefore);
+  }
   await page.locator("#subtabs button", { hasText: "Notes" }).click();
   await page.waitForTimeout(800);
   const notes = await page.evaluate(() => document.getElementById("homeNotesText")?.textContent || "");
