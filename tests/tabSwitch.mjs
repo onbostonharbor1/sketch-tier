@@ -254,10 +254,14 @@ const order = () => page.evaluate(() => uiState.figures.tabs[uiState.figures.act
 if ((await order()) !== "3,2,1,0") problems.push("[figures order] after inserts: " + await order());
 await page.locator("#figure-sidebar .figure-layer-row span").nth(0).click();
 await page.waitForTimeout(300);
-if ((await order()) !== "0,3,2,1") problems.push("[figures order] after clicking 1: " + await order());
+// Tier A: choosing a layer draws it on top without changing the saved order;
+// Keep this layer on top changes it.
+if ((await order()) !== "3,2,1,0") problems.push("[figures order] clicking 1 should not change the order: " + await order());
+await page.evaluate(async () => (await import("/ui/figures/figureLayers.js")).keepLayerOnTop(uiState.figures.activeSubtab));
+if ((await order()) !== "0,3,2,1") problems.push("[figures order] after Keep on top for 1: " + await order());
 await page.locator("#figure-sidebar .figure-layer-row span").nth(1).click();
 await page.waitForTimeout(300);
-if ((await order()) !== "1,0,3,2") problems.push("[figures order] after clicking 2: " + await order());
+if ((await order()) !== "0,3,2,1") problems.push("[figures order] clicking 2 should not change the order: " + await order());
 const heading = await page.locator("#figureLayerLabel").innerText();
 if (!/^Layer 2/.test(heading)) problems.push("[figures order] layer label: " + heading);
 if ((await page.locator("#figureLayerHeading").count()) !== 0) problems.push("[figures order] heading still in the left panel");

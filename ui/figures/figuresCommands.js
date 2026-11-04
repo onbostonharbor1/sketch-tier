@@ -45,7 +45,7 @@ import { formatRebuildReportShared } from "/ui/rebuildSync.js";
 import { nodeRebuildAndValidateManifests } from "/ui/nodeLayer.js";
 import { openHelpHomeOverlay }      from "/ui/help.js";
 import { uiState }                  from "/ui/uiState.js";
-import { deleteLayer }                     from "./figureLayers.js";
+import { deleteLayer, keepLayerOnTop }     from "./figureLayers.js";
 import { redrawFigure }                    from "./figureDraw.js";
 import { canBreakApart, breakApartLayer } from "./figureBreakApart.js";
 import { deletePoint }              from "./figurePoints.js";
@@ -224,6 +224,12 @@ export async function getFiguresCaptionMenuItems(title) {
 
   // Deletes the active layer and its discs; welds to other layers keep their
   // other members. There is no undo yet, so it asks first.
+  const onTopItem = {
+    label:    "Keep this layer on top",
+    disabled: !(ts0 && ts0.figure && ts0.figure.activeLayer >= 0),
+    tooltip:  "The chosen layer is drawn on top only while chosen; this keeps it on top for good (and in the saved figure).",
+    onClick:  () => keepLayerOnTop(uiState.figures.activeSubtab)
+  };
   const deleteLayerItem = {
     label:    "Delete layer",
     disabled: !(ts0 && ts0.figure && ts0.figure.activeLayer >= 0 && ts0.mode !== "points"),
@@ -355,6 +361,7 @@ export async function getFiguresCaptionMenuItems(title) {
     snapRadiusItem,
     deletePointItem,
     breakApartItem,
+    onTopItem,
     deleteLayerItem,
     saveItem,
     saveAsItem,

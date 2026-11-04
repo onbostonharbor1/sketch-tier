@@ -40,10 +40,12 @@
 
    Layer numbers are stable: layer N is figure.layers[N-1] for good.
    Stacking is separate: figure.drawOrder lists layer indices, top
-   first. Selecting a layer moves it to the front of drawOrder
-   (MOVE_TO_FRONT_ON_SELECT), so the last layer clicked is drawn last,
-   on top. Example, layers 1,2,3 inserted: order 3 2 1; click 1 gives
-   1 3 2; click 2 gives 2 1 3.
+   first. Choosing a layer draws it on top while it is chosen, but does
+   not change drawOrder (Tier A: a view change, so a click never alters
+   the saved figure). keepLayerOnTop() moves the active layer to the
+   front of drawOrder for good. Example, layers 1,2,3 inserted: order
+   3 2 1; click 1: still 3 2 1, with 1 drawn on top; Keep this layer on
+   top: 1 3 2.
 
    Split (2026-11-01): this file used to hold the drawing, the layer
    panel and Break Apart as well. They moved, unchanged:
@@ -79,7 +81,6 @@ import { newLayerFields }   from "./figureModel.js";
 import { registerTemplates } from "./figureTemplates.js";
 
 // Experiment switch: true = the last layer clicked goes on top.
-const MOVE_TO_FRONT_ON_SELECT = true;
 // Identity colors handed out to layers in turn (dark enough for white text).
 // Exported for figureLayerPanel.js, which gives an old layer with no color one.
 export const LAYER_COLORS = [
@@ -313,16 +314,31 @@ export function selectLayer(tabId, index) {
   tabState.selectedPoint = null;   // only the active layer's points can be selected
   tabState.centroidSelected = false;
 
-  // [index, ...rest] builds a new array: index first, then every other
-  // entry of drawOrder in its old order.
-  if (MOVE_TO_FRONT_ON_SELECT) {
-    figure.drawOrder = [index, ...figure.drawOrder.filter((n) => n !== index)];
-  }
+  // drawOrder is not changed: redrawFigure() draws the active layer on top
+  // (a view change). keepLayerOnTop() makes it permanent.
 
   renderLayerPanel(tabId);
   redrawFigure(tabId);
 
 } // end selectLayer
+
+
+/* ============================================================
+   keepLayerOnTop(tabId)
+   ------------------------------------------------------------
+   Moves the active layer to the front of drawOrder, so it stays on top
+   after another layer is chosen and in the saved figure.
+   [index, ...rest] builds a new array: index first, then every other
+   entry of drawOrder in its old order.
+   ============================================================ */
+export function keepLayerOnTop(tabId) {
+  const tabState = uiState.figures.tabs[tabId];
+  if (!tabState || tabState.figure.activeLayer < 0) return;
+  const figure = tabState.figure, index = figure.activeLayer;
+  figure.drawOrder = [index, ...figure.drawOrder.filter((n) => n !== index)];
+  renderLayerPanel(tabId);
+  redrawFigure(tabId);
+} // end keepLayerOnTop
 
 
 /* ============================================================

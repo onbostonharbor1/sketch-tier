@@ -82,9 +82,15 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   const wasFinal   = drawState.final;
   if (pointsMode) drawState.final = true;
 
-  // drawOrder is top first; paint bottom to top.
-  for (let k = figure.drawOrder.length - 1; k >= 0; k--) {
-    const i = figure.drawOrder[k];
+  // drawOrder is top first; paint bottom to top. The active layer is drawn
+  // on top while it is chosen, without changing drawOrder (a view change;
+  // keepLayerOnTop in figureLayers.js makes it permanent).
+  const active = figure.activeLayer;
+  const paintOrder = figure.drawOrder.includes(active)
+    ? [active, ...figure.drawOrder.filter((n) => n !== active)]
+    : figure.drawOrder;
+  for (let k = paintOrder.length - 1; k >= 0; k--) {
+    const i = paintOrder[k];
     // Guides (templates) are for drawing against: Show All and Final leave
     // them out. Scaffold is design, shown in Show All, but never in Final.
     if (showAll && figure.layers[i].role === "guide") continue;
