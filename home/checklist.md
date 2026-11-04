@@ -49,4 +49,4 @@ Shown on Home > Checklist, where each line has a checkbox. One item per line, in
 - [ ] T11 Intersections mark: Figures, two crossing lines, Points Mode: purple ring with a cross (docs/CHECKLIST_tier-a.md)
 - [ ] T12 Choosing a layer draws it on top; Keep this layer on top saves it (docs/CHECKLIST_tier-a.md)
 - [ ] T13 Clipping shapers inside / outside: npm run test:shapers (docs/CHECKLIST_tier-a.md)
-- [ ] T14 Read the deferred list in docs/TIERS.md section 5 and answer what it needs (docs/TIERS.md)
+- [ ] T14 Read the deferred list in docs/TIERS.md section 5 and answer what it needs; section 6 records answers so far (docs/TIERS.md)

@@ -177,3 +177,18 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 **Not applicable in V1.** A28 duplicate ids: registry keys can't be duplicated in V1's hand-kept list.
 
 **Waiting for Barry's spec.** A Home subtab that views the HTML notes and information in the help area.
+
+## 6. Barry's answers, 4 November 2026 (later)
+
+- **Before the next tier** (do these first, as their own phases): **A12 undo**, **A18 crash recovery**, **A3 stepping
+  in Figures**.
+- **A11 welds: settled, no change.** V1 already keeps welds as a table of groups (`figure.welds`, members by disc
+  number; `ui/figures/figureWeldModel.js`). When a layer's point count changes, the weld is not changed. If its
+  members no longer meet, the weld shows red, and Barry fixes it by hand.
+- **A4 and A5, registry names:** derive each name from the shape, descriptive (for example `rose`, `lissajous`,
+  `rectangle`). Where a name is ambiguous, record it in a new Markdown file kept for the purpose
+  (`help/registryNames.md`), which becomes part of help. Curve library and shape palette are unblocked, to build on
+  Barry's go.
+- **A27 tags:** explained to Barry; waiting for his answer.
+- **Comment sweep:** explained to Barry; waiting for his answer.
+
