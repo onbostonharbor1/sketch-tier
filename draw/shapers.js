@@ -22,7 +22,10 @@
    FUNCTIONS (alphabetical)
      arcPoints(c, r, fromDeg, toDeg, n)  n+1 points along an arc
      everyNth(pts, n, start)    every nth point, beginning at start
+     inside(pts, shape)         the points inside a closed shape (an array of corners)
+     isInside(p, shape)         is point p inside the closed shape?
      linePoints(a, b, steps)    steps+1 points evenly from a to b
+     outside(pts, shape)        the points outside a closed shape
      mirrored(pts, a, b)        the points reflected across the line a-b
      moved(p, x, y)             a copy of p at x, y (keeps z and the class)
      part(pts, from, to)        points from index from up to (not including) to;
@@ -205,5 +208,33 @@ function distanceToLine(p, a, b) {
   if (len === 0) return Math.hypot(p.x - a.x, p.y - a.y);
   return Math.abs(dy * p.x - dx * p.y + b.x * a.y - b.y * a.x) / len;
 } // end distanceToLine
+
+/* isInside: is point p inside the closed shape whose corners are given in
+   order? (The even-odd rule: count how many edges a line from p to the
+   right crosses; odd means inside.) A point exactly on an edge may count
+   either way. A shape with fewer than three corners has no inside. */
+export function isInside(p, shape) {
+  if (shape.length < 3) return false;
+  let crossings = 0;
+  for (let i = 0, j = shape.length - 1; i < shape.length; j = i++) {
+    const a = shape[i], b = shape[j];
+    const straddles = (a.y > p.y) !== (b.y > p.y);
+    if (straddles && p.x < a.x + (p.y - a.y) * (b.x - a.x) / (b.y - a.y)) crossings++;
+  }
+  return crossings % 2 === 1;
+} // end isInside
+
+
+/* inside: only the points inside the shape (nails within a boundary,
+   or a pattern trimmed to a frame). */
+export function inside(pts, shape) {
+  return pts.filter((p) => isInside(p, shape));
+} // end inside
+
+
+/* outside: only the points outside the shape (a hole left in a pattern). */
+export function outside(pts, shape) {
+  return pts.filter((p) => !isInside(p, shape));
+} // end outside
 
 // end shapers.js

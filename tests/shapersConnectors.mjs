@@ -73,6 +73,19 @@ test("empty arrays give empty arrays", () => {
   for (const f of [S.reversed, S.part, S.everyNth, S.rotateStart, S.simplified]) assert.deepEqual(f([]), []);
 });
 
+test("inside and outside a square; a shape of two points has no inside", () => {
+  const square = [P(0, 0), P(10, 0), P(10, 10), P(0, 10)];
+  const pts = [P(5, 5), P(15, 5), P(-1, 3), P(9, 9)];
+  assert.deepEqual(S.inside(pts, square).map((p) => p.x), [5, 9]);
+  assert.deepEqual(S.outside(pts, square).map((p) => p.x), [15, -1]);
+  assert.equal(S.isInside(P(1, 1), [P(0, 0), P(5, 5)]), false);
+});
+test("inside a concave shape (an L)", () => {
+  const L = [P(0, 0), P(10, 0), P(10, 4), P(4, 4), P(4, 10), P(0, 10)];
+  assert.equal(S.isInside(P(2, 8), L), true);
+  assert.equal(S.isInside(P(8, 8), L), false);
+});
+
 // ---------- connectors ----------
 test("pairwise joins i to i", () => {
   const A = S.linePoints(P(0, 0), P(0, 10), 2), B = S.linePoints(P(10, 0), P(10, 10), 2);
