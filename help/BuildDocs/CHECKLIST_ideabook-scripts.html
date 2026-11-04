@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Checklist: what to check by hand on claude/ideabook-scripts</title>
+  <link rel="stylesheet" href="/help/help.css" />
+</head>
+<body>
+<p class="buildDocSource"><em>Copied from docs/CHECKLIST_ideabook-scripts.md by npm run help:builddocs.</em></p>
+<h1>Checklist: what to check by hand on <code>claude/ideabook-scripts</code></h1>
+<p>Branch from <code>claude/v1-errors</code> (2 Nov 2026). Hint scripts for the Ideabook, and a Run script button to see them. Passes here: <code>lint:globals</code> (0 errors), <code>check:imports</code>, <code>check:ids</code>, <code>test:tabs</code>, <code>test:node</code> (115 passed), <code>test:regression</code>, <code>test:scripts</code>, <code>test:errors</code>, <code>test:history</code>, and the new <code>test:ideabook</code> (the button, and all 282 hint scripts run without an error). Whether a hint is any use is for you.</p>
+<p><strong>Setup.</strong> <code>git fetch</code>, <code>git checkout claude/ideabook-scripts</code>, restart Vite and the Node service.</p>
+<p><strong>I1. The button.</strong> Gallery &gt; Ideabook &gt; Pursuit, open any image: <strong>Run script</strong> beside Prev and Next. Press it: the hint is drawn in place of the photo, with its sliders on the left, and the button reads <strong>Show image</strong>. Next or Prev go back to photos. In 3D, scans, ideas or generative (no scripts yet) the button is greyed.</p>
+<p><strong>I2. The hints.</strong> Pursuit 14, To Build 19, working 20, ok 95, possible 134 (3 not attempted). Each script's header says what the image seems to be, what it is built from, and what was guessed; the Notes popup reads it. Images with a figure number point to the figureNN() in the first StringThing.html that drew them. Four in To Build and three point templates run your existing patterns (First Build, Overlapping Stars). Each folder's <code>scripts/_notDone.txt</code> lists what has no script and why.</p>
+<p><strong>I3. The shared routines.</strong> <code>gallery/Ideabook/scripts/ideabookRoutines.js</code>: points, joining rules, stars, zigzags, symmetry; its header lists them all. <code>stitchWith</code> is written as the proposed extension of <code>stitcher()</code>. Everything draws through <code>drawLine</code>.</p>
+<p><strong>I4. The pursuit engine.</strong> <code>gallery/Ideabook/scripts/pursuitEngine.js</code>, in its own file to become a draw function. Its header maps each script in <code>gallery/Scripts/Pursuit/</code> to the setting that covers it.</p>
+<p><strong>Names.</strong> A script is named after its image, except that <code>&amp; , # ? % + ;</code> become <code>_</code> (the dev server will not serve them in a file name).</p>
+<p><strong>Undo:</strong> revert the branch's commits, or simply delete the <code>scripts</code> folders; nothing else depends on them.</p>
+</body>
+</html>

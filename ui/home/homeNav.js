@@ -21,7 +21,7 @@
      renderHomeCategoriesIfReady()
 
    Subtabs: Categories, Results (when an item is open), Errors
-   (homeErrors.js), Checklist (homeChecklist.js) and Notes (homeNotes.js).
+   (homeErrors.js), Checklist (homeChecklist.js), Help (homeHelp.js) and Notes (homeNotes.js).
    ============================================================ */
 
 import { renderCategories }              from "/ui/categories.js";
@@ -38,12 +38,14 @@ const HOME_VIEW_RESULTS    = "results";
 const HOME_VIEW_ERRORS     = "errors";      // Tier A step 3: homeErrors.js
 const HOME_VIEW_NOTES      = "notes";       // Tier A step 3: homeNotes.js
 const HOME_VIEW_CHECKLIST  = "checklist";   // homeChecklist.js: things Barry is to check
+const HOME_VIEW_HELP       = "help";        // homeHelp.js: Design, Reflections, Build Documents
 
 const VIEW_IDS = {
   categories: "home-categories",
   results:    "home-results",
   errors:     "home-errors",
   checklist:  "home-checklist",
+  help:       "home-help",
   notes:      "home-notes"
 };
 
@@ -92,6 +94,13 @@ function buildHomeAdapter() {
         label: "Checklist",
         async onClick() {
           await switchHomeView(HOME_VIEW_CHECKLIST);
+        }
+      },
+      {
+        id:    VIEW_IDS.help,
+        label: "Help",
+        async onClick() {
+          await switchHomeView(HOME_VIEW_HELP);
         }
       },
       {
@@ -155,7 +164,7 @@ export async function switchHomeView(viewKey) {
     return;
   }
 
-  if (viewKey === HOME_VIEW_ERRORS || viewKey === HOME_VIEW_NOTES || viewKey === HOME_VIEW_CHECKLIST) {
+  if (viewKey === HOME_VIEW_ERRORS || viewKey === HOME_VIEW_NOTES || viewKey === HOME_VIEW_CHECKLIST || viewKey === HOME_VIEW_HELP) {
     for (const id of ["caption", "sketchpad", "action"]) {
       const div = document.getElementById(id);
       if (!div) throw new Error("switchHomeView: #" + id + " not found");
@@ -164,6 +173,9 @@ export async function switchHomeView(viewKey) {
     if (viewKey === HOME_VIEW_ERRORS) {
       const { renderHomeErrors } = await import("/ui/home/homeErrors.js");
       await renderHomeErrors();
+    } else if (viewKey === HOME_VIEW_HELP) {
+      const { renderHomeHelp } = await import("/ui/home/homeHelp.js");
+      await renderHomeHelp();
     } else if (viewKey === HOME_VIEW_CHECKLIST) {
       const { renderHomeChecklist } = await import("/ui/home/homeChecklist.js");
       await renderHomeChecklist();

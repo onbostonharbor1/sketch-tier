@@ -16,6 +16,7 @@
         broken references (a layer not in the registry, a bad drawOrder).
      8. The error checklist: Tick in the bar, Home > Errors (tick, Show all, Purge), Home > Notes.
      9. Home > Checklist: tick, Add item, Show all, Purge ticked (home/checklist.md is restored).
+    10. Home > Help: the three groups, a build document shown formatted, New reflection (removed after).
    The error log written here is removed at the end if this test created it.
 
    Needs the app and the Node service running (npm run dev:all).
@@ -209,6 +210,40 @@ try {
   await page.waitForTimeout(800);
   const notes = await page.evaluate(() => document.getElementById("homeNotesText")?.textContent || "");
   check(notes.includes("Notes and to-do"), "Home > Notes shows home/notes.md");
+
+  console.log("10. Home > Help");
+  const reflectionFile = path.join(ROOT, "help", "Reflections", "Probe_reflection_from_the_test.html");
+  try {
+    await page.click("#home-tab");
+    await page.waitForTimeout(600);
+    await page.locator("#subtabs button", { hasText: "Help" }).click();
+    await page.waitForTimeout(1500);
+    const groups = await page.evaluate(() => [...document.querySelectorAll("#homeHelpTree > ul > li > a")].map((a) => a.textContent));
+    check(groups.length === 3 && /^Design \(\d+\)/.test(groups[0]) && /^Reflections \(\d+\)/.test(groups[1]) && /^Build Documents \(\d+\)/.test(groups[2]),
+          "three groups: Design, Reflections, Build Documents (" + groups.join(" | ") + ")");
+    await page.locator("#homeHelpTree a", { hasText: "Tier A" }).first().click();
+    await page.waitForTimeout(800);
+    const shown = await page.evaluate(() => document.getElementById("homeHelpPane").innerHTML);
+    check(shown.includes("<table>") && shown.includes("Tier A"), "a build document (TIERS.md) shows formatted, with its tables");
+    page.once("dialog", (d) => d.accept("Probe reflection from the test"));
+    await page.click("#homeHelpNew");
+    await page.waitForTimeout(2000);
+    check(fs.existsSync(reflectionFile) && fs.readFileSync(reflectionFile, "utf8").includes("<title>Probe reflection from the test</title>"),
+          "New reflection creates help/Reflections/<title>.html");
+    const editorOpen = await page.evaluate(() => !!document.getElementById("helpEditorArea"));
+    check(editorOpen, "and opens it in the help editor");
+    await page.evaluate(() => document.getElementById("helpCancelButton")?.click());
+    await page.waitForTimeout(500);
+    await page.click("#overlayClose");                // close the help overlay as Barry would
+    await page.click("#home-tab");
+    await page.waitForTimeout(600);
+    await page.locator("#subtabs button", { hasText: "Help" }).click();
+    await page.waitForTimeout(1500);
+    const reflections = await page.evaluate(() => document.getElementById("homeHelpTree").textContent);
+    check(reflections.includes("Probe reflection from the test"), "the new reflection is listed by its title");
+  } finally {
+    fs.rmSync(reflectionFile, { force: true });
+  }
 } finally {
   await browser.close();
   // Leave the log as it was: remove what this test wrote.

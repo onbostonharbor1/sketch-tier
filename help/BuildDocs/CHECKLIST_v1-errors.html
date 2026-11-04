@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Checklist: what to check by hand on claude/v1-errors</title>
+  <link rel="stylesheet" href="/help/help.css" />
+</head>
+<body>
+<p class="buildDocSource"><em>Copied from docs/CHECKLIST_v1-errors.md by npm run help:builddocs.</em></p>
+<h1>Checklist: what to check by hand on <code>claude/v1-errors</code></h1>
+<p>Branch from <code>claude/v1-finish</code> (2 Nov 2026). It makes errors visible, adds the registry and figure-file checks, and adds Script history (VS Code's saved versions of a script, to run or compare). Everything below passes here: <code>lint:globals</code> (0 errors), <code>check:imports</code>, <code>check:ids</code>, <code>test:tabs</code>, <code>test:node</code> (112 passed, 0 failed), <code>test:regression</code> (no drawing changed), <code>test:scripts</code>, and the new <code>test:errors</code> and <code>test:history</code>.</p>
+<p><strong>Setup.</strong> <code>git fetch</code>, <code>git checkout claude/v1-errors</code>, <code>npm install</code>, start as usual. Restart Vite if it was running while files changed.</p>
+<p><strong>E1. Error bar.</strong> Start the app: no red bar. To see one, open the browser console (F12) and type <code>setTimeout(() =&gt; { throw new Error("test") })</code>: a red bar appears above the page on every tab, saying what failed, where, and that it was written to the error log. Do it again: "[2 times]". Dismiss clears it.</p>
+<p><strong>E2. Error log.</strong> Utilities &gt; Tools &gt; Show Logs: the list now has groups, Error logs first. Today's <code>errors_&lt;date&gt;.txt</code> has one line per error, with its time. The "test" error from E1 is there once, not twice.</p>
+<p><strong>E3. Start-up summary.</strong> Reload: the Home tab's yellow bar says "The newest error log has N errors" with the latest few, and its own Dismiss. A manifest problem, when there is one, shows above it as before.</p>
+<p><strong>E4. A failing figure layer.</strong> Hard to cause by hand; <code>test:errors</code> does it: the bar names the figure and layer ("Figure ..., layer 1 (drawLine): ..."), and the other layers still draw. Before, the figure lost that layer silently.</p>
+<p><strong>E5. Validate Draw Registry.</strong> Utilities &gt; Tools &gt; Validate Draw Registry: #text now lists every object as OK or with its problems, from the same check that runs at start-up. The drawing check found one real breach of your drawLine rule: **Linked Circles strokes its circles itself (<code>drawOneCircle</code>), not through <code>drawLine</code>.** Not changed; your call. Parametrics shows grey "drawing not checked here": it fits itself to the Draw tab's canvas, which the Utilities tab does not have. Click a name for detail, as before.</p>
+<p><strong>E6. Figure files.</strong> Utilities &gt; Tools &gt; Check Figure Files: one line per saved figure, OK or its problems. Opening a figure with problems still opens it, as before, but names each problem in the error bar and the log.</p>
+<p><strong>E7. Script history.</strong> Open a pattern or gallery script, caption menu v &gt; Script history...: the side panel lists every version VS Code saved of that script, newest first. <strong>Run</strong> draws that version on the canvas, with its own sliders; the file is not touched, and the panel's top line says which version is showing. <strong>Diff</strong> shows what that save changed (red "-" removed, green "+" added, a few lines around each change); <strong>against now</strong> compares it with the file as it is. <strong>Run the file as it is now</strong> goes back. Check: edit a script in VS Code, save, run it in Sketchpad, change it, save, run, then open Script history: both saves are there. VS Code's limit is now 500 versions per file (<code>.vscode/settings.json</code>); it applies from when VS Code reloads the setting. If the panel says there are no saved versions for a script you have saved, tell me: it looks in <code>%APPDATA%\Code\User\History</code>.</p>
+<p><strong>Undo:</strong> <code>git revert 1a85701</code> (Script history), <code>git revert 45e1759</code> (errors and checks).</p>
+</body>
+</html>

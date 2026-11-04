@@ -26,7 +26,7 @@ import { overlayManager }  from "./overlay.js";
      - Includes /help/help.css
      - bodyHtml is written BETWEEN <body> tags
 ============================================================ */
-function buildFullHelpHtmlDocument(titleText, fileName, bodyHtml) {
+export function buildFullHelpHtmlDocument(titleText, fileName, bodyHtml) {
 
   const title = String(titleText || "").trim() || String(fileName || "").trim() || "Help";
 
