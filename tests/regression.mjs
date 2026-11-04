@@ -23,7 +23,9 @@
        npm run test:regression -- accept          approve everything as it is now
        npm run test:regression -- accept <text>   approve only names containing <text>
    After a compare, tests/regression/report.html shows the approved and the
-   new picture side by side for every change (not committed).
+   new picture side by side for every change, with an overlay, a flicker and
+   a difference picture (not committed). tests/regression/tolerance.json,
+   optional, gives an item its own pixel allowance.
    Exit code 1 if anything changed. Items with no approved copy yet are
    listed but do not fail.
    Optional: SKETCHPAD_URL, PW_CHROMIUM (path to a Chromium to use).
@@ -46,6 +48,11 @@ const LIST     = path.join(DIR, "approved.json");     // approved geometry and e
 const PICTURE_WIDTH = 240;                            // pixels across each kept picture
 const LEVELS   = 8;                                   // pixel difference ignored as noise
 const SHARE    = 0.001;                               // share of pixels that may differ
+// Per-item allowances (Tier A): tests/regression/tolerance.json, optional, e.g.
+//   { "/gallery/Scripts/Generative/noisy.js": { "levels": 20, "share": 0.01 } }
+// An item listed there uses its own levels and share instead of the two above.
+const TOLERANCE_FILE = path.join(DIR, "tolerance.json");
+const TOLERANCE = fs.existsSync(TOLERANCE_FILE) ? JSON.parse(fs.readFileSync(TOLERANCE_FILE, "utf8")) : {};
 
 const [mode, only] = process.argv.slice(2);
 const accepting = mode === "accept";
@@ -122,14 +129,14 @@ function fingerprint(ends) {
   return crypto.createHash("sha1").update(text).digest("hex").slice(0, 16);
 }
 
-// How many pixels of two pictures differ by more than LEVELS (or all, if sizes differ).
-function differingPixels(a, b) {
+// How many pixels of two pictures differ by more than levels (or all, if sizes differ).
+function differingPixels(a, b, levels = LEVELS) {
   const A = PNG.sync.read(a), B = PNG.sync.read(b);
   if (A.width !== B.width || A.height !== B.height) return { count: A.width * A.height, total: A.width * A.height };
   let count = 0;
   for (let i = 0; i < A.data.length; i += 4) {
-    if (Math.abs(A.data[i] - B.data[i]) > LEVELS || Math.abs(A.data[i + 1] - B.data[i + 1]) > LEVELS ||
-        Math.abs(A.data[i + 2] - B.data[i + 2]) > LEVELS) count++;
+    if (Math.abs(A.data[i] - B.data[i]) > levels || Math.abs(A.data[i + 1] - B.data[i + 1]) > levels ||
+        Math.abs(A.data[i + 2] - B.data[i + 2]) > levels) count++;
   }
   return { count, total: A.width * A.height };
 }
@@ -203,8 +210,9 @@ for (const [name, r] of results) {
     else if (r.fingerprint !== a.fingerprint) why.push(`the ${r.lines} lines moved`);
   } else {
     const was = path.join(APPROVED, a.picture);
-    const d = fs.existsSync(was) ? differingPixels(fs.readFileSync(was), r.picture) : { count: 1, total: 1 };
-    if (d.count / d.total > SHARE) why.push(`picture: ${d.count} of ${d.total} pixels differ`);
+    const own = TOLERANCE[name] || {};
+    const d = fs.existsSync(was) ? differingPixels(fs.readFileSync(was), r.picture, own.levels ?? LEVELS) : { count: 1, total: 1 };
+    if (d.count / d.total > (own.share ?? SHARE)) why.push(`picture: ${d.count} of ${d.total} pixels differ`);
   }
   if (why.length) {
     fs.writeFileSync(path.join(LATEST, a.picture), r.picture);
@@ -213,18 +221,53 @@ for (const [name, r] of results) {
 }
 for (const name of Object.keys(approved)) if (!results.has(name)) gone.push(name);
 
-// The report: approved and new side by side, for each change.
+// The report: for each change, approved and new side by side, then three
+// ways of seeing the difference (Tier A), made in the browser when the
+// report is opened: overlay (approved in blue, new in red, both where they
+// agree in black), flicker (click to start and stop switching between the
+// two) and difference (only the pixels that changed, in red).
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 let html = "<!doctype html><meta charset='utf-8'><title>Regression report</title>" +
   "<style>body{font-family:sans-serif;margin:16px}figure{display:inline-block;margin:4px;text-align:center}" +
-  "img{border:1px solid #999}section{border-bottom:1px solid #ccc;padding:8px 0}</style>" +
+  "img,canvas{border:1px solid #999}section{border-bottom:1px solid #ccc;padding:8px 0}</style>" +
   `<h1>Regression report</h1><p>${results.size} items drawn; ${changed.length} changed, ` +
   `${unstable.length} unstable (not compared), ${unapproved.length} not yet approved.</p>`;
 for (const c of changed) {
-  html += `<section><h3>${esc(c.name)}</h3><p>${esc(c.why)}</p>` +
+  html += `<section data-approved='approved/${c.picture}' data-latest='latest/${c.picture}'><h3>${esc(c.name)}</h3><p>${esc(c.why)}</p>` +
     `<figure><img src='approved/${c.picture}'><figcaption>approved</figcaption></figure>` +
-    `<figure><img src='latest/${c.picture}'><figcaption>now</figcaption></figure></section>`;
+    `<figure><img src='latest/${c.picture}'><figcaption>now</figcaption></figure>` +
+    `<figure><canvas class='overlay'></canvas><figcaption>overlay: blue approved, red now</figcaption></figure>` +
+    `<figure><img class='flicker' src='approved/${c.picture}' title='click to flicker'><figcaption class='flickerName'>flicker (click): approved</figcaption></figure>` +
+    `<figure><canvas class='difference'></canvas><figcaption>difference</figcaption></figure></section>`;
 }
+html += `<script>
+// Builds the overlay and difference pictures and wires the flicker.
+function load(src) { return new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = src; }); }
+function pixels(img) { const c = document.createElement("canvas"); c.width = img.width; c.height = img.height;
+  const x = c.getContext("2d"); x.drawImage(img, 0, 0); return x.getImageData(0, 0, c.width, c.height); }
+document.querySelectorAll("section[data-approved]").forEach(async (sec) => {
+  const [a, b] = await Promise.all([load(sec.dataset.approved), load(sec.dataset.latest)]);
+  const A = pixels(a), B = pixels(b), w = A.width, h = A.height;
+  for (const [cls, paint] of [["overlay", (i, o) => {
+      const inkA = A.data[i] + A.data[i + 1] + A.data[i + 2] < 600, inkB = B.data[i] + B.data[i + 1] + B.data[i + 2] < 600;
+      o.set(inkA && inkB ? [0, 0, 0, 255] : inkA ? [0, 90, 255, 255] : inkB ? [230, 0, 0, 255] : [255, 255, 255, 255], i); }],
+    ["difference", (i, o) => {
+      const d = Math.abs(A.data[i] - B.data[i]) + Math.abs(A.data[i + 1] - B.data[i + 1]) + Math.abs(A.data[i + 2] - B.data[i + 2]);
+      o.set(d > ${3 * LEVELS} ? [230, 0, 0, 255] : [255, 255, 255, 255], i); }]]) {
+    const cv = sec.querySelector("canvas." + cls); cv.width = w; cv.height = h;
+    const ctx = cv.getContext("2d"), out = ctx.createImageData(w, h);
+    if (B.width === w && B.height === h) for (let i = 0; i < out.data.length; i += 4) paint(i, out.data);
+    ctx.putImageData(out, 0, 0);
+  }
+  const fl = sec.querySelector("img.flicker"), name = sec.querySelector(".flickerName");
+  let timer = null, showingNew = false;
+  fl.onclick = () => {
+    if (timer) { clearInterval(timer); timer = null; return; }
+    timer = setInterval(() => { showingNew = !showingNew; fl.src = showingNew ? sec.dataset.latest : sec.dataset.approved;
+      name.textContent = "flicker (click): " + (showingNew ? "now" : "approved"); }, 600);
+  };
+});
+</script>`;
 fs.writeFileSync(path.join(DIR, "report.html"), html);
 
 console.log(`\n${results.size} items drawn (${drawKeys.length} Draw objects, ${results.size - drawKeys.length} scripts).`);
