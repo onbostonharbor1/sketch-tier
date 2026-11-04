@@ -2171,6 +2171,7 @@ printAnswers = ["100"];                                     // the nails span 20
 const sized = await page.evaluate(async () => {
   const m = await import("/ui/figures/figurePrint.js");
   const id = uiState.figures.activeSubtab;
+  uiState.figures.printUnits = "mm";                          // this answer is in mm; inches are checked below
   return { changed: m.setPrintSize(id), scale: uiState.figures.tabs[id].figure.scale };
 });
 if (!sized.changed || Math.abs(sized.scale - 0.5) > 1e-9) problems.push("[9 print] print size: " + JSON.stringify(sized) + " dialogs: " + printDialogs.join(" | "));
@@ -2209,6 +2210,25 @@ const leftOut = await page.evaluate(async () => {
   return labels;
 });
 if (JSON.stringify(leftOut) !== JSON.stringify(["1", "2", "5"])) problems.push("[9 print] layer left out: " + JSON.stringify(leftOut));
+// Tier A output: inches, and the whole template as one true-size SVG with the nail colour cycle.
+printAnswers = ["4"];                                       // 4 inches across 200 px: 0.508 mm per px
+const oneSheet = await page.evaluate(async () => {
+  const m = await import("/ui/figures/figurePrint.js");
+  const id = uiState.figures.activeSubtab, t = uiState.figures.tabs[id];
+  uiState.figures.printUnits = "in";
+  m.setPrintSize(id);
+  const inchScale = t.figure.scale;
+  t.figure.scale = 0.5;
+  const plain = m.oneSheetSVG(t, false), coloured = m.oneSheetSVG(t, true);
+  return { inchScale: Math.round(inchScale * 1000) / 1000, toIn: m.toUnits(25.4), fromIn: m.fromUnits(0.1875),
+           circles: plain.svg.split('class="nail"').length - 1, nails: plain.nails,
+           calib: /class="calibration"[^>]*x2="\d+(\.\d+)?"/.test(plain.svg), mmUnits: /width="[\d.]+mm"/.test(plain.svg),
+           black: !plain.svg.includes("#d00000"), cycle: ["#d00000", "#008000", "#ff8c00"].every((c) => coloured.svg.includes(c)) };
+});
+if (oneSheet.inchScale !== 0.508 || oneSheet.toIn !== 1 || Math.abs(oneSheet.fromIn - 4.7625) > 1e-9 || oneSheet.circles !== oneSheet.nails
+    || !oneSheet.calib || !oneSheet.mmUnits || !oneSheet.black || !oneSheet.cycle) {
+  problems.push("[tier A one-sheet SVG and inches] " + JSON.stringify(oneSheet));
+}
 const popupPromise = page.waitForEvent("popup", { timeout: 5000 }).catch(() => null);
 await page.evaluate(async () => (await import("/ui/figures/figurePrint.js")).printTemplate(uiState.figures.activeSubtab));
 const popup = await popupPromise;
@@ -2499,4 +2519,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, no errors");

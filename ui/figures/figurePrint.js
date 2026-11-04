@@ -37,6 +37,13 @@
      setNailSize(tabId)
      templatePages(tabState)
      printTemplate(tabId)
+     oneSheetSVG(tabState, colourCycle), saveOneSheetSVG(tabId)
+     unitName(), toUnits(mm), fromUnits(v)
+
+   Units (Tier A): the print-size and nail-size questions use
+   uiState.figures.printUnits, inches unless set to "mm"; figures keep
+   millimetres. Spacing problems never stop printing: the check only
+   rings and lists them (your responsibility, Barry).
    ============================================================ */
 
 import { uiState } from "/ui/uiState.js";
@@ -47,6 +54,7 @@ const PAPER  = { name: "Letter", w: 215.9, h: 279.4 };   // millimetres (decisio
 const MARGIN = 10;                         // mm round each sheet
 const OVERLAP = 10;                        // mm shared by neighbouring sheets
 const MAX_CHECK = 3000;                    // more nails than this: the spacing check is skipped
+const DEFAULT_NAIL = { diameter: 2, clearance: 3 };   // mm, for figures saved before nail sizes (new ones: figureModel.js)
 
 
 // The layers that print, by index.
@@ -144,7 +152,7 @@ export function spacingProblems(tabState, { fresh = true } = {}) {
   const { nails } = nailsOf(tabState, { fresh });
   if (!figure.scale) return { ok: false, message: "Set the print size first (Print size...).", pairs: [], nails };
   if (nails.length > MAX_CHECK) return { ok: false, message: nails.length + " nails: too many to check.", pairs: [], nails };
-  const nail = figure.nail || { diameter: 2, clearance: 3 };
+  const nail = figure.nail || DEFAULT_NAIL;
   const least = nail.diameter + nail.clearance;          // mm, centre to centre
   const pairs = [];
   for (let a = 0; a < nails.length; a++) {
@@ -155,8 +163,8 @@ export function spacingProblems(tabState, { fresh = true } = {}) {
   }
   pairs.sort((p, q) => p[2] - q[2]);
   const message = pairs.length
-    ? pairs.length + " pair(s) closer than " + least + " mm (nail " + nail.diameter + " mm + clearance " + nail.clearance + " mm)."
-    : "No nails closer than " + least + " mm.";
+    ? pairs.length + " pair(s) closer than " + bothUnits(least) + " (nail " + bothUnits(nail.diameter) + " + clearance " + bothUnits(nail.clearance) + ")."
+    : "No nails closer than " + bothUnits(least) + ".";
   return { ok: true, message, pairs, nails };
 } // end spacingProblems
 
@@ -197,28 +205,114 @@ export function setPrintSize(tabId) {
   const box = nailBox(nails);
   const spanPx = box.maxX - box.minX;
   if (spanPx < 1) { window.alert("The nails do not spread across; set the size from a wider figure."); return false; }
-  const nowMm = ts.figure.scale ? (spanPx * ts.figure.scale).toFixed(1) : "";
-  const answer = window.prompt("Printed width of the template, in millimetres, from the leftmost nail to the rightmost (now "
-                               + Math.round(spanPx) + " pixels on screen):", nowMm);
+  const u = unitName();
+  const now = ts.figure.scale ? toUnits(spanPx * ts.figure.scale) : "";
+  const answer = window.prompt("Printed width of the template, in " + u + ", from the leftmost nail to the rightmost (now "
+                               + Math.round(spanPx) + " pixels on screen):", now);
   if (answer === null) return false;
-  const mm = Number(answer);
-  if (!(Number.isFinite(mm) && mm > 0)) { window.alert("Please give a width in millimetres, greater than 0."); return false; }
-  ts.figure.scale = mm / spanPx;
+  const width = Number(answer);
+  if (!(Number.isFinite(width) && width > 0)) { window.alert("Please give a width in " + u + ", greater than 0."); return false; }
+  ts.figure.scale = fromUnits(width) / spanPx;
   redrawFigure(tabId);
   return true;
 } // end setPrintSize
 
 export function setNailSize(tabId) {
   const ts = uiState.figures.tabs[tabId];
-  const now = ts.figure.nail || { diameter: 2, clearance: 3 };
-  const answer = window.prompt("Nail diameter and clearance in millimetres, separated by a comma:", now.diameter + ", " + now.clearance);
+  const now = ts.figure.nail || DEFAULT_NAIL;
+  const u = unitName();
+  const answer = window.prompt("Nail diameter and clearance in " + u + ", separated by a comma:",
+                               toUnits(now.diameter) + ", " + toUnits(now.clearance));
   if (answer === null) return false;
   const [d, c] = answer.split(",").map((s) => Number(s.trim()));
   if (!(d > 0 && c >= 0)) { window.alert("Please give two numbers: a diameter greater than 0, and a clearance of 0 or more."); return false; }
-  ts.figure.nail = { diameter: d, clearance: c };
+  ts.figure.nail = { diameter: fromUnits(d), clearance: fromUnits(c) };
   redrawFigure(tabId);
   return true;
 } // end setNailSize
+
+
+/* ------------------------------------------------------------
+   Units. Figures keep millimetres; the questions and the cover sheet
+   use uiState.figures.printUnits ("in" or "mm").
+   ------------------------------------------------------------ */
+const MM_PER_INCH = 25.4;
+
+// "inches" or "millimetres", for questions.
+export function unitName() {
+  return uiState.figures.printUnits === "mm" ? "millimetres" : "inches";
+} // end unitName
+
+// A length in mm, shown in the print units: 3 decimals for inches, 1 for mm.
+export function toUnits(mm) {
+  return uiState.figures.printUnits === "mm" ? Number(mm.toFixed(1)) : Number((mm / MM_PER_INCH).toFixed(3));
+} // end toUnits
+
+// A length typed in the print units, as mm.
+export function fromUnits(v) {
+  return uiState.figures.printUnits === "mm" ? v : v * MM_PER_INCH;
+} // end fromUnits
+
+// A length in mm as words in both units, for the cover sheet ("4.8 mm (0.188 in)").
+function bothUnits(mm) {
+  return mm.toFixed(1) + " mm (" + (mm / MM_PER_INCH).toFixed(3) + " in)";
+} // end bothUnits
+
+
+/* ============================================================
+   oneSheetSVG(tabState, colourCycle) / saveOneSheetSVG(tabId)
+   ------------------------------------------------------------
+   The whole template as one true-size SVG (millimetre units), for
+   tiling by hand (Snagit or any other tool) instead of the sheets of
+   printTemplate: every nail, a 100 mm calibration line along the top,
+   and the name. With colourCycle, the nails are coloured in turn
+   (red, green, orange, blue, yellow, Barry's O-14), in nail order, so
+   neighbouring nails are easy to tell apart while hammering.
+   ============================================================ */
+const NAIL_COLOURS = ["#d00000", "#008000", "#ff8c00", "#0040ff", "#d4b000"];
+
+export function oneSheetSVG(tabState, colourCycle = false) {
+  const figure = tabState.figure;
+  const s      = figure.scale;
+  const nail   = figure.nail || DEFAULT_NAIL;
+  const { nails } = nailsOf(tabState);
+  const box    = nailBox(nails);
+  const pad    = Math.max(5, nail.diameter * 2);
+  const top    = 20;                                              // mm above the nails: title and calibration line
+  const widthMm  = Math.max(110, (box.maxX - box.minX) * s + 2 * pad);
+  const heightMm = (box.maxY - box.minY) * s + 2 * pad + top;
+  const name = (figure.name || "Untitled").replace(/[<&>]/g, "");
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${widthMm.toFixed(2)}mm" height="${heightMm.toFixed(2)}mm" `
+          + `viewBox="0 0 ${widthMm.toFixed(2)} ${heightMm.toFixed(2)}" font-family="Courier New, monospace">`;
+  svg += `<text x="${pad}" y="6" font-size="4" font-weight="bold">${name}: ${nails.length} nails, `
+       + `${bothUnits(widthMm)} wide. Print at actual size; the line below is 100 mm.</text>`;
+  svg += `<line class="calibration" x1="${pad}" y1="12" x2="${pad + 100}" y2="12" stroke="#000" stroke-width="0.5"/>`;
+  nails.forEach((n, i) => {
+    const x = (n.x - box.minX) * s + pad, y = (n.y - box.minY) * s + pad + top;
+    const colour = colourCycle ? NAIL_COLOURS[i % NAIL_COLOURS.length] : "#000";
+    svg += `<circle class="nail" cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${(nail.diameter / 2).toFixed(2)}" `
+         + `fill="none" stroke="${colour}" stroke-width="${colourCycle ? 0.5 : 0.25}"/>`;
+    svg += `<path d="M${(x - 0.8).toFixed(2)},${y.toFixed(2)}h1.6M${x.toFixed(2)},${(y - 0.8).toFixed(2)}v1.6" stroke="${colour}" stroke-width="0.2"/>`;
+  });
+  svg += `</svg>\n`;
+  return { svg, widthMm, heightMm, nails: nails.length };
+} // end oneSheetSVG
+
+// Downloads oneSheetSVG as <figure name>.svg. Asks whether to colour the nails.
+export function saveOneSheetSVG(tabId) {
+  const ts = uiState.figures.tabs[tabId];
+  if (!ts.figure.scale) { window.alert("Set the print size first (Print size...)."); return null; }
+  if (!nailsOf(ts).nails.length) { window.alert("The figure has nothing to print: no discs or stitches on layers that print."); return null; }
+  const colour = window.confirm("Colour the nails in turn (red, green, orange, blue, yellow)?\nOK: coloured. Cancel: black.");
+  const { svg } = oneSheetSVG(ts, colour);
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml" }));
+  a.download = (ts.figure.name || "template").replace(/[^A-Za-z0-9 _-]/g, "_") + ".svg";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  return svg;
+} // end saveOneSheetSVG
 
 
 /* ============================================================
@@ -231,7 +325,7 @@ export function setNailSize(tabId) {
 export function templatePages(tabState) {
   const figure = tabState.figure;
   const s      = figure.scale;
-  const nail   = figure.nail || { diameter: 2, clearance: 3 };
+  const nail   = figure.nail || DEFAULT_NAIL;
   const { nails, source, coincident } = nailsOf(tabState);
   const box    = nailBox(nails);
   const pad    = Math.max(5, nail.diameter * 2);                 // mm round the nails
@@ -258,7 +352,7 @@ export function templatePages(tabState) {
   cover += `<text x="0" y="62" font-size="4">It must measure exactly 100 mm. If it does not, the printer scaled the page.</text>`;
   cover += `<text x="0" y="80" font-size="4" font-weight="bold">Scale bar, ${bar} mm in 10 mm steps</text>`;
   for (let k = 0; k < bar / 10; k++) cover += `<rect x="${k * 10}" y="84" width="10" height="4" fill="${k % 2 ? "#fff" : "#000"}" stroke="#000" stroke-width="0.3"/>`;
-  cover += `<text x="0" y="104" font-size="4">Nails: ${nail.diameter} mm across, at least ${nail.clearance} mm apart.</text>`;
+  cover += `<text x="0" y="104" font-size="4">Nails: ${bothUnits(nail.diameter)} across, at least ${bothUnits(nail.clearance)} apart.</text>`;
   cover += `<text x="0" y="111" font-size="4">Sheets overlap by ${OVERLAP} mm; line up the + marks.</text>`;
   cover += `</svg>`;
   pages.push(cover);

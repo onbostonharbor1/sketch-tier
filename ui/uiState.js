@@ -147,6 +147,10 @@ export const uiState = {
     // Click tolerance, in canvas pixels, for picking points in points mode.
     hitRadius: 5,
 
+    // Units for the print-size and nail-size questions and the cover sheet:
+    // "in" (Barry, O-1) or "mm". Figures store millimetres either way.
+    printUnits: "in",
+
     // How close, in canvas pixels, a dropped handle must land to another
     // handle to snap onto it and weld (Phase 8 next pass). Set from
     // Figures Commands > "Weld snap radius".

@@ -86,7 +86,7 @@ export function createEmptyFigure(name) {
     category:    null,
     units:       "px",
     scale:       null,  // millimetres per pixel, once set for printing
-    nail:        { diameter: 2, clearance: 3 },   // millimetres, for the spacing check
+    nail:        { diameter: 2, clearance: 4.76 },  // millimetres, for the spacing check (clearance 3/16 in, Barry O-3)
     nextPoint:   1,
     points:      [],
     layers:      [],

@@ -34,7 +34,8 @@
    ============================================================ */
 
 import { setCaptionBar }            from "/ui/caption.js";
-import { setPrintSize, setNailSize, spacingProblems, printTemplate } from "./figurePrint.js";
+import { setPrintSize, setNailSize, spacingProblems, printTemplate,
+         saveOneSheetSVG, toUnits, unitName } from "./figurePrint.js";
 import { renderLayerPanel } from "./figureLayerPanel.js";
 import { menuManager }              from "/ui/menuManager.js";
 import { makeHelpItem, makeNotesItem } from "/ui/menuCmds.js";
@@ -270,17 +271,17 @@ export async function getFiguresCaptionMenuItems(title) {
   // Print aids (Phase 9, figurePrint.js).
   const fig0 = ts0 && ts0.figure;
   const act0 = fig0 && fig0.activeLayer >= 0 ? fig0.layers[fig0.activeLayer] : null;
-  const scaleText = fig0 && fig0.scale ? " (" + (fig0.scale * 100).toFixed(1) + " mm per 100 px)" : " (not set)";
+  const scaleText = fig0 && fig0.scale ? " (" + toUnits(fig0.scale * 100) + " " + (uiState.figures.printUnits === "mm" ? "mm" : "in") + " per 100 px)" : " (not set)";
   const printSizeItem = {
     label:    "Print size..." + (fig0 ? scaleText : ""),
     disabled: !fig0,
-    tooltip:  "How wide the template prints, in millimetres. Sets the figure's scale.",
+    tooltip:  "How wide the template prints, in " + unitName() + ". Sets the figure's scale.",
     onClick:  () => setPrintSize(uiState.figures.activeSubtab)
   };
   const nailSizeItem = {
-    label:    "Nail size..." + (fig0 && fig0.nail ? " (" + fig0.nail.diameter + " mm, " + fig0.nail.clearance + " mm apart)" : ""),
+    label:    "Nail size..." + (fig0 && fig0.nail ? " (" + toUnits(fig0.nail.diameter) + ", " + toUnits(fig0.nail.clearance) + " apart, " + unitName() + ")" : ""),
     disabled: !fig0,
-    tooltip:  "Nail diameter and the clearance wanted between nails, in millimetres.",
+    tooltip:  "Nail diameter and the clearance wanted between nails, in " + unitName() + ".",
     onClick:  () => setNailSize(uiState.figures.activeSubtab)
   };
   const spacingItem = {
@@ -334,6 +335,18 @@ export async function getFiguresCaptionMenuItems(title) {
     tooltip:  "Opens the template at true size, one sheet per page, with a calibration line. Needs the print size set.",
     onClick:  () => printTemplate(uiState.figures.activeSubtab)
   };
+  const svgItem = {
+    label:    "Save template as one SVG...",
+    disabled: !(fig0 && fig0.scale),
+    tooltip:  "The whole template at true size in one SVG file, to tile by hand. Nails can be coloured in turn.",
+    onClick:  () => saveOneSheetSVG(uiState.figures.activeSubtab)
+  };
+  const unitsItem = {
+    label:    "Print units: " + unitName() + " (switch)",
+    disabled: false,
+    tooltip:  "Inches or millimetres for the print-size and nail-size questions. Figures keep millimetres.",
+    onClick:  () => { uiState.figures.printUnits = uiState.figures.printUnits === "mm" ? "in" : "mm"; }
+  };
 
   return [
     await makeHelpItem("figures", null),
@@ -354,6 +367,8 @@ export async function getFiguresCaptionMenuItems(title) {
     outputItem,
     scaffoldItem,
     printItem,
+    svgItem,
+    unitsItem,
     later("Show Script")
   ];
 
