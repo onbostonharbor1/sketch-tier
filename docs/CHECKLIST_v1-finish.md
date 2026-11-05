@@ -7,7 +7,7 @@ failures were there before. Please run `npm run test:node` on the PC and tell me
 
 The sandbox cannot see Windows, your real files, real printing, or how things feel to use. That is what this list is for.
 Each item says what to do, what a failure looks like, and how to undo. Guesses on open questions are in
-`docs/V1_FINISH_PLAN.md` (decisions G-1 to G-18); reverse any of them by saying so.
+`docs/old/V1_FINISH_PLAN.md` (decisions G-1 to G-18); reverse any of them by saying so.
 
 **Setup.** `git fetch`, `git checkout claude/v1-finish`, `npm install`, start as usual (`sketchpad.bat`). If many files
 change while Vite is running, stop and restart it.
