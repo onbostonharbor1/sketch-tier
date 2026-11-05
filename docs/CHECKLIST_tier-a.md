@@ -97,3 +97,7 @@ still does). Failure: a category or item missing; a status not shown on Home. Un
 **K. Comments** (1e9a6be). A comment above every function (299 added, comments only). `npm run dictionary` lists them in
 `docs/FUNCTIONS.md`. Read a few files you know and tell me any comment that is wrong or unclear.
 
+
+**O. Help Overview** (04efbad). Six pages have a "Changes, 3 to 5 November 2026" section at the top; four older pages
+(dataFlow, sketchpadArchitecture, fileLayer, gallery) have a note that lists now come from the folders. Seven new pages
+under Subsystems. Tell me anything wrong or missing.

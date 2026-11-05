@@ -77,3 +77,5 @@ Shown on Home > Checklist, where each line has a checkbox. One item per line, in
 - [ ] K1 Open three files you know (e.g. draw/drawRegular.js, ui/setUI.js, ui/home/home.js): each function has a comment above it that says what it does (docs/CHECKLIST_tier-a.md)
 - [ ] K2 npm run dictionary; docs/FUNCTIONS.md lists 764 functions, 1 without a comment (docs/CHECKLIST_tier-a.md)
 - [ ] K3 Tell me any comment that is wrong or unclear; I will fix it (docs/CHECKLIST_tier-a.md)
+- [ ] O1 Help Overview: read the 'Changes, November 2026' sections at the top of Home, Draw, Figures, manifest, nodeLayer and Parameter Controls (docs/CHECKLIST_tier-a.md)
+- [ ] O2 Help Overview > Subsystems: read the seven new pages (lists from the folders, errors and checklists, stepping, shapers and connectors, Home Help, Codespaces, tests) (docs/CHECKLIST_tier-a.md)
