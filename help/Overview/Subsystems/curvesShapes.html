@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Curve library and shape palette</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Curve library and shape palette</h1>
+<p class="note">Written 5 November 2026. Code: <code>draw/curves.js</code> (the points), <code>draw/ringObject.js</code>
+(the maker), one small file per object in <code>drawRegistry/</code>. Names: <code>docs/registryNames.md</code>.</p>
+
+<p>Twelve Draw objects, each a curve or shape whose points are stitched one of four ways. In Draw they are in the
+categories <b>curves</b> and <b>shapes</b>. In Figures, the caption has <b>Rectangle</b>, <b>Polygon</b> and <b>Ellipse</b>
+buttons beside Line and Parabola, and a <b>Curve...</b> list.</p>
+
+<table>
+<tr><th>Object</th><th>Its own setting</th><th>What it is</th></tr>
+<tr><td>Rose</td><td>Petals (k)</td><td>r = cos(k t): k petals for odd k, 2k for even</td></tr>
+<tr><td>Lissajous</td><td>a, b, Phase</td><td>x = sin(a t + phase), y = sin(b t)</td></tr>
+<tr><td>Epicycloid</td><td>Lobes</td><td>a circle rolling round the outside of a circle</td></tr>
+<tr><td>Hypocycloid</td><td>Cusps</td><td>a circle rolling round the inside: 3 a deltoid, 4 an astroid</td></tr>
+<tr><td>Astroid</td><td>none</td><td>the four-cusped star</td></tr>
+<tr><td>Cardioid</td><td>none</td><td>the heart, cusp at the centre</td></tr>
+<tr><td>Limacon</td><td>Loop</td><td>an oval, a heart (1) or a loop inside a loop (above 1)</td></tr>
+<tr><td>Superellipse</td><td>Power</td><td>2 a circle, 4 a squircle, 1 a diamond, below 1 a star</td></tr>
+<tr><td>Archimedean Spiral</td><td>Turns</td><td>from the centre outward; the one open curve</td></tr>
+<tr><td>Rectangle</td><td>Height / width</td><td>points spread evenly along the sides</td></tr>
+<tr><td>Polygon</td><td>Sides</td><td>a regular polygon outline, points along the sides</td></tr>
+<tr><td>Ellipse</td><td>Height / width</td><td>an ellipse outline</td></tr>
+</table>
+
+<h2>What every one of them has</h2>
+<ul>
+<li><b>Two handles.</b> The centre moves the whole object. The size handle (starting to the right) resizes it: its distance
+from the centre is the size. Moving the Size slider moves the size handle.</li>
+<li><b>Points:</b> how many points on the curve (3 to 400). These are where nails and discs go.</li>
+<li><b>Stitch:</b> Outline (each point to the next), Chords (each point to the one Skip further on), Times table (point i
+to point i &times; Factor, round the loop) or All pairs. These are the connectors of <code>draw/connectors.js</code>.</li>
+<li>Colour and line width. Every line goes through <code>drawLine</code>, so Final mode, figure transforms, print aids and
+stepping all work.</li>
+<li><b>In Figures,</b> the curve's points are one arm: in points mode a disc can be put on any of them, and welded.</li>
+</ul>
+
+<h2>How the code is arranged</h2>
+<p>All twelve are the same kind of object, so one maker builds them: <code>makeRingObject(spec)</code> in
+<code>draw/ringObject.js</code>. A registry file such as <code>drawRegistry/rose.js</code> is about twenty lines: its name,
+id, category, the function giving its points (<code>rosePoints</code> from <code>draw/curves.js</code>), and its own
+setting. Adding a curve means adding a points function to <code>curves.js</code> and a file like these, then a line in
+<code>main.js</code> and in <code>drawRegistry/drawRegistry.js</code>.</p>
+
+<h2>Names</h2>
+<p><code>polygon</code> and <code>ellipse</code> are outlines, not to be confused with <code>regularPolygon</code> and
+<code>inEllipse</code>, which are stitched patterns; <code>archimedeanSpiral</code> names its kind because "spiral" alone is
+ambiguous. All recorded in <code>docs/registryNames.md</code> (Home &gt; Help &gt; Build Documents).</p>
+</body>
+</html>

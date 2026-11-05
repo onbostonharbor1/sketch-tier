@@ -203,3 +203,12 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 - **Still before the next tier:** A12 undo, A18 crash recovery, A3 stepping in Figures.
 - **Waiting for Barry's go:** A4 curve library and A5 shape palette (naming rule settled); A27 tags (explained).
 
+## 8. Done 5 November 2026
+
+- **A4 curve library and A5 shape palette:** built (76f3986). Rose, Lissajous, Epicycloid, Hypocycloid, Astroid, Cardioid,
+  Limacon, Superellipse, Archimedean Spiral; Rectangle, Polygon, Ellipse. Each has centre and size handles, Points,
+  Stitch (outline, chords, times table, all pairs), Skip, Factor, colour and line width; discs on its points in Figures.
+  Figures caption: Rectangle, Polygon, Ellipse buttons and a Curve list. Names in `docs/registryNames.md`.
+- **Help:** Overview page *Curve library and shape palette*; Draw and Figures pages note them.
+- **Left before the next tier:** A12 undo, A18 crash recovery, A3 stepping in Figures.
+
