@@ -1,9 +1,9 @@
 # Things to check
 
-Shown on Home > Checklist, where each line has a checkbox. One item per line, in the form `- [ ] text`
-(ticked: `- [x] text`). Reviewed and rewritten 5 November 2026: grouped by area, in the order you would walk through
-the app, each line saying what to do and what you should see. Details, where a line names one, are in that docs file.
-If something fails, add a line here (Add item) saying what you saw, and tell me.
+Shown on Home > Checklist, where each line has a checkbox. Each id (S1, HM2, P12 ...) has exact steps, what you should
+see, and pictures in the **Checking guide**: Home > Help > Build Documents > Checking guide (docs/CHECKING_GUIDE.md),
+under the same section number. Open the guide beside this list. If something does not match, Add item here saying what
+you saw, and tell me.
 
 ## 0. Setting up
 - [ ] S1 git fetch, git checkout claude/tier-a, git pull; npm install
@@ -25,14 +25,14 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] HM4 Click a picture item: it shows in Results
 - [ ] HM5 Click a Draw object item (if any have a status): the Draw tab opens on it
 - [ ] HM6 The yellow alert bar appears only when there are unticked errors or a manifest check found problems; Dismiss hides it
-- [ ] T4 Notes: shows home/notes.md; Open in VS Code opens it; edit, save, Reload shows the change (docs/CHECKLIST_tier-a.md)
-- [ ] T5 Checklist: this list. Tick an item: it goes. Show all: ticked items greyed; untick one: it comes back (docs/CHECKLIST_tier-a.md)
+- [ ] T4 Notes: shows home/notes.md; Open in VS Code opens it; edit, save, Reload shows the change (guide)
+- [ ] T5 Checklist: this list. Tick an item: it goes. Show all: ticked items greyed; untick one: it comes back (guide)
 - [ ] T5a Checklist: type in the box and press Add item (or Enter): the new line appears at the end of home/checklist.md
 - [ ] T5b Checklist: Purge ticked asks first, then removes only the ticked lines; headings stay
 - [ ] T5c Open home/checklist.md in VS Code: plain "- [ ]" lines; an edit there shows after switching subtabs
 
 ## 3. Home > Help
-- [ ] H1 Help shows a contents tree on the left and a page on the right (docs/CHECKLIST_tier-a.md)
+- [ ] H1 Help shows a contents tree on the left and a page on the right (guide)
 - [ ] H2 Three groups with counts: Design, Reflections, Build Documents
 - [ ] H3 Design holds the Overview pages by subfolder (Design Notes, Subsystems, Tabs); open one: it shows on the right
 - [ ] H4 Build Documents lists the docs/ documents A to Z (27, including registryNames)
@@ -53,14 +53,14 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] E4 A failing figure layer is named in the bar and the other layers still draw (docs/CHECKLIST_v1-errors.md)
 - [ ] E5 Utilities > Tools > Validate Draw Registry: every object OK except Linked Circles (known), including the 12 new ones
 - [ ] E6 Utilities > Tools > Check Figure Files: one line per saved figure (docs/CHECKLIST_v1-errors.md)
-- [ ] T3 Make an error (F12 console: setTimeout(() => { throw new Error("probe") }, 0)): the red bar lists it with Tick (docs/CHECKLIST_tier-a.md)
+- [ ] T3 Make an error (F12 console: setTimeout(() => { throw new Error("probe") }, 0)): the red bar lists it with Tick (guide)
 - [ ] T3a Tick it in the bar: it leaves the bar; utilities/logfiles/errors_<today>.txt has an "Acknowledged:" line
 - [ ] T3b Make the same error again and reload: Home's yellow bar says 1 error is not yet ticked
 - [ ] T3c Home > Errors lists it with a checkbox; tick it: it goes
 - [ ] T3d Show all: it is back, greyed and ticked; Purge ticked, OK: it is gone even with Show all; the log still has every line plus "Purged:"
 
 ## 5. Lists from the folders (manifests are only notes now)
-- [ ] L1 Patterns, Gallery (Ideabook, Patterns, Scripts), Utilities (Tools, Lab) and Figures lists look exactly as before (docs/CHECKLIST_tier-a.md)
+- [ ] L1 Patterns, Gallery (Ideabook, Patterns, Scripts), Utilities (Tools, Lab) and Figures lists look exactly as before (guide)
 - [ ] L1a Draw > Categories now also shows the categories curves and shapes; an object with saved settings is still marked as such, and only those
 - [ ] L2 Home > Categories shows the same statuses and items as before
 - [ ] L3 In VS Code add a new .js file to a patterns category folder (no manifest edit); reload: it appears, titled by its file name
@@ -78,7 +78,7 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] D3 Sliders, colour pickers and the Stitch list redraw at once
 - [ ] D4 Caption menu: Save as PNG, Save as Pattern, Copy Object, Reset Parameters each still work
 - [ ] D5 Saved settings (secondary objects) open from the category frame and save
-- [ ] T2 Step through the drawing (Draw > Cycloid > caption menu): left column shows first, previous, next, last, slider and "Line N of N" (docs/CHECKLIST_tier-a.md)
+- [ ] T2 Step through the drawing (Draw > Cycloid > caption menu): left column shows first, previous, next, last, slider and "Line N of N" (guide)
 - [ ] T2a Stepping: first shows only line 1 in red with a dot at its start; next and the slider step on; the readout matches the red line
 - [ ] T2b Stepping: move a Cycloid slider while stepping: the drawing changes and stepping carries on
 - [ ] T2c Stepping: Done stepping draws everything again; a tab switch while stepping ends it
@@ -87,7 +87,7 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] T7a Sweep: type "3, 5, 8" in a list box: those values are used instead of From and To
 
 ## 7. Curve library and shape palette (new)
-- [ ] P1 Draw > Categories has a curves frame (9) and a shapes frame (3) (docs/CHECKLIST_tier-a.md)
+- [ ] P1 Draw > Categories has a curves frame (9) and a shapes frame (3) (guide)
 - [ ] P2 Rose: Petals (k) changes the petal count (k odd: k petals, even: 2k)
 - [ ] P3 Lissajous: a, b and Phase change the figure (3 and 2: a pretzel)
 - [ ] P4 Epicycloid: Lobes changes the number of cusps outside
@@ -120,7 +120,7 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] F4 Magic points: diamonds at middles, tips, cusps (docs/CHECKLIST_v1-finish.md)
 - [ ] T11 Two crossing lines in Points Mode: the crossing is a purple ring with a cross; middles are black diamonds; clicking either places a disc there
 - [ ] F5 Print aids: print size, scale bar, spacing check (docs/CHECKLIST_v1-finish.md)
-- [ ] T6 Print size... asks in inches; type 8: the nails span 8 inches (docs/CHECKLIST_tier-a.md)
+- [ ] T6 Print size... asks in inches; type 8: the nails span 8 inches (guide)
 - [ ] T6a Nail size... asks in inches; a new figure shows clearance 0.187 (3/16)
 - [ ] T6b Print units: inches (switch) changes the questions to millimetres and back
 - [ ] T6c Save template as one SVG..., OK for colours: the file's nails are red, green, orange, blue, yellow in turn; Cancel gives black
@@ -151,7 +151,7 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] F12 The survey of what scripts rely on (docs/CHECKLIST_v1-finish.md)
 
 ## 10. Codespace (the iPad)
-- [ ] C1 On github.com: the repository, branch claude/tier-a, Code > Codespaces > Create codespace; it installs and starts by itself (docs/CHECKLIST_tier-a.md)
+- [ ] C1 On github.com: the repository, branch claude/tier-a, Code > Codespaces > Create codespace; it installs and starts by itself (guide)
 - [ ] C1a Open port 5173 (Ports panel or the pop-up): Sketchpad opens
 - [ ] C1b In the Codespace: Draw works, and Figures > Save As works (it needs the Node service)
 - [ ] C1c In the Codespace: the lists are the same as on the PC, and Home > Help opens
@@ -167,13 +167,13 @@ If something fails, add a line here (Add item) saying what you saw, and tell me.
 - [ ] R6 npm run test:ideabook
 - [ ] R7 npm run test:shapers (27 tests) and npm run test:controls (6 tests)
 - [ ] R8 npm run lint:globals: 0 errors
-- [ ] T8 After an intended drawing change, the regression report shows approved, now, overlay, flicker and difference (docs/CHECKLIST_tier-a.md)
+- [ ] T8 After an intended drawing change, the regression report shows approved, now, overlay, flicker and difference (guide)
 - [ ] F13 The regression test itself (docs/CHECKLIST_v1-finish.md)
 
 ## 12. Reading
 - [ ] O1 Help Overview: the "Changes, November 2026" sections at the top of Home, Draw, Figures, manifest, nodeLayer and Parameter Controls
 - [ ] O2 Help Overview > Subsystems: the eight new pages (lists from the folders, errors and checklists, stepping, shapers and connectors, Home Help, Codespaces, tests, curve library and shape palette)
-- [ ] T1 draw/shapers.js and draw/connectors.js: each function clear on its own (docs/CHECKLIST_tier-a.md)
+- [ ] T1 draw/shapers.js and draw/connectors.js: each function clear on its own (guide)
 - [ ] T10 ui/controls/builders/conventions.js: controls by name alone and groups
 - [ ] K1 Open three files you know (draw/drawRegular.js, ui/setUI.js, ui/home/home.js): each function has a comment saying what it does
 - [ ] K2 npm run dictionary; docs/FUNCTIONS.md lists every function A to Z (780, 1 without a comment)

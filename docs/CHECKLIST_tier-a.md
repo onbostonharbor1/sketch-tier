@@ -117,3 +117,5 @@ and a Curve... list; discs sit on any of a curve's points, and weld like any oth
 ambiguous ones (polygon, ellipse, archimedeanSpiral), are in `docs/registryNames.md`. Run Regenerate thumbnails for Draw
 once to give them pictures. Failure: an object that draws nothing at its defaults; a size handle that does not resize;
 discs that do not follow the curve. Undo: `git revert 76f3986`.
+
+**5 November, later.** The explicit, step-by-step version of every check, with pictures, is docs/CHECKING_GUIDE.md (Home > Help > Build Documents > Checking guide).

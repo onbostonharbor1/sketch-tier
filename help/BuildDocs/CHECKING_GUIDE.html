@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Checking guide</title>
+  <link rel="stylesheet" href="/help/help.css" />
+</head>
+<body>
+<p class="buildDocSource"><em>Copied from docs/CHECKING_GUIDE.md by npm run help:builddocs.</em></p>
+<h1>Checking guide</h1>
+<p>Barry, 5 November 2026. This is the long form of Home &gt; Checklist. Each section below matches a section of the checklist, and each check has the same id (S1, HM2, P12 ...). For each: exactly what to click, and exactly what you should see. Pictures show what a correct result looks like. Open this page in Home &gt; Help &gt; Build Documents ("Checking guide") beside the checklist, or in VS Code (docs/CHECKING_GUIDE.md).</p>
+<p>Words used: the <strong>left column</strong> is the narrow coloured panel on the left; the <strong>subtabs</strong> are the second row of tabs (Categories, Errors ...); the <strong>caption</strong> is the bar under the subtabs with the item's name and a <strong>v</strong> button at its right, which opens the <strong>caption menu</strong>; the <strong>Commands</strong> button is at the top of the left column.</p>
+<p>If something does not match: on Home &gt; Checklist type what you saw in the box and press Add item, and tell me.</p>
+<hr>
+<h2>0. Setting up</h2>
+<p><strong>S1.</strong> In a VS Code terminal in C:\Users\barry\Desktop\sketchpad type, one at a time: <code>git fetch</code>, <code>git checkout claude/tier-a</code>, <code>git pull</code>, <code>npm install</code>. <em>See:</em> <code>git checkout</code> says "Switched to branch 'claude/tier-a'" (or "Already on"); <code>npm install</code> ends without "ERR!".</p>
+<p><strong>S2.</strong> Close any window running Vite or the Node service. Double-click <code>sketchpad.bat</code>. <em>See:</em> the window does <strong>not</strong> print "Starting Sketchpad Maintenance..." any more (that step was removed). The browser opens Sketchpad.</p>
+<p><strong>S3.</strong> <em>See:</em> the Home tab, with <strong>no red bar</strong> across the top of the page area.</p>
+<p><strong>S4.</strong> Utilities tab &gt; subtab <strong>Tools</strong> &gt; category frame <strong>Thumbnails</strong> &gt; <strong>Regenerate thumbnails</strong>. In the side panel choose <strong>All</strong> and press <strong>Regenerate</strong>. Wait (gallery pictures take about 90 seconds). <em>See:</em> "Made ... pictures. Skipped 5. Failed 1." (the 5 are animated scripts; the 1 is voronoi, which has never loaded). Thumbnails were already made and committed on 5 November, so this only confirms the tool still works.</p>
+<hr>
+<h2>1. Every tab still works</h2>
+<p><strong>A1.</strong> Click Home, Draw, Patterns, Figures, Gallery, Utilities, then the same six again. <em>See:</em> each tab shows its usual first view both times; no red bar.</p>
+<p><strong>A2.</strong> Draw &gt; Categories &gt; click <strong>Cycloid</strong>. Move its Radius slider. Click Utilities, then Draw. <em>See:</em> the Cycloid subtab is still open, with the Radius where you left it.</p>
+<p><strong>A3.</strong> Patterns &gt; Categories &gt; click any pattern. Click Gallery, then Patterns. <em>See:</em> the same pattern is showing.</p>
+<p><strong>A4.</strong> On each tab press the <strong>Commands</strong> button (top of the left column). <em>See:</em> a side panel slides in from the right titled "... Maintenance"; its X closes it.</p>
+<p><strong>A5.</strong> On any tab press the caption menu <strong>v</strong> &gt; <strong>Help</strong>. <em>See:</em> the Help browser; its tree now also has folders <strong>BuildDocs</strong> and <strong>Reflections</strong>, and no title starts with "Help Treatise".</p>
+<hr>
+<h2>2. Home</h2>
+<p><img src="/docs/images/check/01-home-categories.png" alt="Home, Categories subtab" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>HM1.</strong> Click Home. <em>See:</em> subtabs <strong>Categories, Errors, Checklist, Help, Notes</strong> (as in the picture). A <strong>Results</strong> subtab appears only after you open an item.</p>
+<p><strong>HM2.</strong> Categories. <em>See:</em> one frame per status, such as Queue, fix, Examine, favorite, working. Ideabook pictures are no longer there (their status codes were removed on 5 November, as you asked).</p>
+<p><strong>HM3.</strong> Click a script in a frame. <em>See:</em> the Results subtab opens and the script draws on the canvas; Prev and Next in the caption step to the other items with the same status.</p>
+<p><strong>HM4.</strong> Click a picture item (if a frame has one). <em>See:</em> it shows in Results.</p>
+<p><strong>HM5.</strong> If a frame holds a Draw object, click it. <em>See:</em> the Draw tab opens on that object.</p>
+<p><strong>HM6.</strong> <em>See:</em> the yellow alert bar at the top of Home appears only when an error has not been ticked, or when the last manifest check found problems. Its <strong>Dismiss</strong> hides it.</p>
+<p><img src="/docs/images/check/06-home-notes.png" alt="Home, Notes subtab" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T4.</strong> Home &gt; <strong>Notes</strong>. <em>See:</em> the text of home/notes.md under two buttons. Press <strong>Open in VS Code</strong>: the file opens in VS Code. Add a line, save, press <strong>Reload</strong>: your line shows.</p>
+<p><img src="/docs/images/check/04-home-checklist.png" alt="Home, Checklist subtab" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T5.</strong> Home &gt; <strong>Checklist</strong> (this list). Tick any item. <em>See:</em> it disappears. Tick <strong>Show all (ticked too)</strong>: it is back, greyed. Untick it: it is an ordinary item again.</p>
+<p><strong>T5a.</strong> Type "test item" in the box and press <strong>Add item</strong>. <em>See:</em> "test item" appears at the end of the list.</p>
+<p><strong>T5b.</strong> Tick "test item", press <strong>Purge ticked</strong>, then OK. <em>See:</em> "test item" is gone for good; headings stay.</p>
+<p><strong>T5c.</strong> Open home/checklist.md in VS Code. <em>See:</em> plain lines starting "- [ ]" (or "- [x]" when ticked). Change one line, save, click another Home subtab and back to Checklist: your change shows.</p>
+<hr>
+<h2>3. Home &gt; Help</h2>
+<p><img src="/docs/images/check/05-home-help.png" alt="Home, Help subtab, a build document" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>H1.</strong> Home &gt; <strong>Help</strong>. <em>See:</em> buttons <strong>New reflection...</strong> and <strong>Edit</strong>, a contents tree on the left and a page area on the right (as in the picture).</p>
+<p><strong>H2.</strong> <em>See:</em> three groups: <strong>Design (n)</strong>, <strong>Reflections (n)</strong>, <strong>Build Documents (n)</strong>.</p>
+<p><strong>H3.</strong> Open Design. <em>See:</em> folders Design Notes, Subsystems, Tabs; open one and click a page: it shows on the right. No title starts with "Help Treatise".</p>
+<p><strong>H4.</strong> Open Build Documents. <em>See:</em> the current docs, A to Z: the checklists, Checking guide, FIGURE_FORMAT_V1, FUNCTIONS, registryNames, TIERS and the PDFs. The superseded ones (now in docs/old) are not listed.</p>
+<p><strong>H5.</strong> Click <strong>Tier A</strong> (TIERS). <em>See:</em> real headings, tables with lines, and lists, not raw Markdown with # and |.</p>
+<p><strong>H6.</strong> Click a PDF entry, such as Sketchpad V2 Functional Specification RevB. <em>See:</em> the PDF inside the page; the link <strong>Open the PDF on its own</strong> opens it in a browser tab.</p>
+<p><strong>H7.</strong> Press <strong>New reflection...</strong>, type "My first reflection", OK. <em>See:</em> the help editor opens on a page headed "My first reflection".</p>
+<p><strong>H8.</strong> Type a sentence in the editor, press <strong>Save</strong>, then close the overlay (its X). <em>See:</em> under Reflections, "My first reflection" is listed; click it: your sentence shows.</p>
+<p><strong>H9.</strong> With it chosen, press <strong>Edit</strong>. <em>See:</em> the editor with your sentence; change it, Save: the change shows.</p>
+<p><strong>H10.</strong> Click a Design page. <em>See:</em> <strong>Edit</strong> is greyed. Same for a Build Documents page.</p>
+<p><strong>H11.</strong> Press <strong>New reflection...</strong> and type "My first reflection" again. <em>See:</em> a message that the file is already used; nothing is overwritten.</p>
+<p><strong>H12.</strong> Edit any docs/*.md file (add a word), save, then in a terminal run <code>npm run help:builddocs</code>. Back in Help, click that document. <em>See:</em> your word.</p>
+<p><strong>H13.</strong> Build Documents &gt; <strong>Registry names</strong>. <em>See:</em> a table of the twelve new objects; polygon, ellipse and archimedeanSpiral are marked ambiguous, each with the reason.</p>
+<hr>
+<h2>4. Errors</h2>
+<p><img src="/docs/images/check/02-error-bar-tick.png" alt="The red error bar with Tick" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>E1 to E6.</strong> As in docs/CHECKLIST_v1-errors.md (E5 now also lists the twelve new objects as OK).</p>
+<p><strong>T3.</strong> Press F12 to open the browser console, type <code>setTimeout(() =&gt; { throw new Error("probe") }, 0)</code> and press Enter. <em>See:</em> the red bar, as in the picture: "Uncaught error: probe" with a <strong>Tick</strong> button, and <strong>Tick all</strong> at the right.</p>
+<p><strong>T3a.</strong> Press <strong>Tick</strong>. <em>See:</em> the red bar goes. Open utilities/logfiles/errors_&lt;today&gt;.txt in VS Code: a line "Acknowledged: Uncaught error: probe".</p>
+<p><strong>T3b.</strong> Make the same error again (repeat T3), then reload the page (F5). <em>See:</em> Home's yellow bar says "1 error is not yet ticked".</p>
+<p><img src="/docs/images/check/03-home-errors.png" alt="Home, Errors subtab" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T3c.</strong> Home &gt; <strong>Errors</strong>. <em>See:</em> the error with a checkbox (as in the picture). Tick it: it disappears.</p>
+<p><strong>T3d.</strong> Tick <strong>Show all</strong>: it is back, greyed and ticked. Press <strong>Purge ticked</strong>, OK. <em>See:</em> it is gone even with Show all. The log file still has every line, plus "Purged: Uncaught error: probe".</p>
+<hr>
+<h2>5. Lists from the folders</h2>
+<p>Since 4 November every list is worked out from the files in the folders. manifest.json files only add titles, statuses and order.</p>
+<p><strong>L1.</strong> Look through Patterns, Gallery (Ideabook, Patterns, Scripts), Utilities (Tools, Lab) and Figures. <em>See:</em> the same categories and items as before.</p>
+<p><strong>L1a.</strong> Draw &gt; Categories. <em>See:</em> two new frames, <strong>curves</strong> (9 items) and <strong>shapes</strong> (3), beside the old ones; objects that have saved settings are marked as before, and no others.</p>
+<p><strong>L2.</strong> Home &gt; Categories. <em>See:</em> the same items as before, apart from Ideabook pictures.</p>
+<p><strong>L3.</strong> In VS Code copy patterns/circles/circle.js to patterns/circles/circleCopy.js (do not touch manifest.json). Reload the page, Patterns &gt; circles. <em>See:</em> "circleCopy.js" in the list.</p>
+<p><strong>L4.</strong> Delete circleCopy.js and reload. <em>See:</em> it is gone; the rest of circles is fine; no red bar.</p>
+<p><strong>L4a.</strong> Copy any picture into gallery/Ideabook/ok (manifest untouched); reload; Gallery &gt; Ideabook &gt; ok. <em>See:</em> the picture is in the list. Delete it afterwards.</p>
+<p><strong>L5.</strong> Patterns, open a pattern, caption menu &gt; <strong>Edit Manifest</strong>: change its title; Save. <em>See:</em> the new title in the list. Set a status (for example Queue): Home &gt; Categories shows it under Queue.</p>
+<p><strong>L6.</strong> Figures: make a figure and <strong>Save As</strong> into a new category. <em>See:</em> Figures &gt; Categories lists it.</p>
+<p><strong>L7.</strong> Archive a test item (caption menu &gt; Archive). <em>See:</em> it leaves its list; its file is in the archive folder.</p>
+<p><strong>L8.</strong> Home &gt; Commands &gt; <strong>Rebuild &amp; Validate</strong>. <em>See:</em> a report, as before.</p>
+<p><strong>L9.</strong> Gallery &gt; Ideabook &gt; a category: step with Next. <em>See:</em> the same order as before.</p>
+<hr>
+<h2>6. Draw</h2>
+<p><img src="/docs/images/check/07-draw-categories.png" alt="Draw categories, with the new curves and shapes frames" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>D1.</strong> Draw &gt; Categories: open each object in turn. <em>See:</em> each draws something.</p>
+<p><strong>D2.</strong> Drag a red handle. <em>See:</em> the drawing follows. Click a handle and press the arrow keys: it moves 1 pixel each press, 10 with Shift held.</p>
+<p><strong>D3.</strong> Move a slider, pick a colour, change a list (such as Stitch on a curve). <em>See:</em> the drawing changes at once.</p>
+<p><strong>D4.</strong> Caption menu: <strong>Save as PNG</strong>, <strong>Save as Pattern</strong>, <strong>Copy Object</strong>, <strong>Reset Parameters</strong>. <em>See:</em> each works as before.</p>
+<p><strong>D5.</strong> An object marked as having saved settings: open them from its frame; change one; save. <em>See:</em> as before.</p>
+<p><img src="/docs/images/check/08-draw-stepping.png" alt="Stepping through a drawing" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T2.</strong> Draw &gt; Cycloid &gt; caption menu <strong>v</strong> &gt; <strong>Step through the drawing</strong>. <em>See:</em> in the left column (as in the picture) the title "Step through the drawing", buttons <code>|&lt;  &lt;  &gt;  &gt;|</code>, a slider, the line "Line N of N: (x, y) to (x, y), blue", and <strong>Done stepping</strong>.</p>
+<p><strong>T2a.</strong> Press <code>|&lt;</code>. <em>See:</em> one short line only, drawn thick and red, with a red dot at its start; "Line 1 of ...". Press <code>&gt;</code>: line 2 is added. Drag the slider: the drawing grows or shrinks; the readout always describes the red line.</p>
+<p><strong>T2b.</strong> While stepping, move the Radius slider. <em>See:</em> the drawing changes size and stepping carries on.</p>
+<p><strong>T2c.</strong> Press <strong>Done stepping</strong>. <em>See:</em> the whole drawing again and the stepping controls gone. Start stepping again, click another tab and come back: stepping has ended.</p>
+<p><strong>F9.</strong> Sweep a setting: as in docs/CHECKLIST_v1-finish.md.</p>
+<p><img src="/docs/images/check/09-draw-sweep-two-settings.png" alt="Sweep over two settings" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T7.</strong> Draw &gt; Cycloid &gt; caption menu &gt; <strong>Sweep a setting...</strong>. Choose a <strong>Second setting</strong>, set its Pictures to 2, press <strong>Sweep</strong>. <em>See:</em> a grid (as in the picture): the first setting changes across, the second down; each picture is labelled with both values. Click one: both sliders take its values.</p>
+<p><strong>T7a.</strong> Type <code>3, 5, 8</code> in the first <strong>or list</strong> box and Sweep. <em>See:</em> exactly three columns, for 3, 5 and 8.</p>
+<hr>
+<h2>7. Curve library and shape palette</h2>
+<p><img src="/docs/images/check/10-draw-rose.png" alt="Rose in Draw" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>P1.</strong> Draw &gt; Categories. <em>See:</em> frame <strong>curves</strong> with Archimedean Spiral, Astroid, Cardioid, Epicycloid, Hypocycloid, Limacon, Lissajous, Rose, Superellipse; frame <strong>shapes</strong> with Ellipse, Polygon, Rectangle.</p>
+<p><strong>P2.</strong> Open <strong>Rose</strong>. <em>See:</em> (as in the picture) the rose, two red handles (centre and, to the right, size), and the controls Size, Points, Stitch, Skip, Factor, Petals (k), Color, Line wid. Petals 5: five petals; 4: eight petals.</p>
+<p><strong>P3.</strong> <strong>Lissajous</strong>: change a, b and Phase. <em>See:</em> a 3, b 2 a pretzel shape; other values other figures.</p>
+<p><strong>P4.</strong> <strong>Epicycloid</strong>: Lobes 3 gives three bumps outward; more lobes, more bumps.</p>
+<p><strong>P5.</strong> <strong>Hypocycloid</strong>: Cusps 3 a curved triangle (deltoid), 4 a four-pointed star, more a star with more points.</p>
+<p><strong>P6.</strong> <strong>Astroid</strong> (a four-pointed star) and <strong>Cardioid</strong> (a heart, its dent at the centre) draw.</p>
+<p><strong>P7.</strong> <strong>Limacon</strong>: Loop 0.5 an oval, 1 a heart, 2 a loop inside a loop.</p>
+<p><strong>P8.</strong> <strong>Superellipse</strong>: Power 2 a circle, 4 a rounded square, 1 a diamond, 0.5 a star with curved sides.</p>
+<p><strong>P9.</strong> <strong>Archimedean Spiral</strong>: Turns changes the number of turns; the curve's end is not joined back to its start.</p>
+<p><strong>P10.</strong> <strong>Rectangle</strong> (Height / width), <strong>Polygon</strong> (Sides), <strong>Ellipse</strong> (Height / width) each change shape.</p>
+<p><strong>P11.</strong> On any of them, drag the <strong>centre</strong> handle. <em>See:</em> the whole object moves.</p>
+<p><strong>P12.</strong> Drag the <strong>size</strong> handle (the one to the right). <em>See:</em> the object grows or shrinks, and the Size slider moves to match.</p>
+<p><strong>P13.</strong> Move the <strong>Size</strong> slider. <em>See:</em> the size handle moves with it.</p>
+<p><strong>P14.</strong> Move <strong>Points</strong> from 3 to 400. <em>See:</em> few points (a coarse outline) to many (a smooth one).</p>
+<p><img src="/docs/images/check/11-draw-rose-times-table.png" alt="Rose stitched as a times table" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>P15.</strong> Change <strong>Stitch</strong>: Outline joins each point to the next; Chords joins each to the point Skip further on (move Skip); Times table joins point i to point i x Factor (as in the picture; try negative and fractional Factors); All pairs joins every pair (slow above about 150 points).</p>
+<p><strong>P16.</strong> Try odd settings: Rose Petals 0, Superellipse Power 0.2, Polygon with Points 3. <em>See:</em> something odd is drawn, not nothing, and no red bar.</p>
+<p><strong>P17.</strong> Turn on Final mode (as you normally do). <em>See:</em> only the points of the curve.</p>
+<p><img src="/docs/images/check/12-figures-palette.png" alt="Figures with the palette" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>P18.</strong> Figures &gt; Categories &gt; <strong>Create Figure</strong>. <em>See:</em> in the caption, buttons Line, Parabola, <strong>Rectangle, Polygon, Ellipse</strong>, a <strong>Curve...</strong> list and Template... (as in the picture).</p>
+<p><strong>P19.</strong> Press Rectangle, Polygon, Ellipse, then choose Rose in Curve.... <em>See:</em> four layers in the number strip, each drawn.</p>
+<p><img src="/docs/images/check/13-figures-points-mode-curve.png" alt="Points mode on curve layers" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>P20.</strong> Tick <strong>Points Mode</strong>. <em>See:</em> the layers' points (as in the picture); purple marks where shapes cross. Click on one of the active curve's points: a disc appears there. Untick Points Mode, drag the curve's centre or size handle: the disc moves with the curve.</p>
+<p><strong>P21.</strong> Put a disc on the rose and one on the polygon, then weld them as usual. <em>See:</em> the weld mark.</p>
+<p><strong>P22.</strong> With Points Mode ticked, <em>see:</em> Line, Parabola, Rectangle, Polygon, Ellipse and Curve... are greyed.</p>
+<p><strong>P23.</strong> Caption menu &gt; <strong>Print size...</strong> (inches, P23 uses 8), then <strong>Print template...</strong>. <em>See:</em> nails at the curve points on the sheets.</p>
+<p><strong>P24.</strong> <strong>Save As</strong>, close the figure, open it again. <em>See:</em> the same curves with the same settings.</p>
+<p><strong>P25.</strong> Draw &gt; Rose &gt; caption menu &gt; <strong>Save as Pattern</strong>. <em>See:</em> the new pattern runs in Patterns.</p>
+<p><strong>P26.</strong> Read draw/curves.js, draw/ringObject.js and drawRegistry/rose.js. Can you follow them? Note anything unclear.</p>
+<hr>
+<h2>8. Figures</h2>
+<p><strong>F1, F2, F4, F5, F6, F7, F8, F10, F11.</strong> As in docs/CHECKLIST_v1-finish.md.</p>
+<p><img src="/docs/images/check/14-figures-intersection-mark.png" alt="An intersection mark" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T11.</strong> New figure; press Line twice; drag the second line so it crosses the first; tick Points Mode. <em>See:</em> where they cross, a <strong>purple ring with a cross</strong> (as in the picture); the middles of lines are black open diamonds. Click the purple mark: a disc lands exactly there.</p>
+<p><strong>T6.</strong> Figure with discs, caption menu &gt; <strong>Print size...</strong>. <em>See:</em> the question asks in <strong>inches</strong>. Type 8. <em>See:</em> the menu now shows the scale in inches per 100 px.</p>
+<p><strong>T6a.</strong> Caption menu &gt; <strong>Nail size...</strong> on a new figure. <em>See:</em> it asks in inches and offers "0.079, 0.187" (2 mm nails, 3/16 inch clearance).</p>
+<p><strong>T6b.</strong> Caption menu &gt; <strong>Print units: inches (switch)</strong>, then Nail size... again. <em>See:</em> it now asks in millimetres. Switch back.</p>
+<p><img src="/docs/images/check/15-one-sheet-svg.png" alt="The one-sheet SVG, nails coloured in turn" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>T6c.</strong> Caption menu &gt; <strong>Save template as one SVG...</strong>, answer <strong>OK</strong> to colours. Open the downloaded file in a browser. <em>See:</em> (as in the picture) the name and a line at the top, then the nails, coloured red, green, orange, blue, yellow in turn. Save again answering <strong>Cancel</strong>: black nails.</p>
+<p><strong>T6d.</strong> Print the SVG from the browser at <strong>Actual size</strong> (100%). Measure the line at the top. <em>See:</em> exactly 100 mm.</p>
+<p><strong>T6e.</strong> <strong>Print template...</strong>. <em>See:</em> the cover sheet now gives nail sizes in mm and inches; the sheets as before.</p>
+<p><strong>T6f.</strong> Caption menu &gt; <strong>Show nail spacing problems</strong> on a figure with close nails. <em>See:</em> red rings; then Print template still works.</p>
+<p><strong>T12.</strong> Figure with three layers. Click layer 1 in the number strip. <em>See:</em> layer 1 is drawn over the others. Click layer 2: layer 2 is now on top and layer 1 goes back under.</p>
+<p><strong>T12a.</strong> Click layer 1, caption menu &gt; <strong>Keep this layer on top</strong>, then click layer 2. <em>See:</em> layer 2 on top while chosen, and layer 1 above layer 3.</p>
+<p><strong>T12b.</strong> Save As, close, reopen. <em>See:</em> the kept order; clicks alone did not change the saved file.</p>
+<p><strong>FG1.</strong> Drag a handle onto another layer's handle. <em>See:</em> they snap and weld; moving one moves the other. Move one so the welded discs no longer meet: the weld mark turns red.</p>
+<p><strong>FG2.</strong> Caption menu: <strong>Delete layer</strong>, <strong>Copy</strong>, <strong>Reset</strong>, <strong>Archive</strong> still work as before.</p>
+<p><strong>FG3.</strong> Drag a layer's centroid: it moves; select the centroid and drag the bounding box handle: it rotates.</p>
+<hr>
+<h2>9. Patterns, Gallery and Utilities</h2>
+<p><strong>F3, E7, I1 to I4, F12.</strong> As in docs/CHECKLIST_v1-finish.md, docs/CHECKLIST_v1-errors.md and docs/CHECKLIST_ideabook-scripts.md.</p>
+<p><strong>G1.</strong> <em>See:</em> pictures in the category frames of Patterns, Gallery, Draw and Figures. Utilities &gt; Tools &gt; Thumbnails: untick <strong>Thumbnails on</strong>: names instead of pictures; tick it again. Move <strong>Thumbnail size</strong>: the pictures resize.</p>
+<p><strong>G2.</strong> Utilities &gt; Tools &gt; Thumbnails &gt; <strong>Check Missing Images</strong>. <em>See:</em> only the scripts that cannot have a picture (the animated ones and voronoi).</p>
+<hr>
+<h2>10. Codespace (the iPad)</h2>
+<p><strong>C1.</strong> On the iPad, in Safari: github.com &gt; onbostonharbor1/sketchpad &gt; branch <strong>claude/tier-a</strong> &gt; green <strong>Code</strong> button &gt; <strong>Codespaces</strong> &gt; <strong>Create codespace on claude/tier-a</strong>. <em>See:</em> a browser VS Code; a terminal runs npm install, then npm run dev:all.</p>
+<p><strong>C1a.</strong> In VS Code's <strong>Ports</strong> panel, open port <strong>5173</strong> (the globe icon). <em>See:</em> Sketchpad in a new tab (an address ending in -5173.app.github.dev).</p>
+<p><strong>C1b.</strong> Draw: open an object. Figures: make a figure and <strong>Save As</strong>. <em>See:</em> both work (Save needs the Node service).</p>
+<p><strong>C1c.</strong> <em>See:</em> the same lists as on the PC; Home &gt; Help opens.</p>
+<p><strong>C1d.</strong> In the Codespace's VS Code: commit and push anything you made there; then at github.com/codespaces stop the Codespace.</p>
+<p><strong>C2.</strong> Back on the PC: Save a figure; Utilities &gt; Show Logs; Regenerate thumbnails for Draw. <em>See:</em> all work, with no "The Node service did not answer" while the Node service window is open.</p>
+<hr>
+<h2>11. Tests to run on the PC</h2>
+<p>In a VS Code terminal, with sketchpad.bat running. Each should end with PASS, or "0 failed", or "tests passed".</p>
+<p><strong>R1</strong> <code>npm run test:tabs</code> (about 8 minutes). <strong>R2</strong> <code>npm run test:regression</code>. <strong>R3</strong> <code>npm run test:errors</code>. <strong>R4</strong> <code>npm run test:node</code>. <strong>R5</strong> <code>npm run test:history</code>. <strong>R6</strong> <code>npm run test:ideabook</code>. <strong>R7</strong> <code>npm run test:shapers</code> (27 tests) and <code>npm run test:controls</code> (6 tests). <strong>R8</strong> <code>npm run lint:globals</code>: "0 errors".</p>
+<p>If a browser test fails oddly after you edited code, close and restart Vite first (see Help &gt; Design &gt; Subsystems &gt; Tests and checks).</p>
+<p><strong>T8.</strong> After a deliberate drawing change, run R2 and open http://localhost:5173/tests/regression/report.html. <em>See:</em> for each change: approved, now, an overlay (blue old, red new, black where both), a flicker picture (click to start and stop) and a difference picture (changed pixels in red).</p>
+<hr>
+<h2>12. Reading</h2>
+<p><strong>O1.</strong> Help &gt; Design &gt; Tabs (Home, Draw, Figures) and Subsystems (The Manifest System, nodeLayer, Parameter Controls): the section "Changes, 3 to 5 November 2026" at the top of each.</p>
+<p><strong>O2.</strong> Help &gt; Design &gt; Subsystems: the eight new pages: Lists from the folders, Errors and checklists, Stepping through a drawing, Shapers and connectors, Home Help, Running in a Codespace, Tests and checks, Curve library and shape palette.</p>
+<p><strong>T1, T10, K1, K2, K3, T9.</strong> Read the files named on the checklist line; note anything unclear with Add item.</p>
+<h2>13. Decisions still yours</h2>
+<p><strong>Q1 to Q6.</strong> Not checks: answer them when you are ready (tell me in chat).</p>
+</body>
+</html>

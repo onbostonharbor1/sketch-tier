@@ -18,7 +18,7 @@
 
    The Markdown converter is deliberately small: headings, paragraphs,
    bulleted and numbered lists, tables, fenced code, quotes, rules, and
-   **bold**, *italic*, `code` and [links](url) inside lines. Anything it
+   **bold**, *italic*, `code`, [links](url) and ![pictures](url) inside lines. Anything it
    does not know is shown as plain text, never dropped.
 
    Exports (for tests): markdownToHtml(text), titleOf(text, fallback)
@@ -47,6 +47,7 @@ function inline(text) {
     return escapeHtml(part)
       .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
       .replace(/(^|[^*])\*([^*\s][^*]*)\*/g, "$1<em>$2</em>")
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, "<img src=\"$2\" alt=\"$1\" style=\"max-width:100%;border:1px solid #999\">")
       .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, "<a href=\"$2\">$1</a>");
   }).join("");
 } // end inline
