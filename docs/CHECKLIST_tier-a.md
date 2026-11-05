@@ -101,3 +101,19 @@ still does). Failure: a category or item missing; a status not shown on Home. Un
 **O. Help Overview** (04efbad). Six pages have a "Changes, 3 to 5 November 2026" section at the top; four older pages
 (dataFlow, sketchpadArchitecture, fileLayer, gallery) have a note that lists now come from the folders. Seven new pages
 under Subsystems. Tell me anything wrong or missing.
+
+## 5 November
+
+**Checklist rewritten.** `home/checklist.md` was reviewed and rewritten by area (setting up, tabs, Home, Help, errors,
+lists, Draw, curve library, Figures, scripts, Codespace, tests, reading, decisions), about 150 checks. Older ids (F, E, I,
+T, H, L, K, O, C) are kept where the check is the same, so the details here and in the older checklists still apply.
+
+**P. Curve library and shape palette** (76f3986). Twelve new Draw objects in two new categories: curves (Rose, Lissajous,
+Epicycloid, Hypocycloid, Astroid, Cardioid, Limacon, Superellipse, Archimedean Spiral) and shapes (Rectangle, Polygon,
+Ellipse). Each has a centre handle (moves it) and a size handle (resizes it; the Size slider follows, and moving the
+slider moves the handle), Points, Stitch (Outline, Chords with Skip, Times table with Factor, All pairs), colour and line
+width, and its own setting. In Figures: Rectangle, Polygon and Ellipse buttons in the caption beside Line and Parabola,
+and a Curve... list; discs sit on any of a curve's points, and weld like any other disc. Names, including the three
+ambiguous ones (polygon, ellipse, archimedeanSpiral), are in `docs/registryNames.md`. Run Regenerate thumbnails for Draw
+once to give them pictures. Failure: an object that draws nothing at its defaults; a size handle that does not resize;
+discs that do not follow the curve. Undo: `git revert 76f3986`.

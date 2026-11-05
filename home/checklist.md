@@ -1,81 +1,189 @@
 # Things to check
 
 Shown on Home > Checklist, where each line has a checkbox. One item per line, in the form `- [ ] text`
-(ticked: `- [x] text`). The details of each check are in the docs/CHECKLIST file named at the end of its line.
+(ticked: `- [x] text`). Reviewed and rewritten 5 November 2026: grouped by area, in the order you would walk through
+the app, each line saying what to do and what you should see. Details, where a line names one, are in that docs file.
+If something fails, add a line here (Add item) saying what you saw, and tell me.
 
-## v1-finish (merged into claude1)
-- [ ] F1 Figure files (item 1) (docs/CHECKLIST_v1-finish.md)
-- [ ] F2 Settings stay private (item 2) (docs/CHECKLIST_v1-finish.md)
-- [ ] F3 Scripts in any order (item 3) (docs/CHECKLIST_v1-finish.md)
-- [ ] F4 Magic points (item 4) (docs/CHECKLIST_v1-finish.md)
-- [ ] F5 Print aids (item 5) (docs/CHECKLIST_v1-finish.md)
-- [ ] F6 Templates (item 6) (docs/CHECKLIST_v1-finish.md)
-- [ ] F7 Break apart Inverse Star (item 7) (docs/CHECKLIST_v1-finish.md)
-- [ ] F8 Parametrics handles (item 8) (docs/CHECKLIST_v1-finish.md)
-- [ ] F9 Sweep (item 9) (docs/CHECKLIST_v1-finish.md)
-- [ ] F10 Insert by picture (item 10) (docs/CHECKLIST_v1-finish.md)
-- [ ] F11 Pursuit (temp) (item 11) (docs/CHECKLIST_v1-finish.md)
-- [ ] F12 Survey (item 12) (docs/CHECKLIST_v1-finish.md)
-- [ ] F13 Regression test (item 14) (docs/CHECKLIST_v1-finish.md)
+## 0. Setting up
+- [ ] S1 git fetch, git checkout claude/tier-a, git pull; npm install
+- [ ] S2 Stop any running Vite; start with sketchpad.bat. No "Starting Sketchpad Maintenance" step (the manifest rebuild no longer runs at start-up)
+- [ ] S3 The app opens on Home with no red error bar
+- [ ] S4 Utilities > Tools > Thumbnails > Regenerate thumbnails, Draw: the new curve and shape objects get pictures (26 Draw pictures in all)
 
-## Errors and Script history (merged)
+## 1. Every tab still works
+- [ ] A1 Click each main tab twice in turn (Home, Draw, Patterns, Figures, Gallery, Utilities): each shows what it showed before
+- [ ] A2 Open an object in Draw, switch to another tab and back: the same object and settings are showing
+- [ ] A3 Open a pattern in Patterns, switch away and back: the same pattern is showing
+- [ ] A4 The Commands button on each tab opens that tab's Maintenance panel; the X closes it
+- [ ] A5 The ? (Help) on a tab opens the Help browser; its tree now also has BuildDocs and Reflections
+
+## 2. Home
+- [ ] HM1 Home subtabs read: Categories, Errors, Checklist, Help, Notes (Results appears when an item is open)
+- [ ] HM2 Categories: one frame per status (Queue, fix, Examine, favorite, new ...), the same items as before
+- [ ] HM3 Click a script item in Categories: it runs in Results; Prev and Next step through its status group
+- [ ] HM4 Click a picture item: it shows in Results
+- [ ] HM5 Click a Draw object item (if any have a status): the Draw tab opens on it
+- [ ] HM6 The yellow alert bar appears only when there are unticked errors or a manifest check found problems; Dismiss hides it
+- [ ] T4 Notes: shows home/notes.md; Open in VS Code opens it; edit, save, Reload shows the change (docs/CHECKLIST_tier-a.md)
+- [ ] T5 Checklist: this list. Tick an item: it goes. Show all: ticked items greyed; untick one: it comes back (docs/CHECKLIST_tier-a.md)
+- [ ] T5a Checklist: type in the box and press Add item (or Enter): the new line appears at the end of home/checklist.md
+- [ ] T5b Checklist: Purge ticked asks first, then removes only the ticked lines; headings stay
+- [ ] T5c Open home/checklist.md in VS Code: plain "- [ ]" lines; an edit there shows after switching subtabs
+
+## 3. Home > Help
+- [ ] H1 Help shows a contents tree on the left and a page on the right (docs/CHECKLIST_tier-a.md)
+- [ ] H2 Three groups with counts: Design, Reflections, Build Documents
+- [ ] H3 Design holds the Overview pages by subfolder (Design Notes, Subsystems, Tabs); open one: it shows on the right
+- [ ] H4 Build Documents lists the docs/ documents A to Z (27, including registryNames)
+- [ ] H5 Open TIERS under Build Documents: headings, tables and lists are formatted, not raw Markdown
+- [ ] H6 Open a specification PDF under Build Documents: the PDF shows in the page; Open the PDF on its own opens it in a browser tab
+- [ ] H7 New reflection: asks for a title, then opens the help editor on the new page
+- [ ] H8 Type in the editor and Save: the text is kept; close the overlay; the reflection is listed by its title under Reflections
+- [ ] H9 Choose a reflection and press Edit: the editor opens with its text; Save keeps the change
+- [ ] H10 Edit is greyed for Design and Build Documents pages
+- [ ] H11 New reflection with the title of an existing one: refused with a message
+- [ ] H12 Change a docs/ file, run npm run help:builddocs, open it again: Build Documents shows the change
+- [ ] H13 Open registryNames under Build Documents: the twelve new names, with the three ambiguous ones explained
+
+## 4. Errors
 - [ ] E1 Error bar (docs/CHECKLIST_v1-errors.md)
-- [ ] E2 Error log (docs/CHECKLIST_v1-errors.md)
-- [ ] E3 Start-up summary (docs/CHECKLIST_v1-errors.md)
-- [ ] E4 A failing figure layer (docs/CHECKLIST_v1-errors.md)
-- [ ] E5 Validate Draw Registry (docs/CHECKLIST_v1-errors.md)
-- [ ] E6 Figure files (docs/CHECKLIST_v1-errors.md)
-- [ ] E7 Script history (docs/CHECKLIST_v1-errors.md)
+- [ ] E2 Error log: Utilities > Tools > Show Logs lists Error logs first (docs/CHECKLIST_v1-errors.md)
+- [ ] E3 Start-up summary on Home (docs/CHECKLIST_v1-errors.md)
+- [ ] E4 A failing figure layer is named in the bar and the other layers still draw (docs/CHECKLIST_v1-errors.md)
+- [ ] E5 Utilities > Tools > Validate Draw Registry: every object OK except Linked Circles (known), including the 12 new ones
+- [ ] E6 Utilities > Tools > Check Figure Files: one line per saved figure (docs/CHECKLIST_v1-errors.md)
+- [ ] T3 Make an error (F12 console: setTimeout(() => { throw new Error("probe") }, 0)): the red bar lists it with Tick (docs/CHECKLIST_tier-a.md)
+- [ ] T3a Tick it in the bar: it leaves the bar; utilities/logfiles/errors_<today>.txt has an "Acknowledged:" line
+- [ ] T3b Make the same error again and reload: Home's yellow bar says 1 error is not yet ticked
+- [ ] T3c Home > Errors lists it with a checkbox; tick it: it goes
+- [ ] T3d Show all: it is back, greyed and ticked; Purge ticked, OK: it is gone even with Show all; the log still has every line plus "Purged:"
 
-## Ideabook scripts (merged)
-- [ ] I1 The button (docs/CHECKLIST_ideabook-scripts.md)
-- [ ] I2 The hints (docs/CHECKLIST_ideabook-scripts.md)
+## 5. Lists from the folders (manifests are only notes now)
+- [ ] L1 Patterns, Gallery (Ideabook, Patterns, Scripts), Utilities (Tools, Lab) and Figures lists look exactly as before (docs/CHECKLIST_tier-a.md)
+- [ ] L1a Draw > Categories now also shows the categories curves and shapes; an object with saved settings is still marked as such, and only those
+- [ ] L2 Home > Categories shows the same statuses and items as before
+- [ ] L3 In VS Code add a new .js file to a patterns category folder (no manifest edit); reload: it appears, titled by its file name
+- [ ] L4 Move that file out again; reload: it is gone and nothing breaks
+- [ ] L4a Add a picture to an Ideabook folder without touching its manifest; reload: it appears in that category
+- [ ] L5 Edit Manifest on a pattern (title or status): the new title shows; a new status shows on Home
+- [ ] L6 Save a figure (new category too): Figures > Categories lists it
+- [ ] L7 Archive an item: it leaves its list and its file is in the archive folder
+- [ ] L8 Utilities > Rebuild & Validate still runs and reports
+- [ ] L9 Gallery Prev and Next keep the same order as before
+
+## 6. Draw
+- [ ] D1 Every Draw object opens and draws (Draw > Categories, each one in turn)
+- [ ] D2 Handles drag; a pressed handle nudges with the arrow keys (1 px, 10 with Shift)
+- [ ] D3 Sliders, colour pickers and the Stitch list redraw at once
+- [ ] D4 Caption menu: Save as PNG, Save as Pattern, Copy Object, Reset Parameters each still work
+- [ ] D5 Saved settings (secondary objects) open from the category frame and save
+- [ ] T2 Step through the drawing (Draw > Cycloid > caption menu): left column shows first, previous, next, last, slider and "Line N of N" (docs/CHECKLIST_tier-a.md)
+- [ ] T2a Stepping: first shows only line 1 in red with a dot at its start; next and the slider step on; the readout matches the red line
+- [ ] T2b Stepping: move a Cycloid slider while stepping: the drawing changes and stepping carries on
+- [ ] T2c Stepping: Done stepping draws everything again; a tab switch while stepping ends it
+- [ ] F9 Sweep a setting: a grid of pictures over one setting; click one to use it (docs/CHECKLIST_v1-finish.md)
+- [ ] T7 Sweep with a second setting: a grid, first setting across, second down, each labelled with both values; click one: both sliders take its values
+- [ ] T7a Sweep: type "3, 5, 8" in a list box: those values are used instead of From and To
+
+## 7. Curve library and shape palette (new)
+- [ ] P1 Draw > Categories has a curves frame (9) and a shapes frame (3) (docs/CHECKLIST_tier-a.md)
+- [ ] P2 Rose: Petals (k) changes the petal count (k odd: k petals, even: 2k)
+- [ ] P3 Lissajous: a, b and Phase change the figure (3 and 2: a pretzel)
+- [ ] P4 Epicycloid: Lobes changes the number of cusps outside
+- [ ] P5 Hypocycloid: Cusps 3 a deltoid, 4 an astroid, more a star
+- [ ] P6 Astroid and Cardioid draw (no setting of their own)
+- [ ] P7 Limacon: Loop below 1 an oval, 1 a heart, above 1 a loop inside a loop
+- [ ] P8 Superellipse: Power 2 a circle, 4 a squircle, 1 a diamond, below 1 a star
+- [ ] P9 Archimedean Spiral: Turns changes the turns; the outline is not closed
+- [ ] P10 Rectangle: Height / width changes its shape; Polygon: Sides changes the sides; Ellipse: Height / width
+- [ ] P11 Every one: drag the centre handle: the whole object moves
+- [ ] P12 Every one: drag the size handle (it starts to the right): the object resizes and the Size slider follows
+- [ ] P13 Every one: move the Size slider: the size handle moves with it
+- [ ] P14 Every one: Points changes how many points (3 to 400)
+- [ ] P15 Stitch: Outline joins each point to the next; Chords uses Skip; Times table uses Factor (negative and fractional too); All pairs joins every pair
+- [ ] P16 Odd settings draw something odd rather than nothing (rose k 0, superellipse power 0.2, polygon 3 points)
+- [ ] P17 Final mode shows just the points of a curve
+- [ ] P18 Figures caption has Rectangle, Polygon, Ellipse buttons beside Line and Parabola, and a Curve... list of the 9 curves
+- [ ] P19 Insert a rectangle, a polygon, an ellipse and a rose from the caption: four layers, each drawn
+- [ ] P20 Points Mode on a curve layer: clicking near the curve puts a disc on one of its points; the disc rides along when the curve is moved or resized
+- [ ] P21 Weld a disc on a rose to a disc on a polygon (drop a handle on a handle, or as before): the weld mark shows
+- [ ] P22 Points Mode turns the palette buttons and the Curve list grey
+- [ ] P23 A figure of curves prints: Print size, then Print template, nails on the curve points
+- [ ] P24 Save a figure with curve layers and reopen it: the curves and their settings are as left
+- [ ] P25 Draw > Rose > Save as Pattern: the pattern runs in Patterns
+- [ ] P26 Read draw/curves.js and draw/ringObject.js, and one registry file (drawRegistry/rose.js): plain enough to follow?
+
+## 8. Figures
+- [ ] F1 Figure files: Save As writes format 1 with lid, objectVersion, role (docs/CHECKLIST_v1-finish.md)
+- [ ] F2 Settings stay private between Draw, Figures and Patterns (docs/CHECKLIST_v1-finish.md)
+- [ ] F4 Magic points: diamonds at middles, tips, cusps (docs/CHECKLIST_v1-finish.md)
+- [ ] T11 Two crossing lines in Points Mode: the crossing is a purple ring with a cross; middles are black diamonds; clicking either places a disc there
+- [ ] F5 Print aids: print size, scale bar, spacing check (docs/CHECKLIST_v1-finish.md)
+- [ ] T6 Print size... asks in inches; type 8: the nails span 8 inches (docs/CHECKLIST_tier-a.md)
+- [ ] T6a Nail size... asks in inches; a new figure shows clearance 0.187 (3/16)
+- [ ] T6b Print units: inches (switch) changes the questions to millimetres and back
+- [ ] T6c Save template as one SVG..., OK for colours: the file's nails are red, green, orange, blue, yellow in turn; Cancel gives black
+- [ ] T6d Print the one-sheet SVG at actual size: the line at the top measures 100 mm
+- [ ] T6e Print template... still gives sheets with a cover page; the cover gives nail sizes in mm and inches
+- [ ] T6f Show nail spacing problems rings close pairs, and printing still works with problems present
+- [ ] F6 Templates as guide layers (docs/CHECKLIST_v1-finish.md)
+- [ ] F7 Break apart Inverse Star (docs/CHECKLIST_v1-finish.md)
+- [ ] F8 Parametrics centre and size handles (docs/CHECKLIST_v1-finish.md)
+- [ ] F10 Insert by picture (docs/CHECKLIST_v1-finish.md)
+- [ ] F11 Pursuit (temp) centre handle (docs/CHECKLIST_v1-finish.md)
+- [ ] T12 Click layer 1: drawn on top; click layer 2: layer 2 on top and layer 1 drops back
+- [ ] T12a Choose layer 1, caption menu Keep this layer on top, click layer 2: layer 1 stays above the rest below layer 2
+- [ ] T12b Save and reopen: the kept order is saved; clicks alone never changed the file
+- [ ] FG1 Welds: a handle dropped on another handle welds; moving one moves the other; a weld whose members no longer meet shows red
+- [ ] FG2 Delete layer, Copy, Reset and Archive in the caption menu still work
+- [ ] FG3 Move and rotate a layer by its centroid and bounding box
+
+## 9. Patterns, Gallery and Utilities
+- [ ] F3 Scripts run in any order (docs/CHECKLIST_v1-finish.md)
+- [ ] E7 Script history: open a script, caption menu > Script history: versions listed, Run and Compare work (docs/CHECKLIST_v1-errors.md)
+- [ ] I1 Ideabook: open an image, Run script beside Prev and Next runs its hint (docs/CHECKLIST_ideabook-scripts.md)
+- [ ] I2 The hints: spot-check a few in each Ideabook folder (docs/CHECKLIST_ideabook-scripts.md)
 - [ ] I3 The shared routines (docs/CHECKLIST_ideabook-scripts.md)
 - [ ] I4 The pursuit engine (docs/CHECKLIST_ideabook-scripts.md)
+- [ ] G1 Thumbnails show in the category frames; Thumbnails on or off, and size, still work
+- [ ] G2 Check Missing Images lists only items with no picture
+- [ ] F12 The survey of what scripts rely on (docs/CHECKLIST_v1-finish.md)
 
-## Tier A and Codespaces (claude/tier-a, claude/codespaces)
-- [ ] T1 Shapers and connectors: npm run test:shapers passes; read draw/shapers.js and draw/connectors.js (docs/CHECKLIST_tier-a.md)
-- [ ] T2 Step through the drawing: Draw > Cycloid > caption menu > Step through the drawing (docs/CHECKLIST_tier-a.md)
-- [ ] T3 Errors as a checklist: Tick in the red bar; Home > Errors; Show all; Purge ticked (docs/CHECKLIST_tier-a.md)
-- [ ] T4 Home > Notes shows home/notes.md; Open in VS Code (docs/CHECKLIST_tier-a.md)
-- [ ] T5 Home > Checklist: tick, Show all, Purge ticked, Add item (docs/CHECKLIST_tier-a.md)
-- [ ] C1 Codespace from the iPad: open the repo in a Codespace; the app opens; Save a figure works (docs/CHECKLIST_tier-a.md)
-- [ ] C2 On the PC, after the Codespaces change: saving, logs and thumbnails still work (docs/CHECKLIST_tier-a.md)
-- [ ] T6 Inches and one-sheet SVG: Figures > Print size and Nail size ask in inches; Save template as one SVG; colours (docs/CHECKLIST_tier-a.md)
-- [ ] T7 Sweep over two settings: Draw > Sweep a setting with a second setting, and a typed list (docs/CHECKLIST_tier-a.md)
-- [ ] T8 Regression report views: overlay, flicker, difference (docs/CHECKLIST_tier-a.md)
-- [ ] T9 Function dictionary: npm run dictionary; read docs/FUNCTIONS.md (docs/CHECKLIST_tier-a.md)
-- [ ] T10 Controls by name alone and groups: npm run test:controls; read conventions.js (docs/CHECKLIST_tier-a.md)
-- [ ] T11 Intersections mark: Figures, two crossing lines, Points Mode: purple ring with a cross (docs/CHECKLIST_tier-a.md)
-- [ ] T12 Choosing a layer draws it on top; Keep this layer on top saves it (docs/CHECKLIST_tier-a.md)
-- [ ] T13 Clipping shapers inside / outside: npm run test:shapers (docs/CHECKLIST_tier-a.md)
-- [ ] T14 Read the deferred list in docs/TIERS.md section 5 and answer what it needs; section 6 records answers so far (docs/TIERS.md)
+## 10. Codespace (the iPad)
+- [ ] C1 On github.com: the repository, branch claude/tier-a, Code > Codespaces > Create codespace; it installs and starts by itself (docs/CHECKLIST_tier-a.md)
+- [ ] C1a Open port 5173 (Ports panel or the pop-up): Sketchpad opens
+- [ ] C1b In the Codespace: Draw works, and Figures > Save As works (it needs the Node service)
+- [ ] C1c In the Codespace: the lists are the same as on the PC, and Home > Help opens
+- [ ] C1d Commit and push anything made in the Codespace; stop the Codespace when done (github.com/codespaces)
+- [ ] C2 Back on the PC: saving, Show Logs and Regenerate thumbnails still work (no "did not answer" while the Node service runs)
 
-## 4 November, later: Help, lists from folders, comments
-- [ ] H1 Home > Help shows a contents tree on the left and a page area on the right (docs/CHECKLIST_tier-a.md)
-- [ ] H2 The tree has three groups: Design, Reflections, Build Documents, each with a count (docs/CHECKLIST_tier-a.md)
-- [ ] H3 Design holds the Help browser's Overview pages, by subfolder (Design Notes, Subsystems, Tabs) (docs/CHECKLIST_tier-a.md)
-- [ ] H4 Build Documents lists the docs/ documents A to Z (docs/CHECKLIST_tier-a.md)
-- [ ] H5 A Markdown build document (TIERS) shows formatted: headings, tables, lists (docs/CHECKLIST_tier-a.md)
-- [ ] H6 A PDF build document (a specification) shows inside the page; 'Open the PDF on its own' opens it in a tab (docs/CHECKLIST_tier-a.md)
-- [ ] H7 New reflection asks for a title, then opens the help editor on the new page (docs/CHECKLIST_tier-a.md)
-- [ ] H8 Saving in the editor keeps the text; the reflection is listed by its title under Reflections (docs/CHECKLIST_tier-a.md)
-- [ ] H9 Choose a reflection and press Edit: the editor opens with its text (docs/CHECKLIST_tier-a.md)
-- [ ] H10 Edit is greyed for Design and Build Documents pages (docs/CHECKLIST_tier-a.md)
-- [ ] H11 The existing Help browser (? on a tab) also shows BuildDocs and Reflections folders (docs/CHECKLIST_tier-a.md)
-- [ ] H12 After changing a docs/ file, npm run help:builddocs updates Build Documents (docs/CHECKLIST_tier-a.md)
-- [ ] L1 Every category list looks as before: Patterns, Gallery (Ideabook, Patterns, Scripts), Utilities, Figures, Draw saved settings (docs/CHECKLIST_tier-a.md)
-- [ ] L2 Home > Categories shows the same statuses and items as before (docs/CHECKLIST_tier-a.md)
-- [ ] L3 Add a new .js file to a patterns category folder in VS Code (no manifest edit), reload: it appears, titled by its file name (docs/CHECKLIST_tier-a.md)
-- [ ] L4 Delete (or move out) a pattern file without editing the manifest, reload: it is gone and nothing breaks (docs/CHECKLIST_tier-a.md)
-- [ ] L5 Edit Manifest (title or status) still works and Home shows the new status (docs/CHECKLIST_tier-a.md)
-- [ ] L6 Save a figure, then Figures > Categories lists it (docs/CHECKLIST_tier-a.md)
-- [ ] L7 Archive an item: it leaves its list (docs/CHECKLIST_tier-a.md)
-- [ ] L8 sketchpad.bat starts without the manifest maintenance step (no 'Starting Sketchpad Maintenance') (docs/CHECKLIST_tier-a.md)
-- [ ] L9 Utilities > Rebuild & Validate still runs and reports (docs/CHECKLIST_tier-a.md)
-- [ ] L10 A Codespace (C1) shows the same lists as the PC (docs/CHECKLIST_tier-a.md)
-- [ ] K1 Open three files you know (e.g. draw/drawRegular.js, ui/setUI.js, ui/home/home.js): each function has a comment above it that says what it does (docs/CHECKLIST_tier-a.md)
-- [ ] K2 npm run dictionary; docs/FUNCTIONS.md lists 764 functions, 1 without a comment (docs/CHECKLIST_tier-a.md)
-- [ ] K3 Tell me any comment that is wrong or unclear; I will fix it (docs/CHECKLIST_tier-a.md)
-- [ ] O1 Help Overview: read the 'Changes, November 2026' sections at the top of Home, Draw, Figures, manifest, nodeLayer and Parameter Controls (docs/CHECKLIST_tier-a.md)
-- [ ] O2 Help Overview > Subsystems: read the seven new pages (lists from the folders, errors and checklists, stepping, shapers and connectors, Home Help, Codespaces, tests) (docs/CHECKLIST_tier-a.md)
+## 11. Tests to run on the PC (each should end in PASS or 0 failed)
+- [ ] R1 npm run test:tabs
+- [ ] R2 npm run test:regression; then open tests/regression/report.html through Vite (http://localhost:5173/tests/regression/report.html) if anything changed
+- [ ] R3 npm run test:errors
+- [ ] R4 npm run test:node
+- [ ] R5 npm run test:history
+- [ ] R6 npm run test:ideabook
+- [ ] R7 npm run test:shapers (27 tests) and npm run test:controls (6 tests)
+- [ ] R8 npm run lint:globals: 0 errors
+- [ ] T8 After an intended drawing change, the regression report shows approved, now, overlay, flicker and difference (docs/CHECKLIST_tier-a.md)
+- [ ] F13 The regression test itself (docs/CHECKLIST_v1-finish.md)
+
+## 12. Reading
+- [ ] O1 Help Overview: the "Changes, November 2026" sections at the top of Home, Draw, Figures, manifest, nodeLayer and Parameter Controls
+- [ ] O2 Help Overview > Subsystems: the eight new pages (lists from the folders, errors and checklists, stepping, shapers and connectors, Home Help, Codespaces, tests, curve library and shape palette)
+- [ ] T1 draw/shapers.js and draw/connectors.js: each function clear on its own (docs/CHECKLIST_tier-a.md)
+- [ ] T10 ui/controls/builders/conventions.js: controls by name alone and groups
+- [ ] K1 Open three files you know (draw/drawRegular.js, ui/setUI.js, ui/home/home.js): each function has a comment saying what it does
+- [ ] K2 npm run dictionary; docs/FUNCTIONS.md lists every function A to Z (780, 1 without a comment)
+- [ ] K3 Note any comment that is wrong or unclear (Add item here), and I will fix it
+- [ ] T9 docs/TIERS.md sections 5 to 8: what was built, what is deferred and why
+
+## 13. Decisions still yours
+- [ ] Q1 Undo, crash recovery and stepping in Figures are next, before the next tier: say go when ready
+- [ ] Q2 The Ideabook routines and the old stitcher: move them onto shapers and connectors, or leave them?
+- [ ] Q3 Core / keeper / test tags on Draw objects: want them or drop the idea?
+- [ ] Q4 Templates beyond guide layers, draggable alignment marks, the simplified-curve overlay, the settings page: each needs your spec
+- [ ] Q5 Merge claude/tier-a into claude1 when satisfied (tell me; I fast-forward)
+- [ ] Q6 Delete the leftover branches on GitHub: claude/hopeful-dirac-iirr6d, claude/codespaces (after the merge), and the three old V1 branches
