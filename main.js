@@ -37,6 +37,19 @@ import "./drawRegistry/parametrics.js";
 import "./drawRegistry/radiate.js";
 import "./drawRegistry/regularPolygon.js";
 import "./drawRegistry/regularPursuit.js";
+// The curve library and the shape palette (draw/curves.js, draw/ringObject.js)
+import "./drawRegistry/rose.js";
+import "./drawRegistry/lissajous.js";
+import "./drawRegistry/epicycloid.js";
+import "./drawRegistry/hypocycloid.js";
+import "./drawRegistry/astroid.js";
+import "./drawRegistry/cardioid.js";
+import "./drawRegistry/limacon.js";
+import "./drawRegistry/superellipse.js";
+import "./drawRegistry/archimedeanSpiral.js";
+import "./drawRegistry/rectangle.js";
+import "./drawRegistry/polygon.js";
+import "./drawRegistry/ellipse.js";
 
 // Registry collector
 import "./drawRegistry/drawRegistry.js";

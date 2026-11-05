@@ -16,5 +16,18 @@ window.drawRegistry = Object.assign(
     radiate:            window.drawRegistry_radiate,
     regularPolygon:     window.drawRegistry_regularPolygon,
     regularPursuit:     window.drawRegistry_regularPursuit,
+    // curve library and shape palette
+    rose:               window.drawRegistry_rose,
+    lissajous:          window.drawRegistry_lissajous,
+    epicycloid:         window.drawRegistry_epicycloid,
+    hypocycloid:        window.drawRegistry_hypocycloid,
+    astroid:            window.drawRegistry_astroid,
+    cardioid:           window.drawRegistry_cardioid,
+    limacon:            window.drawRegistry_limacon,
+    superellipse:       window.drawRegistry_superellipse,
+    archimedeanSpiral:  window.drawRegistry_archimedeanSpiral,
+    rectangle:          window.drawRegistry_rectangle,
+    polygon:            window.drawRegistry_polygon,
+    ellipse:            window.drawRegistry_ellipse,
   }
 );

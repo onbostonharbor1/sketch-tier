@@ -187,15 +187,19 @@ function addCaptionTools(tabId) {
   const btnRow  = caption?.querySelector(".caption-buttons");
   if (!caption || !btnRow) return;
 
-  // ---- middle: Line, Parabola ----------------------------------
+  // ---- middle: Line, Parabola, the shape palette, the curve library ----------------------------------
   const mid = document.createElement("div");
   mid.id = "figureCaptionTools";
   mid.style.cssText = "display:flex; gap:8px; flex-grow:1; justify-content:center;";
 
   // [button text, registry key, tooltip]
+  // The shape palette (Rectangle, Polygon, Ellipse) sits with them.
   const tools = [
-    ["Line",     "drawLine", "Insert a line as a new layer"],
-    ["Parabola", "parabola", "Insert a parabola (curve-stitch between two arms) as a new layer"]
+    ["Line",      "drawLine",  "Insert a line as a new layer"],
+    ["Parabola",  "parabola",  "Insert a parabola (curve-stitch between two arms) as a new layer"],
+    ["Rectangle", "rectangle", "Insert a rectangle outline as a new layer (points along its sides)"],
+    ["Polygon",   "polygon",   "Insert a regular polygon outline as a new layer (points along its sides)"],
+    ["Ellipse",   "ellipse",   "Insert an ellipse outline as a new layer"]
   ];
 
   // "const [a, b, c] of list" unpacks each three-element entry into names.
@@ -208,6 +212,21 @@ function addCaptionTools(tabId) {
     b.onclick = () => insertLayer(tabId, key);
     mid.appendChild(b);
   }
+  // The curve library: every registry object in the "curves" category.
+  const curve = document.createElement("select");
+  curve.id = "figureCurveSelect";
+  curve.title = "Insert a curve from the curve library as a new layer";
+  const curves = Object.entries(window.drawRegistry || {})
+    .filter(([, e]) => e && e.category === "curves")
+    .sort((a, b) => a[1].name.localeCompare(b[1].name));
+  curve.innerHTML = "<option value=''>Curve...</option>" +
+    curves.map(([key, e]) => "<option value='" + key + "'>" + e.name + "</option>").join("");
+  curve.onchange = () => {
+    const key = curve.value;
+    curve.value = "";
+    if (key) insertLayer(tabId, key);
+  };
+  mid.appendChild(curve);
   // Templates: guide shapes to draw against (figureTemplates.js).
   const tpl = document.createElement("select");
   tpl.id = "figureTemplateSelect";
@@ -320,7 +339,8 @@ export function updateFigureButtons() {
 
   // Points mode places discs on the active layer only, so the tools that
   // add layers are grayed out and inactive until it is turned off.
-  for (const id of ["figureInsert_drawLine", "figureInsert_parabola", "figureInsertSelect", "figureInsertPictures"]) {
+  for (const id of ["figureInsert_drawLine", "figureInsert_parabola", "figureInsert_rectangle", "figureInsert_polygon",
+                    "figureInsert_ellipse", "figureCurveSelect", "figureInsertSelect", "figureInsertPictures"]) {
     const el = document.getElementById(id);
     if (el) el.disabled = pointsMode;
   }

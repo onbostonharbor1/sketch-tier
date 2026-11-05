@@ -11,7 +11,7 @@
    them in step. Now the folders are the truth:
 
      - A category is a folder. The order is the one in the folder's
-       directoryRegistry.json, then any other folder, A to Z. Folders that
+       directoryRegistry.json, then any other folder that holds items, A to Z. Folders that
        hold no items are skipped: images, scripts, archive, and any name
        starting with "." or "_" or named "System Volume Information".
      - An item is a file of the right kind in that folder (scripts .js;
@@ -106,8 +106,16 @@ export async function listLibrary(payload = {}) {
     throw new Error("listLibrary: basedir must be one of " + Object.keys(LIBRARIES).join(", "));
   }
   const baseAbs = path.resolve("./" + basedir);
-  const categories = categoriesOf(baseAbs);
-  const items = categories.map((c) => itemsOf(path.join(baseAbs, c), LIBRARIES[basedir]));
+  const listed = readJsonQuietly(path.join(baseAbs, "directoryRegistry.json"), []);
+  const categories = [], items = [];
+  for (const c of categoriesOf(baseAbs)) {
+    const list = itemsOf(path.join(baseAbs, c), LIBRARIES[basedir]);
+    // A folder not in directoryRegistry.json is a category only if it holds items
+    // (drawRegistry/<object>/images, made by the thumbnail tools, is not).
+    if (!list.length && !(Array.isArray(listed) && listed.includes(c))) continue;
+    categories.push(c);
+    items.push(list);
+  }
   return { request: "listLibrary", status: "ok", categories, items };
 } // end listLibrary
 

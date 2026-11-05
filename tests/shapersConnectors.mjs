@@ -14,6 +14,7 @@ import path from "node:path";
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
 const S = await import(pathToFileURL(path.join(root, "draw/shapers.js")).href);
 const C = await import(pathToFileURL(path.join(root, "draw/connectors.js")).href);
+const K = await import(pathToFileURL(path.join(root, "draw/curves.js")).href);
 
 let passed = 0;
 function test(name, fn) {
@@ -145,4 +146,35 @@ test("connectors never throw on empty arrays", () => {
   C.mesh([]);
 });
 
-console.log((process.exitCode ? "FAILED. " : "") + passed + " shaper and connector tests passed.");
+// ---------- curves and shapes (draw/curves.js) ----------
+test("every curve and shape gives n points, finite, within about r of the centre", () => {
+  const c = { x: 300, y: 300 };
+  for (const name of Object.keys(K).filter((k) => k.endsWith("Points"))) {
+    const pts = K[name](c, 100, 60, {});
+    assert.equal(pts.length, 60, name);
+    for (const p of pts) {
+      assert.ok(Number.isFinite(p.x) && Number.isFinite(p.y), name + " gives a number");
+      assert.ok(Math.hypot(p.x - c.x, p.y - c.y) <= 100 * 1.5 + 1e-9, name + " stays near r");
+    }
+  }
+});
+test("a circle-like curve reaches r: the ellipse's first point is r to the right", () => {
+  const pts = K.ellipsePoints({ x: 0, y: 0 }, 50, 8, { ratio: 1 });
+  assert.ok(near(pts[0].x, 50) && near(pts[0].y, 0));
+});
+test("a rose with k = 4 has 8 petals: 8 points at full length over a fine ring", () => {
+  const pts = K.rosePoints({ x: 0, y: 0 }, 1, 800, { k: 4 });
+  const tips = pts.filter((p) => Math.hypot(p.x, p.y) > 0.9999).length;
+  assert.equal(tips, 8);
+});
+test("the polygon's points start at its top corner and lie on its sides", () => {
+  const pts = K.polygonPoints({ x: 0, y: 0 }, 10, 12, { sides: 4 });
+  assert.ok(near(pts[0].x, 0) && near(pts[0].y, -10));
+  assert.equal(pts.length, 12);
+});
+test("odd settings are not refused (rose k = 0, superellipse power 0.2)", () => {
+  assert.equal(K.rosePoints({ x: 0, y: 0 }, 10, 20, { k: 0 }).length, 20);
+  assert.equal(K.superellipsePoints({ x: 0, y: 0 }, 10, 20, { power: 0.2 }).length, 20);
+});
+
+console.log((process.exitCode ? "FAILED. " : "") + passed + " shaper, connector and curve tests passed.");

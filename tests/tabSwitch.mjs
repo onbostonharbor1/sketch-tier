@@ -1739,7 +1739,7 @@ await page.locator("#action button", { hasText: "Regenerate" }).click();
 await page.waitForFunction(() => /Made \d+ pictures/.test(document.getElementById("text").innerText), null, { timeout: 30000 });
 const regenText = await page.evaluate(() => document.getElementById("text").innerText);
 const drawKeys = await page.evaluate(() => Object.keys(window.drawRegistry).filter((k) => window.drawRegistry[k] && !window.drawRegistry[k].template));   // Figures guides have no picture
-if (!/Made 14 pictures\. Skipped 0\. Failed 0\./.test(regenText)) problems.push("[regenerate] summary: " + regenText.slice(0, 200));
+if (!/Made 26 pictures\. Skipped 0\. Failed 0\./.test(regenText)) problems.push("[regenerate] summary: " + regenText.slice(0, 200));
 if (thumbWrites.length !== drawKeys.length || thumbWrites.some((w) => w.kind !== "drawRegistry" || w.category !== w.name || !/^iVBORw0KGgo/.test(w.pngBase64 || ""))) {
   problems.push("[regenerate] requests: " + thumbWrites.length + " for " + drawKeys.length + " Draw objects; first " + JSON.stringify(thumbWrites[0] && { ...thumbWrites[0], pngBase64: "..." }));
 }
@@ -2471,6 +2471,37 @@ if (insertCells.length < 14 || insertCells.some((k) => k.startsWith("guide")) ||
 }
 
 /* v1-finish item 11: Pursuit (temp)'s centre is a handle, not a text box. */
+/* Curve library and shape palette: the caption buttons and the Curve list insert
+   layers; a curve layer's points carry discs; Draw opens a curve. */
+stage = "curve library and shape palette";
+await page.click("#figures-tab"); await page.waitForTimeout(800);
+await newFigure();
+await page.click("#figureInsert_rectangle"); await page.waitForTimeout(300);
+await page.click("#figureInsert_polygon");   await page.waitForTimeout(300);
+await page.click("#figureInsert_ellipse");   await page.waitForTimeout(300);
+const curveOptions = await page.evaluate(() => [...document.querySelectorAll("#figureCurveSelect option")].map((o) => o.value).filter(Boolean));
+await page.selectOption("#figureCurveSelect", "rose"); await page.waitForTimeout(300);
+const palette = await page.evaluate(() => {
+  const t = uiState.figures.tabs[uiState.figures.activeSubtab];
+  return { ids: t.figure.layers.map((l) => l.id), lines: t.instances.map((i) => (i.stitchEnds || []).length / 2),
+           ring: t.instances[3].infrastructure()[0].points.length };
+});
+const wantCurves = ["archimedeanSpiral", "astroid", "cardioid", "epicycloid", "hypocycloid", "limacon", "lissajous", "rose", "superellipse"];
+if (JSON.stringify(palette.ids) !== JSON.stringify(["rectangle", "polygon", "ellipse", "rose"]) || palette.lines.some((n) => n < 3)
+    || palette.ring !== 120 || JSON.stringify([...curveOptions].sort()) !== JSON.stringify(wantCurves)) {
+  problems.push("[curve library and shape palette] " + JSON.stringify({ palette, curveOptions }));
+}
+await page.click("#draw-tab"); await page.waitForTimeout(700);
+await page.locator("#subtabs button", { hasText: "Categories" }).first().click(); await page.waitForTimeout(500);
+await page.click('#text .item[data-key="Rose"]'); await page.waitForTimeout(1200);
+const roseDraw = await page.evaluate(() => {
+  const c = window.drawCanvas, d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data;
+  let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++;
+  return { ink: n, sliders: [...document.querySelectorAll("#action input[type=range]")].length, stitch: !!document.querySelector("#action select") };
+});
+if (roseDraw.ink < 500 || roseDraw.sliders < 6 || !roseDraw.stitch) problems.push("[draw rose] " + JSON.stringify(roseDraw));
+await page.click("#figures-tab"); await page.waitForTimeout(800);       // the next stage starts on Figures
+
 stage = "pursuit handle";
 await newFigure();
 await page.selectOption("#figureInsertSelect", "regularPursuit");
@@ -2536,4 +2567,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, sweep over two settings, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, sweep over two settings, curve library and shape palette, no errors");

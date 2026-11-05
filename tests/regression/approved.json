@@ -1294,6 +1294,27 @@
   "stable": true,
   "picture": "patterns_unicorn_mysticRoseEllipse.js.png"
  },
+ "draw:archimedeanSpiral": {
+  "lines": 119,
+  "fingerprint": "2e6cfd5cd2967835",
+  "error": "",
+  "stable": true,
+  "picture": "draw_archimedeanSpiral.png"
+ },
+ "draw:astroid": {
+  "lines": 120,
+  "fingerprint": "e6a385a3701c0081",
+  "error": "",
+  "stable": true,
+  "picture": "draw_astroid.png"
+ },
+ "draw:cardioid": {
+  "lines": 120,
+  "fingerprint": "11f62ef6ef248c72",
+  "error": "",
+  "stable": true,
+  "picture": "draw_cardioid.png"
+ },
  "draw:circularParabola": {
   "lines": 310,
   "fingerprint": "146d4132867221de",
@@ -1322,6 +1343,27 @@
   "stable": true,
   "picture": "draw_drawLine.png"
  },
+ "draw:ellipse": {
+  "lines": 120,
+  "fingerprint": "e3cd360113928add",
+  "error": "",
+  "stable": true,
+  "picture": "draw_ellipse.png"
+ },
+ "draw:epicycloid": {
+  "lines": 120,
+  "fingerprint": "0a8127def0532982",
+  "error": "",
+  "stable": true,
+  "picture": "draw_epicycloid.png"
+ },
+ "draw:hypocycloid": {
+  "lines": 120,
+  "fingerprint": "56c6f317a30a4cb9",
+  "error": "",
+  "stable": true,
+  "picture": "draw_hypocycloid.png"
+ },
  "draw:inEllipse": {
   "lines": 219,
   "fingerprint": "3430fc95100581da",
@@ -1336,12 +1378,26 @@
   "stable": true,
   "picture": "draw_inverseStar.png"
  },
+ "draw:limacon": {
+  "lines": 120,
+  "fingerprint": "d05b997b313e17ed",
+  "error": "",
+  "stable": true,
+  "picture": "draw_limacon.png"
+ },
  "draw:linkedCircles": {
   "lines": 80,
   "fingerprint": "610afd484271b723",
   "error": "",
   "stable": true,
   "picture": "draw_linkedCircles.png"
+ },
+ "draw:lissajous": {
+  "lines": 120,
+  "fingerprint": "4982b413fb104a05",
+  "error": "",
+  "stable": true,
+  "picture": "draw_lissajous.png"
  },
  "draw:mysticRose": {
   "lines": 190,
@@ -1371,12 +1427,26 @@
   "stable": true,
   "picture": "draw_parametrics.png"
  },
+ "draw:polygon": {
+  "lines": 120,
+  "fingerprint": "9115ca646faa67b8",
+  "error": "",
+  "stable": true,
+  "picture": "draw_polygon.png"
+ },
  "draw:radiate": {
   "lines": 22,
   "fingerprint": "f6fc711613b2b80e",
   "error": "",
   "stable": true,
   "picture": "draw_radiate.png"
+ },
+ "draw:rectangle": {
+  "lines": 120,
+  "fingerprint": "dfdc25574393ea03",
+  "error": "",
+  "stable": true,
+  "picture": "draw_rectangle.png"
  },
  "draw:regularPolygon": {
   "lines": 105,
@@ -1391,5 +1461,19 @@
   "error": "",
   "stable": true,
   "picture": "draw_regularPursuit.png"
+ },
+ "draw:rose": {
+  "lines": 120,
+  "fingerprint": "426e611f60966309",
+  "error": "",
+  "stable": true,
+  "picture": "draw_rose.png"
+ },
+ "draw:superellipse": {
+  "lines": 120,
+  "fingerprint": "9b290857275a4ff1",
+  "error": "",
+  "stable": true,
+  "picture": "draw_superellipse.png"
  }
 }

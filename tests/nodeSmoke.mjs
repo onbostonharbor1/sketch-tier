@@ -396,6 +396,7 @@ check("service still answers", (await call("listLogFiles", {})).status === 200);
   mk("patterns/first/manifest.json", JSON.stringify([{ filename: "b", path: "b.js", title: "Bee", status: "fix" },
                                                       { filename: "gone", path: "gone.js", title: "Gone" }]));
   mk("patterns/second/c.js"); mk("patterns/third/d.js"); mk("patterns/images/thumb_x.png");
+  mk("patterns/picturesOnly/images/thumb_y.png");             // not in the registry, no items: not a category
   const { listLibrary } = await import(pathToFileURL(path.join(nodeDir, "libraryIndex.mjs")).href);
   const here = process.cwd();
   process.chdir(lib);

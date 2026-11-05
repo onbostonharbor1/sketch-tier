@@ -2,7 +2,7 @@
 
 Made by `npm run dictionary` from the comments above each function (tests/functionDictionary.mjs). Do not edit by hand: change the comment, then run it again.
 
-764 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
+780 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
 
 | Function | Where | What it does |
 |---|---|---|
@@ -26,6 +26,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `addPatternSubtab` | ui/patterns/patternsNav.js:101 | adds (or relabels) the subtab for the pattern being shown. |
 | `adjustStartEnd` | draw/drawEllipse.js:108 | where the stitching starts and ends on the ring of nodes, after the start skip and end skip settings; returns the new start, end and length. |
 | `allPairs` | draw/connectors.js:129 | every point joined to every other, each pair once. |
+| `alongCorners` | draw/curves.js:141 | n points spread evenly by distance round the closed outline through the corners given, starting at the first corner. |
 | `appendErrorLog` | node/logAndEditorRequests.mjs:247 | TASK: appendErrorLog DESCRIPTION Appends errors reported by the app (ui/errorReport.js) to today's |
 | `appendManifestEntry` | node/writerRequests.mjs:47 | Adds one entry to the end of a manifest (a JSON array). |
 | `applyEditManifest` | ui/editManifestDialog.js:290 | sends the edited fields to the service, which writes them to the manifest, then runs the complete rebuild. |
@@ -53,6 +54,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `assertFileExists` | node/serviceFileHelpers.mjs:82 | Fail-fast file existence check. |
 | `assertFileName` | node/figureFiles.mjs:36 | refuses a name that cannot be a file name on Windows (< > : " \| ? *, or a leading or trailing dot or space). |
 | `assertSimpleName` | node/safePaths.mjs:53 | The value must be a non-empty string that is a single path segment: no "/" or "\", no NUL character, and not "." or "..". |
+| `astroidPoints` | draw/curves.js:88 | the four-cusped hypocycloid, x = cos^3 t, y = sin^3 t. |
 | `attachCanvasToRegion` | ui/scriptRunner.js:192 | moves the shared canvas into a region of the page. |
 | `autoFitParametricToCanvas` | draw/drawParametrics.js:159 | Measures the raw mathematical bounds of the curve and updates the 'scale' and 'mid' properties of the Parametric object to fit the canvas. |
 | `background` | draw/background.js:5 | fills the shared canvas with a colour and, if grid is true, draws a light grid over it. |
@@ -96,6 +98,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `button` | ui/scriptHistory.js:222 | a button with text that runs onClick. |
 | `calculateTintAndShade` | draw/color.js:3 | a lighter (tint) and a darker (shade) version of a colour, percentage of the way to white and to black. |
 | `canBreakApart` | ui/figures/figureBreakApart.js:23 | True when the active layer is visible and its object can come apart (its registry entry has a decompose()). |
+| `cardioidPoints` | draw/curves.js:95 | the heart, r = (1 + cos t) / 2: the epicycloid with one cusp, which sits at the centre c, the curve reaching r to the right. |
 | `categoriesOf` | node/libraryIndex.mjs:70 | the category folders of a library, in order. |
 | `centroidHit` | ui/figures/figureCentroid.js:142 | True when canvas point (x, y) is on the diamond, or on the rotation handle while the diamond is selected. |
 | `changeLine` | draw/drawRegular.js:136 | an arm with points removed: truncate drops points from the start, shorten from the end, always leaving at least two. |
@@ -127,7 +130,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `closeFormsOverlay` | ui/editManifestDialog.js:374 | closes the dialog overlay. |
 | `closeNotesOverlay` | ui/overlay.js:266 | Tears the notes popup down exactly as its close (x) button does. |
 | `closeOverlay` | ui/overlay.js:120 | hides the help overlay. |
-| `closeTab` | ui/figures/figuresNav.js:466 | Throws the figure away (after asking, if it has unsaved changes), stops every mouse listener that may belong to it, and shows another subtab. |
+| `closeTab` | ui/figures/figuresNav.js:486 | Throws the figure away (after asking, if it has unsaved changes), stops every mouse listener that may belong to it, and shows another subtab. |
 | `collectRegistryEntries` | ui/draw/drawCategories.js:48 | every registry object that is not a template, as { key, name, category, entry }. |
 | `colourNameToHex` | draw/color.js:75 | a CSS colour name ("aliceblue") as its hex code, or false if the name is not known. |
 | `comparePoints` | draw/drawUtilities.js:730 | true when two points are the same to two decimal places. |
@@ -238,6 +241,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `editManifestEntryInSingleFile` | node/manifestRequests.mjs:192 | Updates exactly one manifest file in place (array of entries). |
 | `editPatternsManifestItem` | ui/patterns/patternsMenuCmds.js:207 | opens Edit Manifest for the pattern shown (title, status). |
 | `editUtilitiesManifestItem` | ui/utilities/utilitiesMenuCmds.js:102 | opens Edit Manifest for the utility shown (title, status). |
+| `ellipsePoints` | draw/curves.js:132 | an ellipse of half-width r and half-height r * ratio. |
 | `enableNextPrevOverlay` | ui/nextPrevOverlay.js:101 | Args: spec = { targetEl: <HTMLElement>, |
 | `endStepPass` | ui/draw/drawStep.js:68 | a redraw has finished; bring the slider and the readout up to date (the number of lines can change when a setting changes). |
 | `ensureArray` | ui/menuManager.js:31 | value if it is an array; throws otherwise. |
@@ -249,6 +253,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `ensureReady` | ui/menuManager.js:24 | throws if the menu manager has not been started. |
 | `ensureResultsSubtab` | ui/gallery/galleryNav.js:129 | adds the Results subtab (the item being viewed) if it is not there. |
 | `ensureUtilitiesCacheLoaded` | ui/utilities/utilities.js:67 | reads the Tools and Lab lists. |
+| `epicycloidPoints` | draw/curves.js:69 | the path of a point on a small circle rolling round the outside of a big one; lobes is how many cusps. |
 | `errorStates` | ui/errorChecklist.js:48 | go through every log line in order and work out, for each different error, whether it is open or ticked. |
 | `escapeAttr` | ui/editManifestDialog.js:388 | text made safe for an HTML attribute. |
 | `escapeHtml` | node/copyBuildDocs.mjs:36 | text made safe to put inside HTML. |
@@ -323,6 +328,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `hideHelp` | ui/overlay.js:108 | hides the help overlay. |
 | `hideOffcanvas` | ui/offcanvas.js:93 | slides the side panel out and removes its backdrop. |
 | `historyRoot` | node/scriptHistoryRequests.mjs:41 | The folder VS Code keeps its local history in, on this computer. |
+| `hypocycloidPoints` | draw/curves.js:79 | a small circle rolling round the inside of a big one; cusps is how many points the star has (3 a deltoid, 4 an astroid). |
 | `ideabookHasScript` | ui/gallery/galleryResults.js:316 | True if the image has a hint script. |
 | `ideabookScriptName` | ui/gallery/galleryResults.js:303 | The script's file name for an image: the image's name, with the few characters the dev server will not serve in a file name (& , # ? % + ;) replaced by "_". |
 | `ideabookScriptPath` | ui/gallery/galleryResults.js:308 | The app path of an image's hint script (it may not exist). |
@@ -360,12 +366,14 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `launchDetached` | node/logAndEditorRequests.mjs:208 | Starts a command detached from this service. |
 | `launchTabViaSetUI` | ui/home/homeNav.js:324 | switches to another main tab (used to open an item there). |
 | `layerTransform` | ui/figures/figurePoints.js:153 | The transform of layer number i of the figure, or null. |
+| `limaconPoints` | draw/curves.js:102 | r = (1 + loop cos t) / (1 + loop). |
 | `lineDiff` | ui/scriptHistory.js:45 | The lines of both texts in order, each marked as kept (" "), removed ("-") or added ("+"). |
 | `linePoints` | draw/shapers.js:54 | steps+1 points evenly spaced from a to b, both ends included. |
 | `lineSpan` | ui/scriptHistory.js:206 | one line of a comparison, in a colour. |
+| `lissajousPoints` | draw/curves.js:60 | x = sin(a t + phase), y = sin(b t). |
 | `listFilesByExt` | node/maintain_manifests.mjs:399 | Lists files in a directory that match a specific extension, with exclusion support. |
 | `listHelpTopics` | node/homeListRequests.mjs:51 | TASK: listHelpTopics The topics in one help folder, for Home > Help (ui/home/homeHelp.js): every .html file under help/<folder>, with the title from its <title> |
-| `listHomeItems` | node/libraryIndex.mjs:131 | the request (see the header above). |
+| `listHomeItems` | node/libraryIndex.mjs:139 | the request (see the header above). |
 | `listIdeabookScripts` | node/scriptHistoryRequests.mjs:141 | TASK: listIdeabookScripts The hint scripts of one Ideabook category: the .js files in gallery/Ideabook/<category>/scripts/. |
 | `listImageFiles` | node/maintain_manifests.mjs:407 | Lists image files in a directory based on standard web extensions. |
 | `listInsertableObjects` | ui/figures/figureLayers.js:106 | Registry objects for the Insert pulldown: [{ key, name }], sorted by name. |
@@ -393,6 +401,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `makeEditManifestItem` | ui/menuCmds.js:135 | Returns an Edit Manifest menu item. |
 | `makeHelpItem` | ui/menuCmds.js:53 | Returns a Help menu item. |
 | `makeNotesItem` | ui/menuCmds.js:178 | Returns a Notes menu item for a source file. |
+| `makeRingObject` | draw/ringObject.js:59 | a complete registry object from a spec (see the header). |
 | `makeRootedPath` | node/manifestRequests.mjs:413 | an entry's file as a path from the project root ("/patterns/circles/circle.js"). |
 | `makeRootedPathFromManifest` | node/maintain_manifests.mjs:341 | Converts a filesystem path from a manifest entry into a browser-rooted web path. |
 | `makeScriptHistoryItem` | ui/menuCmds.js:94 | Returns a "Script history..." menu item: the versions VS Code saved of the open script, to run or compare (ui/scriptHistory.js). |
@@ -451,13 +460,14 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `openHelpHomeOverlay` | ui/help.js:63 | UPDATED: - This becomes the ONE entry point for opening Help. |
 | `openInEditor` | node/logAndEditorRequests.mjs:158 | the request (see the header above). |
 | `openInsertPanel` | ui/figures/figureInsertPanel.js:30 | the Insert an object side panel: a picture of every object, a larger preview on hover, click to insert. |
-| `openNewFigureTab` | ui/figures/figuresNav.js:439 | Creates an empty, unnamed figure in a new subtab and shows it. |
+| `openNewFigureTab` | ui/figures/figuresNav.js:459 | Creates an empty, unnamed figure in a new subtab and shows it. |
 | `openOverlay` | ui/overlay.js:115 | Panel-style overlay open/close (rarely used) |
 | `openSavedFigure` | ui/figures/figuresSave.js:190 | Reads the file, makes a new figure subtab for it and rebuilds the live objects. |
 | `openScriptHistory` | ui/scriptHistory.js:72 | the side panel of a script's saved versions. |
 | `openSweepPanel` | ui/draw/drawSweep.js:116 | The side panel: setting, from, to, how many, Sweep. |
 | `outside` | draw/shapers.js:236 | only the points outside the shape (a hole left in a pattern). |
 | `page` | node/copyBuildDocs.mjs:143 | a complete help page around a body. |
+| `pairsFor` | draw/ringObject.js:50 | the lines for a list of points, by the stitch setting. |
 | `pairwise` | draw/connectors.js:49 | point i of A joined to point i+offset of B. |
 | `para` | ui/scriptHistory.js:215 | a paragraph holding text. |
 | `parseChecklist` | ui/home/homeChecklist.js:36 | the file split into lines, and the items found among them, each { text, done, at } where at is its line number. |
@@ -471,6 +481,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `pointAtArcLength` | draw/drawEllipse.js:198 | Given cumulative arc-lengths (S) and corresponding points (X), returns the interpolated point at the specified arc length. |
 | `pointByN` | ui/figures/figureWeldModel.js:37 | the figure's point (disc) with number n, or null. |
 | `pointPickerDotId` | ui/controls/shared/helpers.js:9 | Generate a unique dot ID for point picker overlays |
+| `polygonPoints` | draw/curves.js:169 | a regular polygon of the given number of sides, corners on a circle of radius r, the first corner at the top, n points spread round its sides. |
 | `polyline` | draw/connectors.js:140 | each point joined to the next. |
 | `polyline` | ui/figures/figureMagic.js:59 | The arm as a list of canvas points, each with its t along the arm. |
 | `positionMenu` | ui/menuManager.js:66 | places the menu just below the button that opened it. |
@@ -503,6 +514,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `rebuildAllManifests` | ui/rebuildSync.js:44 | The complete rebuild (Barry's rule): after anything changes a manifest -- Edit Manifest, Archive, saving a figure, Create Pattern, Create Gallery PNG -- the ... |
 | `rebuildControls` | ui/controls/rendering/rebuild.js:33 | CONTROL PANEL REBUILD TRIGGER PURPOSE: Provides a self-contained rebuild mechanism for dynamic |
 | `rebuildInstances` | ui/figures/figureLayers.js:245 | For a figure that was read from a file (Phase 10): makes one live object per saved layer, in the same order, the way insertLayer() makes one. |
+| `rectanglePoints` | draw/curves.js:159 | a rectangle of half-width r and half-height r * ratio, with n points spread round its sides from the top left corner. |
 | `redrawFigure` | ui/figures/figureDraw.js:64 | Clears the canvas and draws every visible layer, bottom to top. |
 | `reflectionFileName` | ui/home/homeHelp.js:45 | a title turned into a file name: letters, digits and spaces kept, everything else dropped, spaces as underscores. |
 | `reflowNotes` | ui/notes.js:73 | Header notes are hard-wrapped for the editor. |
@@ -561,6 +573,8 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `restoreUtilityTab` | ui/utilities/utilities.js:164 | shows the Utilities tab again as it was left. |
 | `reversed` | draw/shapers.js:79 | the same points in the opposite order. |
 | `rgbToHex` | draw/color.js:47 | RGB → hex helper |
+| `ring` | draw/curves.js:38 | n points, point i at parameter t = i/n of a full turn, from a function giving the point (as a fraction of r) for an angle t. |
+| `rosePoints` | draw/curves.js:52 | the rose curve r = cos(k t). |
 | `rotated` | draw/shapers.js:118 | every point turned about centre c by deg degrees. |
 | `rotateStart` | draw/shapers.js:103 | treat the points as a closed loop and start it at index k. |
 | `rotateTransformAbout` | draw/drawTransform.js:140 | Turns the whole picture by d radians about the canvas point (cx, cy). |
@@ -691,6 +705,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `snapshotWeldMembers` | ui/figures/figureWeldMove.js:75 | The current canvas position of every welded disc on one layer, taken just before that layer is about to change. |
 | `sortCaseInsensitive` | node/generateHelpManifest.mjs:62 | compares two names ignoring upper and lower case, for sorting. |
 | `spacingProblems` | ui/figures/figurePrint.js:150 | { ok, message, pairs: [[nailA, nailB, mm]], nails }. |
+| `spiralPoints` | draw/curves.js:119 | an Archimedean spiral from the centre out to r, turns turns. |
 | `startServer` | node/sketchpadServer.mjs:114 | DESCRIPTION Creates and starts the HTTP server. |
 | `startStepping` | ui/draw/drawStep.js:39 | draw everything once to count the lines, then show the controls with the last line marked. |
 | `statusForError` | node/sketchpadServer.mjs:93 | A plain Error thrown by a handler for bad input has no system error code and says what is wrong with the request. |
@@ -698,14 +713,15 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `stopStepping` | ui/draw/drawStep.js:50 | remove the controls and draw the whole object again. |
 | `stripExt` | node/maintain_manifests.mjs:414 | Removes the specified extension from a string. |
 | `summaryLines` | node/maintain_manifests.mjs:266 | The lines that go at the top of the log: the problems, then the files added to manifests. |
+| `superellipsePoints` | draw/curves.js:110 | \|x\|^p + \|y\|^p = 1. |
 | `sweepableSettings` | ui/draw/drawSweep.js:37 | The settings a sweep can run over: every slider (range control), as { key, label, min, max, step }. |
 | `sweepGrid` | ui/draw/drawSweep.js:74 | A grid over two settings: one row per value of keyB (down), one picture per value of keyA (across). |
 | `sweepPictures` | ui/draw/drawSweep.js:65 | One picture (a data URL) per value, of the open object with key set to it. |
 | `sweepValues` | ui/draw/drawSweep.js:47 | count values evenly across from..to, each on one of the slider's steps. |
 | `switchHomeView` | ui/home/homeNav.js:146 | shows one of Home's views (Categories, Results, Errors, Checklist, Help, Notes) and remembers it. |
 | `switchTab` | ui/draw/drawNav.js:198 | makes a subtab the active one and draws what it holds. |
-| `switchToCategories` | ui/figures/figuresNav.js:362 | Shows the category list (#text) and hides the drawing area, the layer strip and the controls. |
-| `switchToFigureTab` | ui/figures/figuresNav.js:401 | Shows one figure: hides the category list, shows the drawing area and the layer strip, builds the caption bar and its tools, then the layer panel (which also... |
+| `switchToCategories` | ui/figures/figuresNav.js:382 | Shows the category list (#text) and hides the drawing area, the layer strip and the controls. |
+| `switchToFigureTab` | ui/figures/figuresNav.js:421 | Shows one figure: hides the category list, shows the drawing area and the layer strip, builds the caption bar and its tools, then the layer panel (which also... |
 | `switchUtilityTab` | ui/utilities/utilitiesNav.js:104 | shows one Utilities subtab and remembers it. |
 | `syncLayerToCanvas` | ui/canvasLayerManager.js:152 | Sizes and positions the named canvas layer to exactly match the dimensions of referenceCanvas. |
 | `syncSystemStateAfterRebuild` | ui/rebuildSync.js:16 | Global Sync: Wipes the manifest cache and sets needsUpdate for all tabs. |
@@ -733,7 +749,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `trimmedRange` | draw/drawRegular.js:421 | The same clamp changeLine() applies, but returning the index window { from, to } instead of a cut-down array. |
 | `unitName` | ui/figures/figurePrint.js:243 | "inches" or "millimetres", for questions. |
 | `updateDrawCaption` | ui/draw/drawMenuCmds.js:61 | Builds the full caption bar for a draw object tab. |
-| `updateFigureButtons` | ui/figures/figuresNav.js:264 | The left command area. |
+| `updateFigureButtons` | ui/figures/figuresNav.js:283 | The left command area. |
 | `updateGalleryCaption` | ui/gallery/galleryMenuCmds.js:61 | the caption for the item shown: its category and title, Prev and Next, and the menu. |
 | `updateLayerInfo` | ui/figures/figureLayerPanel.js:202 | Fills the "Layer N . |
 | `updatePatternsCaption` | ui/patterns/patternsMenuCmds.js:53 | Title rule: "{category}: {title}" |
