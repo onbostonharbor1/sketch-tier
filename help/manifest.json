@@ -2,46 +2,47 @@
   "root": [
     "Index"
   ],
+  "BuildDocs": [
+    "Architecture-Rethink",
+    "CHECK_REPORT_2026-10-31",
+    "CHECKLIST_batch-1",
+    "CHECKLIST_ideabook-scripts",
+    "CHECKLIST_sweep-1",
+    "CHECKLIST_tier-a",
+    "CHECKLIST_v1-errors",
+    "CHECKLIST_v1-finish",
+    "FIGURE_FORMAT_V1",
+    "Figures-code",
+    "FUNCTIONS",
+    "Help-Overview",
+    "NOT_DONE",
+    "Remaining-Phases",
+    "Rethink-From-Scratch",
+    "RUNBOOK_deferred",
+    "Sketchpad-Then-and-Next",
+    "Sketchpad-V2-Detailed-Specification",
+    "Sketchpad-V2-Functional-Specification-RevB",
+    "Sketchpad-V2-Functional-Specification",
+    "TEST_TABLE_main-to-batch-1",
+    "TIERS",
+    "V1_FINISH_PLAN",
+    "V2_IDEAS",
+    "V2_LEGACY_SURVEY",
+    "WHAT_WAS_DONE_batch-1"
+  ],
   "draw": [
     "inEllipse",
     "inverseStar",
     "linkedCircles",
     "parabola"
   ],
-  "figures": [],
   "gallery": {
-    "Ideabook": {
-      "3D": [],
-      "generative": [],
-      "ideas": [],
-      "ok": [],
-      "possible": [],
-      "Pursuit": [],
-      "scans": [],
-      "To Build": [],
-      "working": []
-    },
-    "Patterns": {
-      "PursuitPatterns": [],
-      "ScanPatterns": []
-    },
     "Scripts": {
-      "Curve Stitch": [],
       "Elliptical": [
         "ellipseDemo.js"
-      ],
-      "Experimental": [],
-      "General parametric": [],
-      "Generative": [],
-      "Multiple": [],
-      "Named parametric": [],
-      "Pursuit": [],
-      "Rose": [],
-      "Spiral": [],
-      "Unicorns": []
+      ]
     }
   },
-  "home": [],
   "Overview": {
     "Design Notes": [
       "coding_simplicity",
@@ -55,9 +56,13 @@
     "Subsystems": [
       "caption",
       "categories",
+      "codespaces",
+      "errorsChecklists",
       "fileLayer",
       "GROUPING_SYSTEM_GUIDE",
+      "homeHelp",
       "interactor",
+      "libraryIndex",
       "manifest",
       "menuManager",
       "nodeLayer",
@@ -67,6 +72,9 @@
       "pointDragging",
       "scriptRunner",
       "setUI",
+      "shapersConnectors",
+      "stepping",
+      "testing",
       "ui_utilities",
       "uiState"
     ],
@@ -82,27 +90,9 @@
   "patterns": {
     "builds": [
       "firstBuild"
-    ],
-    "circles": [],
-    "curve_stitch": [],
-    "figures": [],
-    "fundamental": [],
-    "imported": [],
-    "parametric": [],
-    "polar": [],
-    "pursuit": [],
-    "spirals": [],
-    "stuff": [],
-    "unicorn": []
+    ]
   },
-  "utilities": {
-    "Lab": {
-      "Backgrounds": [],
-      "Color": []
-    },
-    "Tools": {
-      "Backgrounds": [],
-      "Stuff": []
-    }
-  }
+  "Reflections": [
+    "About_Reflections"
+  ]
 }

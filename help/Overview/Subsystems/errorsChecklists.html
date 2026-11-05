@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Errors and checklists</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Errors and checklists</h1>
+
+<p class="note">Written 5 November 2026. Code: <code>ui/errorReport.js</code>, <code>ui/errorChecklist.js</code>,
+<code>ui/home/homeErrors.js</code>, <code>ui/home/homeChecklist.js</code>, <code>ui/home/homeTickList.js</code>,
+<code>node/homeListRequests.mjs</code>.</p>
+
+<h2>Errors</h2>
+<p>An error caught at a choke point (a figure layer's draw, the Draw redraw, a tab switch, opening a file) or not caught at
+all is shown in the red error bar on every tab and written once to <code>utilities/logfiles/errors_&lt;date&gt;.txt</code>.
+A repeat is counted, not logged again.</p>
+<p><b>A checklist, not a dismissal.</b> Each error in the bar has <b>Tick</b>, and the bar has <b>Tick all</b>. Ticking writes
+<code>Acknowledged: &lt;where&gt;: &lt;message&gt;</code> to the log. Home &gt; <b>Errors</b> reads every error log and lists
+each error not yet ticked, across restarts. <b>Show all</b> shows the ticked ones too, greyed. <b>Purge ticked</b> writes
+<code>Purged: ...</code> lines, after which those errors are not shown at all. The log lines themselves are never removed:
+a log is history.</p>
+<p><code>errorStates(logTexts)</code> works this out by reading the log lines in order: an error line opens its error (the
+key is the line without its time and its file:line), an Acknowledged line ticks it, a Purged line removes it, and the same
+error reported again after a tick is open again.</p>
+
+<h2>The checking list</h2>
+<p>Home &gt; <b>Checklist</b> shows <code>home/checklist.md</code>, a Markdown task list (<code>- [ ] text</code>, ticked
+<code>- [x] text</code>), so it reads the same in VS Code. Tick or untick an item, <b>Show all</b>, <b>Purge ticked</b>
+(removes the ticked lines) and <b>Add item</b> each rewrite the whole file through the <code>writeChecklist</code> request,
+atomically. Lines that are not items (headings, notes) are kept as they are. Each phase adds its hand checks here, with
+the details in its <code>docs/CHECKLIST_*.md</code>.</p>
+
+<h2>One list display</h2>
+<p>Both subtabs use <code>renderTickList(container, spec)</code>: an intro sentence, Show all, Purge ticked (it asks first),
+an optional Add item box, and the items with checkboxes. Where the items live is the caller's business.</p>
+
+<h2>Tests</h2>
+<p><code>npm run test:errors</code>, sections 8 to 10.</p>
+
+</body>
+</html>

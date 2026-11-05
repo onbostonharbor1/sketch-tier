@@ -21,7 +21,16 @@ and <code>node/sketchpadService.mjs</code> (the tasks).</p>
 
   <h1>nodeLayer.js — Browser-side Bridge to the Node Service</h1>
 
-  <p>
+  
+<h2>Changes, 3 to 5 November 2026</h2>
+<p><b>The address.</b> <code>nodeDispatch()</code> posts to <code>/dispatch</code> on the page's own server; Vite passes it
+to the service on port 5174 (<code>vite.config.js</code>). This is what lets Sketchpad run in a GitHub Codespace. A
+missing service gives the plain "did not answer" message. See <i>Running in a Codespace</i>.</p>
+<p><b>New requests:</b> <code>writeChecklist</code> and <code>listHelpTopics</code> (<code>node/homeListRequests.mjs</code>),
+<code>listLibrary</code> and <code>listHomeItems</code> (<code>node/libraryIndex.mjs</code>). Errors are acknowledged and
+purged by writing lines with <code>appendErrorLog</code>.</p>
+
+<p>
     This page is intentionally “raw help HTML”: it is written as a single self-contained page
     so you can drop it into your help system as-is, and/or split it later into smaller pages.
     The discussion is based on one file:

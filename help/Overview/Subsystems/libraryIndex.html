@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lists from the folders (libraryIndex)</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Lists from the folders (libraryIndex)</h1>
+
+<p class="note">Written 5 November 2026. Code: <code>node/libraryIndex.mjs</code>; read by <code>ui/manifest.js</code> and
+<code>ui/home/homeManifest.js</code>.</p>
+
+<p>Every list Sketchpad shows (Patterns, the three Gallery areas, Utilities Tools and Lab, Figures, Draw's saved settings)
+and the Home list are worked out from the files in the folders, on request, by the Node service. Before 4 November they
+came from <code>manifest.json</code> files, and a list was only as right as its manifest.</p>
+
+<h2>The rules</h2>
+<ul>
+<li><b>A category is a folder.</b> The order is that of the library's <code>directoryRegistry.json</code>, then any other
+folder, A to Z. Skipped: <code>images</code>, <code>scripts</code>, <code>archive</code>, names starting with "." or "_",
+and "System Volume Information".</li>
+<li><b>An item is a file of the right kind:</b> scripts (.js) for patterns, gallery Scripts and utilities; pictures for
+Ideabook and gallery Patterns; .json for figures and saved settings. Thumbnails (<code>thumb_*</code>) and the list files
+themselves are not items.</li>
+<li><b>Notes.</b> What a file cannot say about itself (a title other than its name, a Home status, the order) still
+comes from the folder's <code>manifest.json</code>. An entry whose file is gone is left out. A file with no entry appears
+after the listed ones, titled by its file name.</li>
+<li><b>No watcher.</b> A new file appears the next time the list is read (a reload, or Rebuild). Node's file watching is
+unreliable on Windows, so it is not used.</li>
+</ul>
+
+<h2>The requests</h2>
+<table>
+<tr><th>Request</th><th>Payload</th><th>Answer</th></tr>
+<tr><td><code>listLibrary</code></td><td><code>{ basedir }</code>, one of the eight libraries</td><td><code>{ categories: [name], items: [[entry]] }</code>; <code>items[i]</code> belongs to <code>categories[i]</code>; an entry is <code>{ filename, path, title, ...notes }</code></td></tr>
+<tr><td><code>listHomeItems</code></td><td>none</td><td><code>{ items: [{ file, path, title, status }] }</code>: every item with a status, by title</td></tr>
+</table>
+
+<h2>On the page</h2>
+<p><code>ManifestManager.get(basedir)</code> asks for <code>listLibrary</code> for the eight libraries and keeps the answer
+in its cache exactly as it used to keep manifest data, so no tab changed. Home's
+<code>loadHomeManifest_async()</code> asks for <code>listHomeItems</code>. Either falls back to reading the files only when
+there is no service (a read-only copy).</p>
+
+<h2>What still writes manifests</h2>
+<p>Edit Manifest (title, status), Archive, Save figure, Create Pattern and the thumbnail tools still write
+<code>manifest.json</code>, now as notes. <code>sketchpad.bat</code> no longer runs the manifest maintenance at start-up;
+Utilities &gt; Rebuild &amp; Validate still runs it.</p>
+
+<h2>Tests</h2>
+<p><code>npm run test:node</code> builds a scratch library and checks the order, the notes, a file with no entry, an entry
+with no file, and the refusal of a folder that is not a library. When it was built, every list was compared item by item
+with the manifests: identical.</p>
+
+</body>
+</html>

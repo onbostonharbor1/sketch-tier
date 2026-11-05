@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tests and checks</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Tests and checks</h1>
+
+<p class="note">Written 5 November 2026. Every command is run from the project folder; the browser tests need Vite and the
+Node service running (<code>sketchpad.bat</code>, or <code>npm run dev:all</code>).</p>
+
+<table>
+<tr><th>Command</th><th>What it checks</th></tr>
+<tr><td><code>npm run test:tabs</code></td><td>The whole app through a browser: every tab, Figures, welds, print aids, Sweep, stepping, and much more. Extended with every phase.</td></tr>
+<tr><td><code>npm run test:regression</code></td><td>Draws every Draw object, pattern and gallery script and compares each with its approved copy. The report (<code>tests/regression/report.html</code>) shows approved, now, an overlay, a flicker picture and a difference picture for each change. Approve an intended change with <code>-- accept &lt;name&gt;</code>; <code>tests/regression/tolerance.json</code> gives an item its own allowance.</td></tr>
+<tr><td><code>npm run test:errors</code></td><td>The error bar, the error log, the error checklist, Home &gt; Errors, Checklist, Help and Notes, and the registry and figure-file checks.</td></tr>
+<tr><td><code>npm run test:node</code></td><td>The Node service's requests, including lists from the folders.</td></tr>
+<tr><td><code>npm run test:history</code></td><td>Script history.</td></tr>
+<tr><td><code>npm run test:ideabook</code></td><td>The Ideabook Run script button and every hint script.</td></tr>
+<tr><td><code>npm run test:shapers</code></td><td>Shapers and connectors (no browser).</td></tr>
+<tr><td><code>npm run test:controls</code></td><td>Controls by name alone (no browser).</td></tr>
+<tr><td><code>npm run lint:globals</code></td><td>No undeclared globals: must report 0 errors.</td></tr>
+<tr><td><code>npm run check:imports</code>, <code>check:ids</code></td><td>Imports resolve; page ids match the region table.</td></tr>
+<tr><td><code>npm run dictionary</code></td><td>Writes <code>docs/FUNCTIONS.md</code>, every function A to Z with the first sentence of its comment.</td></tr>
+<tr><td><code>npm run help:builddocs</code></td><td>Remakes Build Documents from docs/.</td></tr>
+</table>
+
+<h2>Hand checks</h2>
+<p>What tests cannot see (Windows, printing, how a thing feels) is listed on Home &gt; Checklist, one line per check, with
+details in the phase's <code>docs/CHECKLIST_*.md</code>.</p>
+
+<h2>One trap</h2>
+<p>If a source file is edited while Vite is running, a browser test can end up holding a second copy of the app's state
+(Vite starts serving the file under a new address). The symptom looks like a real bug. Restart Vite before running the
+tests after editing code.</p>
+
+</body>
+</html>

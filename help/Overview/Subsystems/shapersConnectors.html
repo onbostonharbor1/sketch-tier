@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shapers and connectors</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Shapers and connectors</h1>
+
+<p class="note">Written 5 November 2026. Code: <code>draw/shapers.js</code>, <code>draw/connectors.js</code>,
+<code>drawPairs</code> in <code>draw/drawUtilities.js</code>. Tests: <code>npm run test:shapers</code>.</p>
+
+<p>Two small libraries of plain functions for the two things that take Sketchpad beyond StringThing: what you can do to an
+array of points, and ways of stitching.</p>
+
+<h2>Shapers: arrays of points in, arrays out</h2>
+<p><code>linePoints</code>, <code>arcPoints</code>, <code>reversed</code>, <code>part</code>, <code>everyNth</code>,
+<code>rotateStart</code>, <code>translated</code>, <code>rotated</code>, <code>scaled</code>, <code>mirrored</code>,
+<code>resampled</code>, <code>simplified</code>, and for clipping <code>inside</code>, <code>outside</code>,
+<code>isInside</code>. None changes the array it is given or draws. A moved point is a copy of the old one with x and y
+changed, so it keeps its class and any z value (depth, for later).</p>
+
+<h2>Connectors: arrays in, pairs [a, b] out</h2>
+<p><code>pairwise</code> (offset, wrap, and spread for arms of different lengths), <code>corner</code>, <code>chords</code>,
+<code>growingChords</code>, <code>timesTable</code>, <code>allPairs</code>, <code>polyline</code>, <code>mesh</code>. A
+connector knows nothing about reversing, ranges or every nth: those are shapers, applied first. Nothing is refused:
+unequal arms join as far as the shorter goes (or spread across the longer), and odd settings draw what they draw.</p>
+
+<h2>Reading a rule</h2>
+<pre><code>drawPairs(pairwise(part(A, 0, 10), reversed(B)), "blue", 1);</code></pre>
+<p>Each step can be looked at on its own in the debugger. <code>drawPairs</code> sends every pair through
+<code>drawLine</code>, so Final mode, figure transforms, the print aids and stepping all see the lines.</p>
+
+<h2>Not yet</h2>
+<p>The Ideabook routines and the old <code>stitcher</code> still use their own code; moving them onto these is Barry's
+decision (the promotion rule).</p>
+
+</body>
+</html>

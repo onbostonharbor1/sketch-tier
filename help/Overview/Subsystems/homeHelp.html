@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Home Help: Design, Reflections, Build Documents</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Home Help: Design, Reflections, Build Documents</h1>
+
+<p class="note">Written 5 November 2026. Code: <code>ui/home/homeHelp.js</code>, <code>node/homeListRequests.mjs</code>
+(<code>listHelpTopics</code>), <code>node/copyBuildDocs.mjs</code>.</p>
+
+<p>Home &gt; <b>Help</b> is a notes and information viewer laid out like the Help browser: a contents tree on the left
+(jsTree) and the chosen page on the right.</p>
+
+<table>
+<tr><th>Group</th><th>Folder</th><th>Listed</th><th>Changed by</th></tr>
+<tr><td>Design</td><td><code>help/Overview</code></td><td>by subfolder</td><td>the Help browser's editor</td></tr>
+<tr><td>Reflections</td><td><code>help/Reflections</code></td><td>by title, A to Z</td><td>New reflection and Edit, here</td></tr>
+<tr><td>Build Documents</td><td><code>help/BuildDocs</code></td><td>A to Z</td><td><code>npm run help:builddocs</code> (never by hand)</td></tr>
+</table>
+
+<h2>Reflections</h2>
+<p><b>New reflection...</b> asks for a title, makes a file name from it (letters, digits and spaces kept, spaces as
+underscores), writes <code>help/Reflections/&lt;name&gt;.html</code> with the title as its <code>&lt;title&gt;</code>
+through <code>writeHelpFile</code>, and opens the help editor (TinyMCE, <code>ui/helpEditor.js</code>, loaded only then).
+The title is what the tree shows. <b>Edit</b> opens a chosen reflection in the same editor.</p>
+
+<h2>Build Documents</h2>
+<p><code>node/copyBuildDocs.mjs</code> empties <code>help/BuildDocs</code> and fills it from <code>docs/</code>: each
+Markdown file becomes an HTML page (a browser shows Markdown as plain text), converted by a small converter that knows
+headings, paragraphs, lists, tables, fenced code, quotes and the inline marks; each PDF gets a page that shows it from
+<code>docs/</code> in a frame (not copied). Run it after the docs change.</p>
+
+<h2>The lists</h2>
+<p><code>listHelpTopics { folder }</code> returns every .html under one of the three folders with its title and subfolder,
+so a new reflection appears at once.</p>
+
+</body>
+</html>

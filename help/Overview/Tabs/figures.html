@@ -14,6 +14,20 @@
 preliminary account: what the tab is for, the ideas it is built on, how it is used today, how the code is
 laid out, and where the phases stand. The authority for the phases is <code>PHASES.md</code>.</p>
 
+
+<h2>Changes, 3 to 5 November 2026</h2>
+<ul>
+<li><b>Choosing a layer</b> draws it on top without changing the saved <code>drawOrder</code> (a click never alters the
+figure). The caption menu's <b>Keep this layer on top</b> (<code>keepLayerOnTop</code>, <code>figureLayers.js</code>)
+makes it permanent.</li>
+<li><b>Print units:</b> Print size and Nail size are asked in inches (<code>uiState.figures.printUnits</code>, switchable to
+mm); figures keep millimetres. New figures have a clearance of 3/16 inch.</li>
+<li><b>Save template as one SVG:</b> the whole template at true size in one file, for tiling by hand, nails black or
+coloured red, green, orange, blue, yellow in turn (<code>oneSheetSVG</code>, <code>figurePrint.js</code>).</li>
+<li><b>Intersections</b> have their own mark in points mode, a purple ring with a cross (<code>figureMagic.js</code>).</li>
+<li>Figures are listed from the folders, like every other list.</li>
+</ul>
+
 <h2>What it is for</h2>
 <p>Figures is where several drawing objects come together into one design. It serves two purposes, and
 neither is a means to the other:</p>

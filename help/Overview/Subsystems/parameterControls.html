@@ -16,6 +16,15 @@ earlier page described are switched off (handles are dragged by <code>interactor
 new widgets: number, accordion and thumbnail grid. The schema flags are listed on the companion page
 "Control Schema Flags" (<code>parameterControls2.html</code>).</p>
 
+
+<h2>Changes, 4 November 2026: controls by name alone</h2>
+<p>A script or object may declare a well-known setting by name only (<code>controls: { lineWidth: true, steps: true }</code>)
+and get the whole control from a table, <code>CONVENTIONS</code> in <code>ui/controls/builders/conventions.js</code>. One
+change keeps the rest (<code>{ lineWidth: { max: 3 } }</code>). A group stands for several:
+<code>{ style: "group" }</code> becomes colour, line width and transparency. A control written in full is left exactly as
+it is. <code>expandSchema()</code> is applied by the data builders, the group filter and the renderer. Tests:
+<code>npm run test:controls</code>.</p>
+
 <p>Given an object's control schema and its current values, this system builds the controls in the left
 action panel and, when one changes, updates the value and asks for a redraw. Draw, Figures and runnable
 scripts all use it.</p>

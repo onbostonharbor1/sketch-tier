@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Running in a Codespace</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Running in a Codespace</h1>
+
+<p class="note">Written 5 November 2026. Code: <code>vite.config.js</code>, <code>.devcontainer/devcontainer.json</code>,
+<code>nodeDispatch</code> in <code>ui/nodeLayer.js</code>.</p>
+
+<p>Sketchpad can run in a GitHub Codespace, which is how Barry can use it from the iPad.</p>
+
+<h2>What made it possible</h2>
+<p>The page used to send every service request to <code>http://localhost:5174/dispatch</code>. On the iPad "localhost" is
+the iPad, and Safari blocks a plain-http request from an https page. Now the page posts to <code>/dispatch</code> on its own
+server, and Vite passes the request to the service on port 5174 (<code>vite.config.js</code>). The page never needs to know
+where the service is.</p>
+<p>The service still refuses other sites. Vite marks a request that came from Sketchpad's own page, whatever address the
+page was reached at, as coming from <code>http://localhost:5173</code>; a request from any other site keeps its own origin
+and is refused (403). <code>allowedHosts</code> lets the page be reached at <code>*.app.github.dev</code>.</p>
+
+<h2>Using it</h2>
+<p>On github.com: the repository, the branch, Code &gt; Codespaces &gt; Create codespace. The
+<code>.devcontainer</code> runs <code>npm install</code> once and <code>npm run dev:all</code> each time the Codespace is
+opened, and forwards port 5173, where the app is. Commit and push work done there. Stop the Codespace when done (free
+hours are limited). Open in VS Code opens the Codespace's browser editor; Script history there shows the Codespace's own
+saved versions.</p>
+
+</body>
+</html>

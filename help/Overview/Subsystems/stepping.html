@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stepping through a drawing</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Stepping through a drawing</h1>
+
+<p class="note">Written 5 November 2026. Code: <code>ui/draw/drawStep.js</code>, and a few lines in <code>drawLine</code>
+(<code>draw/drawUtilities.js</code>) and <code>drawActiveTab</code> (<code>ui/draw/drawRunner.js</code>).</p>
+
+<p>Barry found drawing errors by stepping through a drawing in the debugger and watching the lines go down one at a time.
+Draw &gt; caption menu &gt; <b>Step through the drawing</b> does the same on the canvas.</p>
+
+<h2>How it works</h2>
+<p><code>drawLine</code> is the one door every registry line goes through. While <code>drawState.step</code> is set
+(<code>{ limit, count, lines, box }</code>), <code>drawLine</code> counts every line it is asked for, records it in
+<code>lines</code>, draws only the first <code>limit</code>, and draws line number <code>limit</code> thick and red with a
+dot at its start. So any Draw object can be stepped without changing it.</p>
+<p>Each redraw starts the count again: <code>drawActiveTab</code> calls <code>beginStepPass()</code> before the object draws
+and <code>endStepPass()</code> after, which updates the slider and the readout. Moving a slider or dragging a handle while
+stepping shows the first k lines of the changed drawing.</p>
+
+<h2>The controls</h2>
+<p>In the left column (<code>#button</code>, class <code>tab-extra</code>): first, previous, next, last, a slider, the
+readout "Line k of N: (x, y) to (x, y), colour", and <b>Done stepping</b>. A tab switch removes the controls; the next
+<code>drawLine</code> sees they are gone and stops stepping.</p>
+
+<h2>Not yet</h2>
+<p>Figures and scripts: the same <code>drawLine</code> hook serves them; they need their own controls. Stepping in Figures
+is on the list before the next tier.</p>
+
+</body>
+</html>

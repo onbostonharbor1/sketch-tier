@@ -18,7 +18,18 @@ itself and has no archive or edit command yet, so nothing invalidates <code>"fig
 
   <h1>The Manifest System: Loading, Caching, Invalidation, and Tab Registration</h1>
 
-  <p>
+  
+<h2>Changes, 4 November 2026: lists from the folders</h2>
+<p><b>Read this first.</b> For the eight libraries (patterns, gallery/Scripts, gallery/Ideabook, gallery/Patterns,
+utilities/Lab, utilities/Tools, figures, drawRegistry), <code>ManifestManager.get()</code> no longer reads
+<code>directoryRegistry.json</code> and the <code>manifest.json</code> files. It asks the Node service for
+<code>listLibrary</code>, which works the lists out from the folders (<code>node/libraryIndex.mjs</code>) and answers in the
+same shape, so every caller is unchanged. Manifest files are now only notes: titles, statuses and order. A file with no
+entry still appears; an entry whose file is gone is ignored. The Home list is <code>listHomeItems</code>. The reading of
+manifest files described below is what happens when there is no service (a read-only copy). See <i>Lists from the
+folders</i>.</p>
+
+<p>
     This treatise describes the current manifest architecture as implemented across
     <span class="mono">ui/manifest.js</span>, the tab lifecycle files, and
     <span class="mono">ui/home/homeManifest.js</span>.

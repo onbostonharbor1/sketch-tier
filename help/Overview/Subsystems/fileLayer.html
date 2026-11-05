@@ -10,6 +10,13 @@
 
 <h1>fileLayer.js — Reading Files and Building Paths</h1>
 
+<p class="note"><b>Changed 4 November 2026.</b> Category lists and the Home list now come from the folders
+(<code>node/libraryIndex.mjs</code>, requests <code>listLibrary</code> and <code>listHomeItems</code>);
+<code>directoryRegistry.json</code> gives only the category order and <code>manifest.json</code> files are only notes
+(titles, statuses, order). No manifest rebuild runs at start-up; the page reaches the Node service through
+<code>/dispatch</code> on its own server. Where this page describes manifests as the source of a list, read it as the
+fallback when there is no service. See <i>Lists from the folders</i>.</p>
+
 <p class="note">Rewritten 27 October 2026 against the current code. The main changes since the earlier page:
 every path is now absolute (<code>/patterns/...</code>; the old <code>../patterns/...</code> forms are gone and a
 relative path is refused), <code>exists()</code> uses GET instead of HEAD, and the path helpers have been

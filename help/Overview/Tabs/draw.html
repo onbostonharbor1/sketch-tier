@@ -14,6 +14,18 @@
 <code>draw.js</code>; the tab has since been split into seven files under <code>ui/draw/</code>, and it
 gained secondary objects (saved parameter variations).</p>
 
+
+<h2>Changes, 3 to 5 November 2026</h2>
+<ul>
+<li><b>Step through the drawing</b> (caption menu): the object is drawn one line at a time. See <i>Stepping through a
+drawing</i>. <code>drawActiveTab()</code> calls <code>beginStepPass()</code> before the object draws and
+<code>endStepPass()</code> after.</li>
+<li><b>Sweep a setting</b> takes a second setting, which gives a grid (first across, second down), and either setting may be
+a typed list ("3, 5, 8"): <code>sweepGrid</code> and <code>parseValueList</code> in <code>ui/draw/drawSweep.js</code>.</li>
+<li>Controls may be declared by name alone (<code>lineWidth: true</code>, <code>style: "group"</code>). See
+<i>Parameter Controls</i>.</li>
+</ul>
+
 <p>The Draw tab shows one registry object at a time on the shared canvas, with its controls. It is a small
 tab system inside the main one: a permanent <strong>Categories</strong> subtab that lists every
 <code>drawRegistry</code> object, plus one subtab per object you open.</p>

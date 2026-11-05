@@ -26,7 +26,14 @@ Tabs.</p>
 
   <h1>Sketchpad Architecture (Detailed)</h1>
 
-  <p>
+  <p class="note"><b>Changed 4 November 2026.</b> Category lists and the Home list now come from the folders
+(<code>node/libraryIndex.mjs</code>, requests <code>listLibrary</code> and <code>listHomeItems</code>);
+<code>directoryRegistry.json</code> gives only the category order and <code>manifest.json</code> files are only notes
+(titles, statuses, order). No manifest rebuild runs at start-up; the page reaches the Node service through
+<code>/dispatch</code> on its own server. Where this page describes manifests as the source of a list, read it as the
+fallback when there is no service. See <i>Lists from the folders</i>.</p>
+
+<p>
     This document is the detailed architectural reference for Sketchpad.
     It is intended to support implementation, debugging, and long-term consistency.
   </p>
