@@ -13,7 +13,7 @@
 import { beginStepPass, endStepPass } from "/ui/draw/drawStep.js";
 import { reportError } from "/ui/errorReport.js";
 import { uiState }               from "/ui/uiState.js";
-import { resetCanvas }           from "/draw/drawState.js";
+import { resetCanvas, startClock, stopClock } from "/draw/drawState.js";
 import { buildParameterControls } from "/ui/parameterControls.js";
 import { markTabDirty }           from "/ui/draw/drawNav.js";
 import { syncLayerToCanvas as syncOverlayToCanvas } from "/ui/canvasLayerManager.js";
@@ -69,7 +69,12 @@ export function drawActiveTab() {
     const params = (state.parameters = entry.params);
     entry.update(params);
     beginStepPass();          // stepping view: count lines from zero (drawStep.js)
-    entry.draw();
+    startClock("Draw object " + entry.name);   // time limit (drawState.js)
+    try {
+      entry.draw();
+    } finally {
+      stopClock();
+    }
     endStepPass();
 
     // --- NEW: Render the ghost skeleton for Line 1 ---

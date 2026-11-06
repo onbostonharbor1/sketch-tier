@@ -33,7 +33,7 @@
 
 import { beginStepPass, endStepPass, stepLayer } from "/ui/draw/drawStep.js";
 import { reportError } from "/ui/errorReport.js";
-import { resetCanvas, drawState } from "/draw/drawState.js";
+import { resetCanvas, drawState, startClock, stopClock } from "/draw/drawState.js";
 import { uiState }               from "/ui/uiState.js";
 import { newBounds }              from "/draw/drawTransform.js";
 import { refreshPoints, drawFigurePoints } from "./figurePoints.js";
@@ -114,11 +114,13 @@ export function redrawFigure(tabId, { dim = true } = {}) {
     // with its params (a slider or a handle may have changed them).
     try {
       inst.update(inst.params);
+      startClock(`Figure "${figure.name || tabId}", layer ${i + 1}`);   // time limit (drawState.js)
       inst.draw();
     } catch (err) {
       // This layer is left out; the others still draw.
       reportError(`Figure "${figure.name || tabId}", layer ${i + 1} (${figure.layers[i].id})`, err);
     }
+    stopClock();
     inst.bounds         = drawState.bounds;    // kept for figureCentroid.js
     inst.stitchEnds     = drawState.collect;   // kept for figurePrint.js
     drawState.transform = null;

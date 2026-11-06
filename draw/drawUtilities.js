@@ -53,7 +53,7 @@ drawManyLines(s) / drawLinesAround / drawLinesWithin
 
 
 import { Point, Line } from "/classes/classes.js";
-import { drawState }   from "./drawState.js";
+import { drawState, checkClock } from "./drawState.js";
 import { drawParab }   from "/draw/drawRegular.js";
 import { createNodes } from "/draw/createNodes.js";
 import { mapPoint, noteBounds } from "./drawTransform.js";
@@ -424,6 +424,7 @@ function drawLine(arg1, arg2, arg3 = "blue", arg4 = 1) {
     // space: note them for the layer's bounds, then map them to canvas
     // space. Everything below uses the mapped points.
     // ------------------------------------------------------------
+    checkClock();                       // time limit (drawState.js): throws once a drawing runs too long
     noteBounds(pt1);
     noteBounds(pt2);
     pt1 = mapPoint(pt1);

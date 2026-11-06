@@ -17,6 +17,7 @@
      8. The error checklist: Tick in the bar, Home > Errors (tick, Show all, Purge), Home > Notes.
      9. Home > Checklist: tick, Add item, Show all, Purge ticked (home/checklist.md is restored).
     10. Home > Help: the three groups, a build document shown formatted, New reflection (removed after).
+    11. The time limit stops a runaway drawing, through drawLine or the canvas directly.
    The error log written here is removed at the end if this test created it.
 
    Needs the app and the Node service running (npm run dev:all).
@@ -244,6 +245,30 @@ try {
   } finally {
     fs.rmSync(reflectionFile, { force: true });
   }
+
+  console.log("11. The time limit");
+  const clock = await page.evaluate(async () => {
+    const { drawState, startClock, stopClock } = await import("/draw/drawState.js");
+    const { drawLine } = await import("/draw/drawUtilities.js");
+    drawState.timeLimit = 300;                              // short, for the test
+    const runaway = (draw) => {
+      const t0 = performance.now();
+      startClock("a runaway test");
+      try { for (let i = 0; i < 1e9; i++) draw(i); return { stopped: false }; }
+      catch (err) { return { stopped: true, ms: Math.round(performance.now() - t0), message: err.message }; }
+      finally { stopClock(); }
+    };
+    const viaDrawLine = runaway((i) => drawLine({ x: 0, y: 0 }, { x: i % 100, y: 50 }, "blue", 1));
+    const c = window.drawCanvas.getContext("2d");
+    const viaCanvas = runaway((i) => { c.beginPath(); c.moveTo(0, 0); c.lineTo(i % 100, 60); c.stroke(); });
+    const afterwards = runaway((i) => { if (i > 1000) throw new Error("done"); drawLine({ x: 0, y: 0 }, { x: 1, y: 1 }); });
+    drawState.timeLimit = 2000;
+    return { viaDrawLine, viaCanvas, afterwards: afterwards.message };
+  });
+  check(clock.viaDrawLine.stopped && clock.viaDrawLine.ms < 2000 && /Drawing stopped: a runaway test ran longer than 0.3 s/.test(clock.viaDrawLine.message),
+        "a runaway drawing through drawLine is stopped at the limit (" + clock.viaDrawLine.ms + " ms)");
+  check(clock.viaCanvas.stopped && clock.viaCanvas.ms < 2000, "a runaway script drawing on the canvas directly is stopped too (" + clock.viaCanvas.ms + " ms)");
+  check(clock.afterwards === "done", "a quick drawing is not stopped");
 } finally {
   await browser.close();
   // Leave the log as it was: remove what this test wrote.

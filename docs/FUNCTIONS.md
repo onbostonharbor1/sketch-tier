@@ -2,11 +2,11 @@
 
 Made by `npm run dictionary` from the comments above each function (tests/functionDictionary.mjs). Do not edit by hand: change the comment, then run it again.
 
-781 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
+784 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
 
 | Function | Where | What it does |
 |---|---|---|
-| `_m` | draw/drawUtilities.js:497 | the point half way between a and b (short name for midpoint). |
+| `_m` | draw/drawUtilities.js:498 | the point half way between a and b (short name for midpoint). |
 | `acknowledge` | ui/errorChecklist.js:94 | write "Acknowledged: <key>" to today's error log. |
 | `activateCentroid` | ui/figures/figureCentroid.js:219 | Starts listening. |
 | `activateGallerySubtab` | ui/gallery/galleryNav.js:176 | marks one Gallery subtab as active. |
@@ -102,6 +102,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `categoriesOf` | node/libraryIndex.mjs:70 | the category folders of a library, in order. |
 | `centroidHit` | ui/figures/figureCentroid.js:142 | True when canvas point (x, y) is on the diamond, or on the rotation handle while the diamond is selected. |
 | `changeLine` | draw/drawRegular.js:136 | an arm with points removed: truncate drops points from the start, shorten from the end, always leaving at least two. |
+| `checkClock` | draw/drawState.js:180 | throws if the drawing has run past its deadline. |
 | `checkDrawRegistry` | ui/registryCheck.js:98 | every problem in the whole draw registry, each naming its object. |
 | `checkDrawsThroughDrawLine` | ui/registryCheck.js:119 | The rule: registry objects reach the canvas only through drawLine (draw/drawUtilities.js). |
 | `checkFigureFormat` | ui/figures/figureModel.js:196 | every problem found in a figure's data, as sentences (empty when sound); used when a figure file is opened. |
@@ -113,7 +114,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `clampValue` | ui/controls/widgets/rangeWidget.js:106 | v kept within the slider's range. |
 | `clampValue` | ui/controls/widgets/rangeWidget.js:230 | v kept within the slider's range. |
 | `clear` | ui/menuManager.js:152 | closes any open menu. |
-| `clearCanvas` | ui/draw/drawRunner.js:133 | wipes the shared canvas. |
+| `clearCanvas` | ui/draw/drawRunner.js:138 | wipes the shared canvas. |
 | `clearCanvasBackground` | ui/scriptRunner.js:214 | fills the canvas with one colour (white unless given). |
 | `clearCategoryFrame` | ui/categories.js:379 | Utility: clear a category region entirely. |
 | `clearDivs` | ui/uiUtilities.js:21 | Empties the core divs shared by all tabs. |
@@ -133,7 +134,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `closeTab` | ui/figures/figuresNav.js:486 | Throws the figure away (after asking, if it has unsaved changes), stops every mouse listener that may belong to it, and shows another subtab. |
 | `collectRegistryEntries` | ui/draw/drawCategories.js:48 | every registry object that is not a template, as { key, name, category, entry }. |
 | `colourNameToHex` | draw/color.js:75 | a CSS colour name ("aliceblue") as its hex code, or false if the name is not known. |
-| `comparePoints` | draw/drawUtilities.js:730 | true when two points are the same to two decimal places. |
+| `comparePoints` | draw/drawUtilities.js:731 | true when two points are the same to two decimal places. |
 | `computeHelpPathFromParts` | ui/helpTree.js:223 | Builds the canonical help file path for a leaf. |
 | `consumeLaunchIfForDraw` | ui/draw/draw.js:243 | the waiting launch request (from Home or Figures) if it is for the Draw tab, cleared once read; null otherwise. |
 | `consumeLaunchIfForFigures` | ui/figures/figures.js:196 | If Home launched this tab for a saved figure, clears the launch request and opens the figure. |
@@ -169,7 +170,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `deactivateCentroid` | ui/figures/figureCentroid.js:365 | Removes all four listeners with one abort. |
 | `deactivatePointsInput` | ui/figures/figurePointer.js:340 | Removes every points-mode listener (one abort) and hides the interaction layer. |
 | `decodeEntities` | node/homeListRequests.mjs:74 | the few HTML entities a title is likely to hold. |
-| `deflectPoint` | draw/drawUtilities.js:600 | the point distance away from origin in the direction angle (radians). |
+| `deflectPoint` | draw/drawUtilities.js:601 | the point distance away from origin in the direction angle (radians). |
 | `deleteLayer` | ui/figures/figureLayers.js:356 | Deletes the active layer. |
 | `deletePoint` | ui/figures/figurePoints.js:345 | Removes the point. |
 | `deleteTab` | ui/draw/drawNav.js:176 | closes an object's subtab and shows its neighbour. |
@@ -211,7 +212,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `drawMysticRose` | draw/drawUnicorns.js:52 | Mystic Rose: every node joined to every other node. |
 | `drawNodes` | draw/drawUtilities.js:157 | joins the nodes in order round the ring, the last back to the first: the outline of the shape. |
 | `drawOneCircle` | draw/drawLinkedCircles.js:20 | Circles use ctx.arc, so they have no endpoints. |
-| `drawPairs` | draw/drawUtilities.js:767 | draw the lines a connector returned (draw/connectors.js). |
+| `drawPairs` | draw/drawUtilities.js:768 | draw the lines a connector returned (draw/connectors.js). |
 | `drawParab` | draw/drawRegular.js:167 | PURPOSE - Build two arms from two lines and stitch them into a parabola. |
 | `drawParabs` | draw/drawUtilities.js:113 | draws the stitch lines of each parabola, leaving out the last thing.truncate lines. |
 | `drawParametric` | draw/drawParametrics.js:55 | The primary loop for evaluating, auto-fitting, and drawing the curve segments. |
@@ -260,7 +261,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `escapeHtml` | ui/htmlText.js:7 | htmlText.js Text helpers for building HTML strings. |
 | `everyNth` | draw/shapers.js:93 | every nth point, beginning at index `start`. |
 | `executeScriptToCanvas` | ui/scriptRunner.js:286 | Execute a module into the shared canvas. |
-| `executeScriptToText` | ui/scriptRunner.js:357 | Executes a script module and displays its output as text in the DOM. |
+| `executeScriptToText` | ui/scriptRunner.js:362 | Executes a script module and displays its output as text in the DOM. |
 | `expandSchema` | ui/controls/builders/conventions.js:61 | a new schema object (the one given is not changed). |
 | `extendWithArms` | draw/drawEllipse.js:90 | Helper: optionally extend ellipse with attached arms If arm1 shares first circle point, remove overlap before concat |
 | `extractBodyInnerHtml` | ui/helpTree.js:25 | Returns the HTML found BETWEEN <body> ... |
@@ -306,11 +307,11 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `getHomeResultsRenderToken` | ui/home/homeState.js:31 | Setters |
 | `getIdsWithSecondaries` | ui/draw/drawTabState.js:35 | Getter |
 | `getIDsWithSecondaries` | ui/draw/secondaryObjects.js:69 | Returns an array of primary IDs that possess at least one secondary object. |
-| `getLineEquation` | draw/drawUtilities.js:740 | the equation of the line through two points, as text ("y = mx + b", or "x = c" when vertical). |
+| `getLineEquation` | draw/drawUtilities.js:741 | the equation of the line through two points, as text ("y = mx + b", or "x = c" when vertical). |
 | `getMidpointSet` | classes/linkedCircles.js:118 | Returns the predefined midpoint array for a given circle count. |
 | `getMidpointSet` | classes/overlayClass.js:127 | Returns the predefined midpoint array for a given circle count. |
 | `getPatternsCaptionMenuItems` | ui/patterns/patternsMenuCmds.js:243 | the caption menu for a pattern (Help, Show Script, Script history, Edit Manifest, Archive ...). |
-| `getPreviousIndex` | draw/drawUtilities.js:646 | the index before i in a ring of length items (0 wraps to the last). |
+| `getPreviousIndex` | draw/drawUtilities.js:647 | the index before i in a ring of length items (0 wraps to the last). |
 | `getPrimaryObjectsWithSecondaries` | node/secondaryRequests.mjs:190 | TASK: getPrimaryObjectsWithSecondaries |
 | `getSecondaryManifest` | node/secondaryRequests.mjs:163 | TASK: getSecondaryManifest |
 | `getTinyMceConfig` | ui/helpEditor.js:62 | Returns a TinyMCE init config object. |
@@ -420,7 +421,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `markTabDirty` | ui/draw/drawNav.js:239 | marks a subtab as changed since it was opened (a mark on its label). |
 | `measureParametricBounds` | draw/drawParametrics.js:178 | Evaluates the curve functions across all sample points to find the mathematical min/max bounding box. |
 | `mesh` | draw/connectors.js:151 | a grid given as rows (an array of arrays of points). |
-| `midpoint` | draw/drawUtilities.js:493 | the point half way between a and b. |
+| `midpoint` | draw/drawUtilities.js:494 | the point half way between a and b. |
 | `mirrored` | draw/shapers.js:134 | every point reflected across the line through a and b. |
 | `moved` | draw/shapers.js:47 | a copy of point p at (x, y). |
 | `moveFollowerHandle` | ui/figures/figureWeldMove.js:117 | The delta is in canvas pixels but handles are stored in object space, so: handle to canvas, add the delta, back to object space. |
@@ -443,7 +444,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `normalizeGalleryEntryPath` | ui/gallery/galleryResults.js:353 | an entry's file as a path from the project root. |
 | `normalizeScriptInfo` | ui/scriptRunner.js:170 | Ensure scriptInfo vocabulary consistency: - scriptInfo.parameters <-> scriptInfo.params |
 | `noteBounds` | draw/drawTransform.js:182 | caller has asked for bounds by setting drawState.bounds. |
-| `numbersToPoints` | draw/drawUtilities.js:693 | PURPOSE - Normalize mixed “index-or-point” inputs into actual Point objects. |
+| `numbersToPoints` | draw/drawUtilities.js:694 | PURPOSE - Normalize mixed “index-or-point” inputs into actual Point objects. |
 | `offsetParams` | ui/figures/figureLayers.js:280 | Shifts whatever positions a registry object keeps: its points, midpoint, center or start. |
 | `onDomContentLoaded` | ui/setUI.js:236 | start-up: menus, overlays, canvas layers, the registry check, the tab buttons, then the Home tab. |
 | `onEscape` | ui/offcanvas.js:88 | Escape closes the side panel. |
@@ -487,10 +488,10 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `positionMenu` | ui/menuManager.js:66 | places the menu just below the button that opened it. |
 | `prepareCategoryFolder` | node/writerRequests.mjs:22 | Finds <rootDir>/<category>, makes its images/ folder if it is missing, and checks its manifest.json exists. |
 | `prepareSharedCanvas` | ui/thumbnailMaker.js:258 | Puts the shared canvas in #sketchpad on a white page, as running a script does. |
-| `printCircNum` | draw/drawUtilities.js:503 | a number in a small circle at pt (in Final mode it only counts, drawState.ctr). |
+| `printCircNum` | draw/drawUtilities.js:504 | a number in a small circle at pt (in Final mode it only counts, drawState.ctr). |
 | `printTemplate` | ui/figures/figurePrint.js:396 | Opens the template in its own window, one sheet per page, ready to print. |
-| `printText` | draw/drawUtilities.js:522 | text drawn at pt. |
-| `printTitle` | draw/drawUtilities.js:544 | sets the drawing's title (drawState.title). |
+| `printText` | draw/drawUtilities.js:523 | text drawn at pt. |
+| `printTitle` | draw/drawUtilities.js:545 | sets the drawing's title (drawState.title). |
 | `probe` | node/check_ports.mjs:4 | tries to open a server on port; answers whether the port is free. |
 | `processDrawRegistry` | node/maintain_manifests.mjs:277 | Performs text analysis on DrawRegistry files to extract metadata (id, status, name). |
 | `processGalleryImages` | node/maintain_manifests.mjs:147 | Scans Ideabook and Patterns domains in the gallery for image files. |
@@ -498,8 +499,8 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `processPatterns` | node/maintain_manifests.mjs:84 | Scans the patterns directory and updates local manifest.json files. |
 | `processUtilities` | node/maintain_manifests.mjs:180 | Scans Utilities/Tools and Utilities/Lab directories for script files. |
 | `propagateAfterChange` | ui/figures/figureWeldMove.js:235 | Compares the welded discs of layerIndex against snapshot (from snapshotWeldMembers, taken before the change) and walks the weld graph outward for every one t... |
-| `ptsOnLine` | draw/drawUtilities.js:579 | PTSONLINE Generate equally spaced points along a line segment, using transforms stored in thing.lineTransform. |
-| `ptsOnStraightLine` | draw/drawUtilities.js:588 | --- base helper: straight interpolation --- |
+| `ptsOnLine` | draw/drawUtilities.js:580 | PTSONLINE Generate equally spaced points along a line segment, using transforms stored in thing.lineTransform. |
+| `ptsOnStraightLine` | draw/drawUtilities.js:589 | --- base helper: straight interpolation --- |
 | `purge` | ui/errorChecklist.js:86 | write "Purged: <key>" for each key, so those errors no longer appear, even with Show all. |
 | `readErrorStates` | ui/errorChecklist.js:102 | every error from every error log the service lists, read oldest first, with its state (errorStates). |
 | `readJson` | node/maintain_manifests.mjs:394 | Synchronously reads and parses a JSON file. |
@@ -546,7 +547,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `renderParameterControls` | ui/controls/rendering/renderer.js:23 | builds the controls listed in controlData into the tab's controls area (and its interface area for interface controls). |
 | `renderPattern` | draw/drawEllipse.js:19 | INTERNAL EXECUTION ENGINE Consolidated logic for drawing patterns within a set of nodes. |
 | `renderPatternThumbGrid` | ui/patterns/patternsDisplay.js:36 | the pictures of one Patterns category. |
-| `renderScaffoldGuides` | ui/draw/drawRunner.js:87 | Renders the dashed scaffolding for the active drawing's primary arm. |
+| `renderScaffoldGuides` | ui/draw/drawRunner.js:92 | Renders the dashed scaffolding for the active drawing's primary arm. |
 | `renderSubtabs` | ui/figures/figuresNav.js:105 | Rebuilds the whole bar from uiState.figures.tabs. |
 | `renderTarget` | ui/thumbnailMaker.js:201 | Draws the target on the shared canvas and returns the canvas, or null when the target is skipped. |
 | `renderThumbnailGrid` | ui/thumbnails.js:22 | a grid of pictures in a region, each running onClick when clicked. |
@@ -555,8 +556,8 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `reportProblems` | ui/errorReport.js:90 | For a check that finds several problems (the registry check, a figure file check): each problem text is reported as its own error. |
 | `resampled` | draw/shapers.js:148 | n points spaced evenly by distance along the path the points make (corner to corner, not closed). |
 | `resetActiveDrawObject` | ui/draw/drawMenuCmds.js:306 | puts the open object's settings back to its defaults (Reset Parameters). |
-| `resetCanvas` | draw/drawState.js:71 | Clears the bitmap and resets the context state. |
-| `resetDrawStateForScript` | draw/drawState.js:55 | Puts drawState back to its starting values before a pattern or gallery script runs, so nothing one script leaves behind reaches the next: the point list (pts... |
+| `resetCanvas` | draw/drawState.js:81 | Clears the bitmap and resets the context state. |
+| `resetDrawStateForScript` | draw/drawState.js:65 | Puts drawState back to its starting values before a pattern or gallery script runs, so nothing one script leaves behind reaches the next: the point list (pts... |
 | `resetFiguresState` | ui/figures/figuresState.js:84 | Reset (used by init) NOTE: Does NOT clear figuresRegistry -- that cache persists across navigation and is only cleared by explicit cache |
 | `resetFigureTab` | ui/figures/figuresSave.js:302 | Throws away the changes since the last save: reads the saved file again and rebuilds the figure from it. |
 | `resetGalleryState` | ui/gallery/galleryState.js:71 | forgets the area, category, list and position. |
@@ -582,7 +583,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `run` | ui/scriptHistory.js:160 | Runs the script at scriptPath, or text in its place; true if it ran. |
 | `runManifestMaintenance` | node/maintain_manifests.mjs:28 | Main entry point for the maintenance script. |
 | `runPattern` | ui/draw/drawExport.js:194 | (no comment) |
-| `runScriptByPath` | ui/scriptRunner.js:391 | 1. |
+| `runScriptByPath` | ui/scriptRunner.js:396 | 1. |
 | `runSetUI` | ui/setUI.js:183 | the work of one tab switch, noting each stage so a failure can say where it stopped. |
 | `runUtilityEntry` | ui/utilities/utilitiesDisplay.js:116 | loads and runs one utility script, with its caption and controls. |
 | `runUtilityItem` | ui/utilities/utilities.js:361 | not used: utilities run through onUtilityItemClick (throws if called). |
@@ -632,7 +633,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `setCurrentTabId` | ui/figures/figuresState.js:71 | records the figure subtab now shown. |
 | `setDefaultControl` | ui/controls/widgets/textWidget.js:9 | a text box (or the input type the control names), the control used when no other fits. |
 | `setDrawAction` | ui/draw/drawMenuCmds.js:189 | No-op placeholder -- parameter controls are injected directly by the draw object's own init()/render(). |
-| `setDrawSketchpad` | ui/draw/drawRunner.js:123 | makes the item's subtab active and draws it. |
+| `setDrawSketchpad` | ui/draw/drawRunner.js:128 | makes the item's subtab active and draws it. |
 | `setDrawSubtabs` | ui/draw/drawNav.js:65 | builds the Draw subtab bar: Categories, then a subtab for each open object. |
 | `setDrawText` | ui/draw/drawCategories.js:39 | shows the Draw categories in #text. |
 | `setFiguresAction` | ui/figures/figures.js:232 | Builds the Figures controls in the permanent #button div, under the Commands button, in this order: Show All checkbox      (figure subtabs only) |
@@ -659,7 +660,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `setNumberControl` | ui/controls/widgets/numberWidget.js:22 | -- Build the input ---------------------------------------- |
 | `setPatternsSubtabs` | ui/patterns/patternsNav.js:44 | the Patterns subtab bar: Categories, and the Pattern subtab when one is open. |
 | `setPrintSize` | ui/figures/figurePrint.js:201 | Ask for the printed width of the nails (mm), or the nail diameter and clearance (mm). |
-| `setPt` | draw/drawUtilities.js:755 | adds a point to drawState.pts, draws its number unless draw is false, and returns its index. |
+| `setPt` | draw/drawUtilities.js:756 | adds a point to drawState.pts, draws its number unless draw is false, and returns its index. |
 | `setRadioControl` | ui/controls/widgets/radioWidget.js:10 | a group of radio buttons, one per option; choosing one sets the parameter and redraws. |
 | `setRangeControl` | ui/controls/widgets/rangeWidget.js:198 | a slider with its minimum, maximum and current value shown. |
 | `setRangeControlUnified` | ui/controls/widgets/rangeWidget.js:11 | a slider, either with a header row (rangeHeader) or the plain kind. |
@@ -706,11 +707,13 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `sortCaseInsensitive` | node/generateHelpManifest.mjs:62 | compares two names ignoring upper and lower case, for sorting. |
 | `spacingProblems` | ui/figures/figurePrint.js:150 | { ok, message, pairs: [[nailA, nailB, mm]], nails }. |
 | `spiralPoints` | draw/curves.js:119 | an Archimedean spiral from the centre out to r, turns turns. |
+| `startClock` | draw/drawState.js:167 | the drawing named by what may run for drawState.timeLimit milliseconds from now. |
 | `startServer` | node/sketchpadServer.mjs:114 | DESCRIPTION Creates and starts the HTTP server. |
 | `startStepping` | ui/draw/drawStep.js:50 | draw everything once to count the lines, then show the controls with the last line marked. |
 | `statusForError` | node/sketchpadServer.mjs:93 | A plain Error thrown by a handler for bad input has no system error code and says what is wrong with the request. |
 | `stepLayer` | ui/draw/drawStep.js:74 | called by the figure redraw before each layer draws. |
-| `stitcher` | draw/drawUtilities.js:553 |    returns an array of lines |
+| `stitcher` | draw/drawUtilities.js:554 |    returns an array of lines |
+| `stopClock` | draw/drawState.js:174 | the drawing has finished; no limit applies until the next start. |
 | `stopStepping` | ui/draw/drawStep.js:62 | remove the controls and draw the whole picture again. |
 | `stripExt` | node/maintain_manifests.mjs:414 | Removes the specified extension from a string. |
 | `summaryLines` | node/maintain_manifests.mjs:266 | The lines that go at the top of the log: the problems, then the files added to manifests. |

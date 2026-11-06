@@ -59,7 +59,7 @@
    This MUST be a concrete file import (".js") so the browser
    never falls back to index.html.
 */
-import { drawState, resetCanvas, resetDrawStateForScript } from "/draw/drawState.js";
+import { drawState, resetCanvas, resetDrawStateForScript, startClock, stopClock } from "/draw/drawState.js";
 
 /*
    ParameterControls builder.
@@ -313,7 +313,12 @@ export async function executeScriptToCanvas(mod, title, options = {}) {
   //  SET DEBUG HERE
   // 1. EXECUTE THE SCRIPT FIRST
   // This ensures the script's runPattern() populates the points array
-  await mod.runPattern();
+  startClock("Script " + (title || ""));          // time limit (drawState.js)
+  try {
+    await mod.runPattern();
+  } finally {
+    stopClock();
+  }
 
   // 2. NORMALIZE scriptInfo to check for interactivity
   const info = normalizeScriptInfo(mod);

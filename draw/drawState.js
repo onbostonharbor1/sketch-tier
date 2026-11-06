@@ -35,7 +35,17 @@ export let drawState = {
   // layer }. While set (and counting is not false), drawLine counts every line, draws
   // only the first `limit`, marks line number `limit`, and records each
   // line it is asked for in `lines`.
-  step: null
+  step: null,
+  // Time limit (6 November 2026): a drawing that runs longer than timeLimit
+  // milliseconds is stopped with a message, keeping what it drew, instead of
+  // freezing the page. deadline is set by startClock() at the choke points
+  // (the Draw redraw, each figure layer, the script runner) and is null
+  // otherwise; clockWhat names what is drawing; clockCalls counts drawing
+  // calls since the clock started (the clock is read every 256 of them).
+  timeLimit: 2000,
+  deadline: null,
+  clockWhat: "",
+  clockCalls: 0
 };
 
 // The starting values of every field above, kept so each script run can
@@ -138,3 +148,56 @@ Object.defineProperty(window, "ctx", {
   },
   configurable: true
 });
+
+
+/* ============================================================
+   The time limit (6 November 2026)
+   ------------------------------------------------------------
+   A timer cannot interrupt code that is running, so a drawing stuck in a
+   long loop is stopped from inside: every drawing call (drawLine, and the
+   canvas's own lineTo, arc, stroke and fill, for scripts that draw on the
+   canvas directly) calls checkClock(), which throws once the deadline has
+   passed. The error is caught where errors are caught already and shown
+   in the red bar; what was drawn stays on the canvas. A loop that never
+   draws is not stopped by this.
+   ============================================================ */
+
+/* startClock: the drawing named by what may run for drawState.timeLimit
+   milliseconds from now. */
+export function startClock(what) {
+  drawState.deadline   = performance.now() + drawState.timeLimit;
+  drawState.clockWhat  = what || "the drawing";
+  drawState.clockCalls = 0;
+} // end startClock
+
+/* stopClock: the drawing has finished; no limit applies until the next start. */
+export function stopClock() {
+  drawState.deadline = null;
+} // end stopClock
+
+/* checkClock: throws if the drawing has run past its deadline. Reads the
+   clock only every 256 calls, so it costs almost nothing. */
+export function checkClock() {
+  if (drawState.deadline === null || drawState.deadline === undefined) return;
+  drawState.clockCalls++;
+  if (drawState.clockCalls % 256 !== 0) return;
+  if (performance.now() <= drawState.deadline) return;
+  const what = drawState.clockWhat, calls = drawState.clockCalls;
+  drawState.deadline = null;                     // stop once; whatever draws next is not stopped again
+  throw new Error("Drawing stopped: " + what + " ran longer than " + (drawState.timeLimit / 1000) +
+                  " s (about " + calls + " drawing calls). What was drawn is kept. To allow longer, raise drawState.timeLimit.");
+} // end checkClock
+
+/* The canvas's own drawing calls check the clock too, so scripts that call
+   ctx.lineTo, ctx.arc, ctx.stroke or ctx.fill directly are covered. Each is
+   wrapped once: the original runs unchanged after the check. */
+(function wrapCanvasCalls() {
+  const proto = window.CanvasRenderingContext2D && window.CanvasRenderingContext2D.prototype;
+  if (!proto || proto.__sketchpadClock) return;
+  for (const name of ["lineTo", "arc", "stroke", "fill"]) {
+    const original = proto[name];
+    proto[name] = function (...args) { checkClock(); return original.apply(this, args); };
+  }
+  proto.__sketchpadClock = true;
+})();
+
