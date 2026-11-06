@@ -64,5 +64,15 @@
     "filename": "joinedParabsBandLinked",
     "path": "joinedParabsBandLinked.js",
     "title": "Joined Parabolas with a linked band"
+  },
+  {
+    "filename": "alternatingShapes",
+    "path": "alternatingShapes.js",
+    "title": "Alternating Shapes"
+  },
+  {
+    "filename": "alternatingShapesDefined",
+    "path": "alternatingShapesDefined.js",
+    "title": "Alternating Shapes, each defined"
   }
 ]
