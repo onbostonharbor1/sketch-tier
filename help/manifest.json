@@ -48,6 +48,7 @@
     "Subsystems": [
       "caption",
       "categories",
+      "combinations",
       "codespaces",
       "curvesShapes",
       "errorsChecklists",

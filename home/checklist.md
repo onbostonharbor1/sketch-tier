@@ -208,3 +208,8 @@ you saw, and tell me.
 - [ ] U3 Pick one tutorial and do its Watch it and Try steps; note anything that does not match the code (Add item)
 - [ ] U4 npm run help:pdf -- C:\Users\barry\Desktop\Sketchpad-Help.pdf (with sketchpad.bat running) makes the PDF; open it: cover, contents, four parts
 
+## Combinations (6 November)
+- [ ] CB1 Gallery > Scripts > Combinations > Framed Alternating Shapes: shapes inside a slant frame
+- [ ] CB2 Controls for: Shapes shows the shapes' sliders, Frame the frame's; a slider in each changes only its own part
+- [ ] CB3 Drag a shapes handle in the combination; then open Curve Stitch > Alternating Shapes: it is unchanged
+- [ ] CB4 Home > Help > Overview > Combinations reads clearly; gallery/Scripts/Combinations/combinable.md lists 6 scripts that can be combined

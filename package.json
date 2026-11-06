@@ -35,6 +35,7 @@
     "help:builddocs": "node node/copyBuildDocs.mjs",
     "help:pdf": "node node/makeHelpPdf.mjs",
     "test:controls": "node --no-warnings tests/controlConventions.mjs",
+    "test:combinable": "node tests/combinable.mjs",
     "test:intersections": "node --no-warnings tests/intersections.mjs",
     "build:static": "node scripts/buildStatic.mjs",
     "pixels:save": "node tests/pixelShots.mjs",

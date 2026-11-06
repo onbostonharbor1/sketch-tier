@@ -1,4 +1,32 @@
 {
+ "/gallery/Scripts/Combinations/frame.js": {
+  "lines": 76,
+  "fingerprint": "97a064fef2245188",
+  "error": "",
+  "stable": true,
+  "picture": "gallery_Scripts_Combinations_frame.js.png"
+ },
+ "/gallery/Scripts/Combinations/framedAlternatingShapes.js": {
+  "lines": 20352,
+  "fingerprint": "4c9f6f1491a69dac",
+  "error": "",
+  "stable": true,
+  "picture": "gallery_Scripts_Combinations_framedAlternatingShapes.js.png"
+ },
+ "/gallery/Scripts/Curve Stitch/alternatingShapes.js": {
+  "lines": 1000,
+  "fingerprint": "b43d51782431f1c5",
+  "error": "",
+  "stable": true,
+  "picture": "gallery_Scripts_Curve_Stitch_alternatingShapes.js.png"
+ },
+ "/gallery/Scripts/Curve Stitch/alternatingShapesDefined.js": {
+  "lines": 1080,
+  "fingerprint": "34e0ae19b0cf05dd",
+  "error": "",
+  "stable": true,
+  "picture": "gallery_Scripts_Curve_Stitch_alternatingShapesDefined.js.png"
+ },
  "/gallery/Scripts/Curve Stitch/arcsAndInner.js": {
   "lines": 552,
   "fingerprint": "5ccaac09c43beef1",
@@ -19,6 +47,20 @@
   "error": "",
   "stable": true,
   "picture": "gallery_Scripts_Curve_Stitch_joinedParabs.js.png"
+ },
+ "/gallery/Scripts/Curve Stitch/joinedParabsBand.js": {
+  "lines": 448,
+  "fingerprint": "8faf3de5be8fa6b2",
+  "error": "",
+  "stable": true,
+  "picture": "gallery_Scripts_Curve_Stitch_joinedParabsBand.js.png"
+ },
+ "/gallery/Scripts/Curve Stitch/joinedParabsBandLinked.js": {
+  "lines": 607,
+  "fingerprint": "76b311580b2e9435",
+  "error": "",
+  "stable": true,
+  "picture": "gallery_Scripts_Curve_Stitch_joinedParabsBandLinked.js.png"
  },
  "/gallery/Scripts/Curve Stitch/manyJoinedParabs.js": {
   "lines": 160,

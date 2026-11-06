@@ -489,3 +489,9 @@ differently, Add item on the checklist saying which section.
 *See:* "Wrote ... (61 pages of help in 4 parts)". The PDF has a cover, a contents list with links, and four parts: Design:
 Tabs, Design: Subsystems, Design: Design Notes, Tutorials; about 180 printed pages with page numbers.
 
+## 16. Added 6 November: combinations
+
+CB1 to CB4. A combination (gallery/Scripts/Combinations/) draws two existing gallery scripts as one drawing, with one set
+of controls showing at a time (Controls for) and the first script's handles. The scripts are imported unchanged. The
+analyzer (checkCombinable in combine.js) is run by npm run test:combinable, which writes combinable.md. Help: Overview >
+Subsystems > Combinations.

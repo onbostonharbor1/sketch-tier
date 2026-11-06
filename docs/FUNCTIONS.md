@@ -2,7 +2,7 @@
 
 Made by `npm run dictionary` from the comments above each function (tests/functionDictionary.mjs). Do not edit by hand: change the comment, then run it again.
 
-784 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
+786 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
 
 | Function | Where | What it does |
 |---|---|---|
@@ -59,6 +59,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `autoFitParametricToCanvas` | draw/drawParametrics.js:137 | Measures the raw mathematical bounds of the curve and updates the 'scale' and 'mid' properties of the Parametric object to fit the canvas. |
 | `background` | draw/background.js:5 | fills the shared canvas with a colour and, if grid is true, draws a light grid over it. |
 | `beginStepPass` | ui/draw/drawStep.js:83 | a redraw is starting; count from zero again. |
+| `bodyOf` | node/makeHelpPdf.mjs:41 | the inside of a page's body element. |
 | `bothUnits` | ui/figures/figurePrint.js:258 | A length in mm as words in both units, for the cover sheet ("4.8 mm (0.188 in)"). |
 | `boxOfFigure` | ui/figures/figureTemplates.js:169 | The smallest rectangle round every visible layer that is not a guide, in canvas pixels, or null when nothing has been drawn yet. |
 | `breakApartLayer` | ui/figures/figureBreakApart.js:44 | Replaces the active layer's object with its pieces (Phase 7c). |
@@ -468,6 +469,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `openSweepPanel` | ui/draw/drawSweep.js:116 | The side panel: setting, from, to, how many, Sweep. |
 | `outside` | draw/shapers.js:236 | only the points outside the shape (a hole left in a pattern). |
 | `page` | node/copyBuildDocs.mjs:144 | a complete help page around a body. |
+| `pagesIn` | node/makeHelpPdf.mjs:30 | the .html files of a help folder, each { file, title }, A to Z by title. |
 | `pairsFor` | draw/ringObject.js:50 | the lines for a list of points, by the stitch setting. |
 | `pairwise` | draw/connectors.js:49 | point i of A joined to point i+offset of B. |
 | `para` | ui/scriptHistory.js:215 | a paragraph holding text. |
@@ -517,7 +519,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `rebuildInstances` | ui/figures/figureLayers.js:245 | For a figure that was read from a file (Phase 10): makes one live object per saved layer, in the same order, the way insertLayer() makes one. |
 | `rectanglePoints` | draw/curves.js:159 | a rectangle of half-width r and half-height r * ratio, with n points spread round its sides from the top left corner. |
 | `redrawFigure` | ui/figures/figureDraw.js:65 | Clears the canvas and draws every visible layer, bottom to top. |
-| `reflectionFileName` | ui/home/homeHelp.js:45 | a title turned into a file name: letters, digits and spaces kept, everything else dropped, spaces as underscores. |
+| `reflectionFileName` | ui/home/homeHelp.js:49 | a title turned into a file name: letters, digits and spaces kept, everything else dropped, spaces as underscores. |
 | `reflowNotes` | ui/notes.js:73 | Header notes are hard-wrapped for the editor. |
 | `refreshGalleryFromManifestEdit` | ui/gallery/galleryMenuCmds.js:260 | forgets the Gallery and Home lists and reads them again, after an edit. |
 | `refreshHomeCategoriesFromManifestEdit` | ui/home/homeManifest.js:124 | reads the Home list again after an edit and shows it. |
@@ -538,7 +540,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `renderHomeCategoriesIfReady` | ui/home/homeNav.js:210 | shows the Home categories if the list has been read, otherwise says it is loading. |
 | `renderHomeChecklist` | ui/home/homeChecklist.js:48 | read the file, show the list, and wire the changes. |
 | `renderHomeErrors` | ui/home/homeErrors.js:24 | read the logs, then show the list. |
-| `renderHomeHelp` | ui/home/homeHelp.js:97 | the buttons, the tree and the page pane, side by side. |
+| `renderHomeHelp` | ui/home/homeHelp.js:101 | the buttons, the tree and the page pane, side by side. |
 | `renderHomeImageEntryToText` | ui/home/homeResults.js:118 | shows a picture item in #text. |
 | `renderHomeJsEntryToCanvas` | ui/home/homeResults.js:91 | runs a script item on the canvas. |
 | `renderHomeNotes` | ui/home/homeNotes.js:21 | the two buttons and the file's text as it stands. |
@@ -691,7 +693,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `showNextGalleryItem` | ui/gallery/galleryResults.js:187 | shows the item after the current one (the last wraps to the first). |
 | `showNotesOverlay` | ui/overlay.js:225 | Shows a file's header notes in the same "help" overlay layer and with the same toolbar and body classes as showHelpOverlay. |
 | `showOffcanvas` | ui/offcanvas.js:23 | Unified offcanvas display function. |
-| `showPage` | ui/home/homeHelp.js:84 | load one help page into the right pane (its <body> only). |
+| `showPage` | ui/home/homeHelp.js:88 | load one help page into the right pane (its <body> only). |
 | `showPanel` | ui/offcanvas.js:60 | Show #offcanvasPanel as it stands (a caller that filled it in itself uses this). |
 | `showPatternsCategories` | ui/gallery/galleryNav.js:235 | the gallery Patterns view: a frame per category of pictures. |
 | `showPatternScript` | ui/patterns/patternsMenuCmds.js:196 | shows the pattern script's source text. |
@@ -743,13 +745,13 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `toggleWeldAt` | ui/figures/figureWelds.js:135 | The right-click action. |
 | `toHexColor` | ui/controls/widgets/colorWidget.js:51 | Any CSS color text as "#rrggbb". |
 | `toObject` | ui/interactor.js:162 | canvas coordinates as the armed object's own coordinates (back through its layer transform). |
-| `topicsOf` | ui/home/homeHelp.js:52 | the topics of one help folder, A to Z by title. |
+| `topicsOf` | ui/home/homeHelp.js:56 | the topics of one help folder, A to Z by title. |
 | `toSafeName` | node/createFigureService.mjs:250 | Helpers |
 | `toUnits` | ui/figures/figurePrint.js:248 | A length in mm, shown in the print units: 3 decimals for inches, 1 for mm. |
 | `translated` | draw/shapers.js:112 | every point moved by dx, dy. |
 | `translateTransform` | draw/drawTransform.js:121 | The same transform, moved (dx, dy) canvas pixels. |
 | `translateWholeLayer` | ui/figures/figureWeldMove.js:131 | The fallback for a node with no real handle of its own. |
-| `treeData` | ui/home/homeHelp.js:65 | the jsTree nodes. |
+| `treeData` | ui/home/homeHelp.js:69 | the jsTree nodes. |
 | `trimmedRange` | draw/drawRegular.js:421 | The same clamp changeLine() applies, but returning the index window { from, to } instead of a cut-down array. |
 | `unitName` | ui/figures/figurePrint.js:243 | "inches" or "millimetres", for questions. |
 | `updateDrawCaption` | ui/draw/drawMenuCmds.js:61 | Builds the full caption bar for a draw object tab. |

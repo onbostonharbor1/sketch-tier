@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Combinations: two gallery scripts as one drawing</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Combinations: two gallery scripts as one drawing</h1>
+
+<p class="note">Written 6 November 2026. Code: <code>gallery/Scripts/Combinations/lib/combine.js</code>. Example:
+<code>framedAlternatingShapes.js</code> (Alternating Shapes inside a Frame). Test and report:
+<code>npm run test:combinable</code>, which writes <code>gallery/Scripts/Combinations/combinable.md</code>.</p>
+
+<p>A combination is an ordinary gallery script in the Combinations folder. It names two existing gallery scripts and
+draws both on the canvas as one drawing. The two scripts are imported as they are; nothing in them is changed, and
+they still run on their own exactly as before. The scripts are not related: no shared points, no welds, and neither
+reads anything from the other. This is a playpen feature for trying things, not part of the Sketchpad model: no
+registry object, figure, layer or file format knows about it.</p>
+
+<h2>Writing one</h2>
+
+<pre>import { makeCombination } from "./combine.js";
+import { scriptInfo as shapes } from "../Curve Stitch/alternatingShapes.js";
+import { scriptInfo as frame }  from "./frame.js";
+
+export const scriptInfo = makeCombination({
+  title: "Framed Alternating Shapes",
+  first: shapes, firstName: "Shapes",
+  second: frame, secondName: "Frame"
+});
+
+export function runPattern() {
+  scriptInfo.init();
+  scriptInfo.redrawHandler();
+}</pre>
+
+<p>That is the whole file. Save it in the Combinations folder and it appears in the list.</p>
+
+<h2>What the combination does</h2>
+
+<ul>
+<li><b>Copies.</b> Each script is copied (<code>Object.create</code> with its params cloned, as figure layers copy
+registry objects), so playing with the combination never changes the script itself.</li>
+<li><b>One set of controls at a time.</b> The first control, <b>Controls for</b>, picks whose sliders are in the panel.
+It is the same grouping that drawing-way selects use (<code>showsGroup</code> and <code>belongsToGroup</code>). Behind
+the scenes the keys get a prefix (<code>a_color</code>, <code>b_color</code>) so the two scripts' settings stay apart;
+the scripts never see the prefixes.</li>
+<li><b>One set of handles.</b> The first script's points are the handles. The second script has none.</li>
+<li><b>Drawing.</b> The canvas is cleared once; then each copy's <code>update</code> and <code>draw</code> run, the
+first script, then the second. A script's own <code>redrawHandler</code> is never called.</li>
+</ul>
+
+<h2>The analyzer: can a script be combined?</h2>
+
+<p><code>checkCombinable(scriptInfo)</code> tries a script the way a combination would and says yes or no, with the
+reasons. A combination runs it on both its scripts when it starts and refuses, in the red error bar, if either fails.
+The checks:</p>
+
+<ol>
+<li>It exports <code>scriptInfo</code> with <code>params</code> and a <code>draw()</code>, and its controls have no
+groups of their own.</li>
+<li>A copy draws something without an error.</li>
+<li>The copy's <code>draw()</code> does not clear the canvas (that would wipe the first script).</li>
+<li>The copy answers its own settings: changing them changes the drawing. A script that says <code>scriptInfo.</code>
+where it means <code>this.</code> draws from the original and fails here.</li>
+<li>The original's settings are the same afterwards (no shared state).</li>
+</ol>
+
+<h2>What the first report said</h2>
+
+<p>6 of 86 gallery scripts can be combined today. The reasons the others cannot, most common first:</p>
+
+<ul>
+<li><b>60: draw is a module-level function, not on scriptInfo.</b> These scripts (curveStitch, polygonCorner and most
+older ones) keep <code>init</code>, <code>update</code> and <code>draw</code> as functions at the top of the file, with
+their state in module variables. Nothing outside can draw them without editing them. Making one combinable means moving
+those functions onto <code>scriptInfo</code> and their state onto <code>this</code>: real rewriting, not a mechanical fix.</li>
+<li><b>16: draw() clears the canvas.</b> Mechanical: the clear moves from <code>draw()</code> to
+<code>redrawHandler</code>.</li>
+<li>A few single cases: a script with groups of its own, one that will not load, one that needs a canvas id the
+analyzer's page does not have, one that uses <code>scriptInfo</code> by name.</li>
+</ul>
+
+<p>There is no converter. A converter would edit your gallery scripts, which are yours to change. If the report shows
+mostly mechanical failures one day, a converter that writes a new file beside the original for you to read is worth
+building. Today most failures are the first kind, so it would not pay.</p>
+
+<h2>Limits</h2>
+
+<ul>
+<li>Two scripts, named in the file. Choosing them from a list is a possible next step.</li>
+<li>A script whose controls have their own groups cannot be used yet: its groups would mix with Controls for.</li>
+<li>The handles are the first script's only.</li>
+</ul>
+
+</body>
+</html>
