@@ -12,9 +12,11 @@
 //   2.  Circuit Breaker: Prevents infinite drawing or overlapping loops
 //       by detecting when a curve has returned to its starting point
 //       and moving in its original direction.
-//   3.  Intersection Detection: An incremental, O(n^2) check that
-//       identifies where a curve crosses itself. It uses a sensitive
-//       epsilon buffer to avoid "beading" at segment joints.
+//   3.  Intersection Detection: where the curve crosses itself, by
+//       findIntersections() in draw/intersections.js (a grid, so fast
+//       for long curves; tunable through thing.intersections). Segments
+//       2 or fewer apart, and 1% at each segment end, are not counted,
+//       to avoid "beading" at segment joints.
 //   4.  Polar Support: A wrapper that converts polar coordinates
 //       (radius and angle) into Cartesian parametric functions.
 // ------------------------------------------------------------
@@ -22,6 +24,7 @@
 import { Point } from "/classes/classes.js";
 import { Parametric } from "/classes/parametric.js";
 import { drawLine, printText, displayPoint } from "/draw/drawUtilities.js";
+import { findIntersections } from "/draw/intersections.js";
 
 /**
  * drawPolar(s)
@@ -56,6 +59,7 @@ export function drawParametric(thing) {
     autoFitParametricToCanvas(thing);
 
     const segments = [];
+    const curve = [];        // the points drawn, in order, for the intersection search
 
     // 2. Establish "The Start" for the Circuit Breaker logic
     const pStart = new Point(
@@ -92,64 +96,38 @@ export function drawParametric(thing) {
                 if (distToStart < 2.0 && dotProduct > 0) {
                     // BRIDGE: Draw the last closing segment to pStart to eliminate gaps
                     drawLine(pPrev, pStart, color, lineWidth);
-
-                    // Final intersection check for the bridge segment
-                    if (showIntersections) {
-                        for (let j = 0; j < segments.length - 2; j++) {
-                            const old = segments[j];
-                            const hit = getLineIntersection(pPrev, pStart, old.p1, old.p2);
-                            if (hit) displayPoint(hit, "red");
-                        }
-                    }
+                    curve.push(pStart);
                     break; // Terminate drawing early
                 }
             }
 
             // Normal Segment Drawing
             drawLine(newSeg.p1, newSeg.p2, color, lineWidth);
-
-            // 4. INTERSECTION DETECTION
-            // Compare the brand new segment against all previous non-adjacent segments.
-            if (showIntersections && segments.length > 2) {
-                for (let j = 0; j < segments.length - 2; j++) {
-                    const old = segments[j];
-                    const hit = getLineIntersection(newSeg.p1, newSeg.p2, old.p1, old.p2);
-                    if (hit) displayPoint(hit, "red");
-                }
-            }
             segments.push(newSeg);
+            curve.push(pCurrent);
         } else {
             // First point initialization
             segments.push({ p1: pCurrent, p2: pCurrent });
+            curve.push(pCurrent);
         }
     }
-} // end drawParametric
 
-/**
- * getLineIntersection(p1, p2, p3, p4)
- * Traditional line segment intersection using the Determinant/Cramer's Rule approach.
- * Returns {x, y} or null.
- */
-function getLineIntersection(p1, p2, p3, p4) {
-    const denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
-    if (denom === 0) return null; // Parallel
-
-    const ua = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;
-    const ub = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;
-
-    // SENSITIVITY TWEAK:
-    // epsilon (0.01) represents a 1% buffer at the ends of segments.
-    // This stops joints from flagging as intersections (beading).
-    const epsilon = 0.01;
-
-    if (ua > epsilon && ua < (1 - epsilon) && ub > epsilon && ub < (1 - epsilon)) {
-        return {
-            x: p1.x + ua * (p2.x - p1.x),
-            y: p1.y + ua * (p2.y - p1.y)
-        };
+    // 4. INTERSECTIONS: where the curve crosses itself, found by the grid
+    //    method in draw/intersections.js (fast and tunable; it replaced a
+    //    test of every segment against every earlier one). The settings
+    //    reproduce the old marks: segments up to 2 apart along the curve
+    //    are not tested, and 1% at each end of a segment does not count
+    //    (so joints do not "bead"). thing.intersections may override any
+    //    of them (see the header of intersections.js).
+    if (showIntersections) {
+        const found = findIntersections([curve], {
+            neighbourSkip: 2, endMargin: 0.01, mergeDistance: 0,
+            ...(thing.intersections || {})
+        });
+        for (const hit of found.points) displayPoint(hit, "red");
+        thing.intersectionNotes = found.notes;     // "stopped at ..." if a limit was reached
     }
-    return null;
-}
+} // end drawParametric
 
 /**
  * autoFitParametricToCanvas(thing)

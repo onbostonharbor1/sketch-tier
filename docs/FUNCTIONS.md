@@ -2,7 +2,7 @@
 
 Made by `npm run dictionary` from the comments above each function (tests/functionDictionary.mjs). Do not edit by hand: change the comment, then run it again.
 
-780 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
+781 functions in ui, draw, classes, drawRegistry, node; 1 without a comment above them.
 
 | Function | Where | What it does |
 |---|---|---|
@@ -56,9 +56,9 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `assertSimpleName` | node/safePaths.mjs:53 | The value must be a non-empty string that is a single path segment: no "/" or "\", no NUL character, and not "." or "..". |
 | `astroidPoints` | draw/curves.js:88 | the four-cusped hypocycloid, x = cos^3 t, y = sin^3 t. |
 | `attachCanvasToRegion` | ui/scriptRunner.js:192 | moves the shared canvas into a region of the page. |
-| `autoFitParametricToCanvas` | draw/drawParametrics.js:159 | Measures the raw mathematical bounds of the curve and updates the 'scale' and 'mid' properties of the Parametric object to fit the canvas. |
+| `autoFitParametricToCanvas` | draw/drawParametrics.js:137 | Measures the raw mathematical bounds of the curve and updates the 'scale' and 'mid' properties of the Parametric object to fit the canvas. |
 | `background` | draw/background.js:5 | fills the shared canvas with a colour and, if grid is true, draws a light grid over it. |
-| `beginStepPass` | ui/draw/drawStep.js:59 | a redraw is starting; count from zero again. |
+| `beginStepPass` | ui/draw/drawStep.js:83 | a redraw is starting; count from zero again. |
 | `bothUnits` | ui/figures/figurePrint.js:258 | A length in mm as words in both units, for the cover sheet ("4.8 mm (0.188 in)"). |
 | `boxOfFigure` | ui/figures/figureTemplates.js:169 | The smallest rectangle round every visible layer that is not a guide, in canvas pixels, or null when nothing has been drawn yet. |
 | `breakApartLayer` | ui/figures/figureBreakApart.js:44 | Replaces the active layer's object with its pieces (Phase 7c). |
@@ -69,7 +69,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `buildCategoryFrameElement` | ui/categories.js:282 | <div class="category-frame">   <div class="category-header">title</div>   <div class="category-content"></div> |
 | `buildCategoryItemElement` | ui/categories.js:314 | <div class="item">   <span>name</span>   [chevron icon if hasSubitems] |
 | `buildCirclePairs` | draw/drawLinkedCircles.js:60 | which circles are linked, by link style: pairwise (each to the next), ring (pairwise and the last back to the first) or all to all. |
-| `buildControls` | ui/draw/drawStep.js:103 | the stepping controls, appended to #button. |
+| `buildControls` | ui/draw/drawStep.js:128 | the stepping controls, appended to #button. |
 | `buildControlsIfPresent` | ui/scriptRunner.js:241 | Builds parameter controls ONLY if scriptInfo exists AND caller requests controls. |
 | `buildCurveFromParams` | drawRegistry/parametrics.js:137 | the settings the parametric drawing code needs, gathered from the object's params (centre, zoom, colour, line width, intersections ...). |
 | `buildDrawMenuItems` | ui/draw/drawMenuCmds.js:202 | Legacy descriptor format used by older callers. |
@@ -139,7 +139,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `consumeLaunchIfForFigures` | ui/figures/figures.js:196 | If Home launched this tab for a saved figure, clears the launch request and opens the figure. |
 | `convertParabPtsToLines` | draw/drawUtilities.js:90 | each parabola given as 3 or 4 points turned into its two lines (a 3-point corner has its middle point doubled). |
 | `copyActiveDrawObject` | ui/draw/drawMenuCmds.js:265 | opens a copy of the open object in a new subtab, with the same settings (Copy Object). |
-| `copyBuildDocs` | node/copyBuildDocs.mjs:150 | empty help/BuildDocs and fill it again from docs/. |
+| `copyBuildDocs` | node/copyBuildDocs.mjs:151 | empty help/BuildDocs and fill it again from docs/. |
 | `copyFigureTab` | ui/figures/figuresSave.js:269 | Opens a copy of the figure in a new subtab. |
 | `corner` | draw/connectors.js:78 | the curve stitch most used in the ideabook. |
 | `cornerPartners` | ui/figures/figureWelds.js:94 | A Parabola's two corner handles (line1_pt2 and line2_pt1, say) are two separate fields, independent by default (Phase 7's "fan/bowtie" finding): they only st... |
@@ -163,9 +163,9 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `createPngFromActiveDrawObject` | ui/draw/drawMenuCmds.js:349 | saves the canvas as a PNG in the Gallery (Save as PNG). |
 | `createPrintNodes` | draw/drawUtilities.js:67 | CREATE PRINT NODES |
 | `crossHair` | draw/drawUnicorns.js:9 | a grey cross 40 pixels wide over each point, to mark it. |
-| `crossing` | ui/figures/figureMagic.js:71 | Where segments p1-p2 and p3-p4 cross, as { u, v } (fractions along each), or null. |
-| `crossings` | ui/figures/figureMagic.js:118 | Every crossing of one arm of the layer with the arms of every visible layer, named by the other arm and counted along this arm. |
-| `curveFeatures` | ui/figures/figureMagic.js:82 | Tips and cusps of one list arm, in order along it. |
+| `crossingOf` | draw/intersections.js:55 | where segment p1-p2 crosses segment p3-p4, as { x, y, ua, ub } (ua and ub: how far along each, 0 to 1), or null. |
+| `crossings` | ui/figures/figureMagic.js:107 | Every crossing of one arm of the layer with the arms of every visible layer, named by the other arm and counted along this arm. |
+| `curveFeatures` | ui/figures/figureMagic.js:71 | Tips and cusps of one list arm, in order along it. |
 | `deactivateCentroid` | ui/figures/figureCentroid.js:365 | Removes all four listeners with one abort. |
 | `deactivatePointsInput` | ui/figures/figurePointer.js:340 | Removes every points-mode listener (one abort) and hides the interaction layer. |
 | `decodeEntities` | node/homeListRequests.mjs:74 | the few HTML entities a title is likely to hold. |
@@ -204,7 +204,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `drawLinesWithin` | draw/drawUtilities.js:342 | PURPOSE - Draw many straight line segments between points in an array. |
 | `drawLinkedCircles` | draw/drawLinkedCircles.js:80 | Fail-fast validation The function expects a fully-formed LinkedCircles object. |
 | `drawLogarithmicSpiral` | draw/drawSpirals.js:104 |  drawLogarithmicSpiral    r is the radius from the origin. |
-| `drawMagicMarks` | ui/figures/figureMagic.js:201 | In points mode, a small open diamond on every magic point of the active layer, so it is visible where a click will land on one. |
+| `drawMagicMarks` | ui/figures/figureMagic.js:191 | In points mode, a small open diamond on every magic point of the active layer, so it is visible where a click will land on one. |
 | `drawManyLines` | draw/drawUtilities.js:206 | PURPOSE Draw a set of straight-line connections between points in an array, using a configurable skip pattern. |
 | `drawManyParabs` | draw/drawRegular.js:124 | draws each stitched parabola of a list. |
 | `drawManyParabs` | draw/drawUtilities.js:103 | draws each parabola of a list (3-point corners have their middle point doubled first). |
@@ -214,9 +214,9 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `drawPairs` | draw/drawUtilities.js:767 | draw the lines a connector returned (draw/connectors.js). |
 | `drawParab` | draw/drawRegular.js:167 | PURPOSE - Build two arms from two lines and stitch them into a parabola. |
 | `drawParabs` | draw/drawUtilities.js:113 | draws the stitch lines of each parabola, leaving out the last thing.truncate lines. |
-| `drawParametric` | draw/drawParametrics.js:52 | The primary loop for evaluating, auto-fitting, and drawing the curve segments. |
+| `drawParametric` | draw/drawParametrics.js:55 | The primary loop for evaluating, auto-fitting, and drawing the curve segments. |
 | `drawPlusMark` | ui/figures/figureWeldMarks.js:61 | a weld mark: a white disc with a plus in the given colour. |
-| `drawPolar` | draw/drawParametrics.js:31 | Converts polar function definitions into Cartesian parametric functions and then hands them off to the main drawing engine. |
+| `drawPolar` | draw/drawParametrics.js:34 | Converts polar function definitions into Cartesian parametric functions and then hands them off to the main drawing engine. |
 | `drawPureSpiral` | draw/drawSpirals.js:136 | an Archimedean spiral drawn as a smooth line: radius grows by spread for every radian, up to maxAngle. |
 | `drawPureSpiralA` | draw/drawSpirals.js:166 | an Archimedean spiral drawn as short straight steps, 60 to a turn, gap apart, for numRotations turns. |
 | `drawPureSpiralB` | draw/drawSpirals.js:193 | points along a spiral, 10 degrees apart, drawn as dots (ptsToDraw of them). |
@@ -243,7 +243,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `editUtilitiesManifestItem` | ui/utilities/utilitiesMenuCmds.js:102 | opens Edit Manifest for the utility shown (title, status). |
 | `ellipsePoints` | draw/curves.js:132 | an ellipse of half-width r and half-height r * ratio. |
 | `enableNextPrevOverlay` | ui/nextPrevOverlay.js:101 | Args: spec = { targetEl: <HTMLElement>, |
-| `endStepPass` | ui/draw/drawStep.js:68 | a redraw has finished; bring the slider and the readout up to date (the number of lines can change when a setting changes). |
+| `endStepPass` | ui/draw/drawStep.js:92 | a redraw has finished; bring the slider and the readout up to date (the number of lines can change when a setting changes). |
 | `ensureArray` | ui/menuManager.js:31 | value if it is an array; throws otherwise. |
 | `ensureGalleryCacheLoaded` | ui/gallery/gallery.js:97 | reads the lists of the three Gallery areas (Ideabook, Patterns, Scripts). |
 | `ensureHomeSavedState` | ui/home/home.js:79 | makes sure Home's remembered state exists, starting on Categories. |
@@ -270,9 +270,10 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `fillPanel` | ui/scriptHistory.js:81 | reads the script's saved versions from VS Code's history and lists them, each with Run and Compare. |
 | `filterControlsByActiveGroups` | ui/controls/builders/groupFilter.js:38 | Get the schema (controls definitions) |
 | `findCandidate` | ui/figures/figurePoints.js:170 | The infrastructure point nearest to (x, y) within radius, or null. |
-| `findFeature` | ui/figures/figureMagic.js:189 | Where the named feature is now on that arm, as t, or null if the object no longer has it (the other layer moved away, say). |
+| `findFeature` | ui/figures/figureMagic.js:179 | Where the named feature is now on that arm, as t, or null if the object no longer has it (the other layer moved away, say). |
 | `findHandleIndex` | ui/figures/figureWeldMove.js:100 | Matching by position (to a millionth of a pixel) rather than by name works for every object without a table of field names: an arm's a and b are the object's... |
 | `findHistory` | node/scriptHistoryRequests.mjs:71 | The history folder and entries for one file, or null when VS Code has none. |
+| `findIntersections` | draw/intersections.js:70 | see the header. |
 | `findMissingThumbnails` | ui/thumbnailMaker.js:174 | Asks for each picture file. |
 | `findOriginalManifestEntryByRootedPath` | node/manifestRequests.mjs:274 | Searches ALL real manifests under: ./patterns, ./gallery, ./utilities For each entry, computes its rooted path using the same |
 | `findPoint` | ui/figures/figurePoints.js:220 | The numbered point of the active layer nearest to (x, y) within radius, or null. |
@@ -294,7 +295,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `getCurrentList` | ui/utilities/utilitiesState.js:42 | the list being stepped through. |
 | `getCurrentTabId` | ui/figures/figuresState.js:58 | the figure subtab now shown. |
 | `getDrawCaptionMenuItems` | ui/draw/drawMenuCmds.js:98 | Always present: Help, Save as PNG, Save as Pattern, Copy Object, Reset Parameters |
-| `getFiguresCaptionMenuItems` | ui/figures/figuresCommands.js:157 | Returns the menu as an array of items. |
+| `getFiguresCaptionMenuItems` | ui/figures/figuresCommands.js:158 | Returns the menu as an array of items. |
 | `getFiguresRegistry` | ui/figures/figuresState.js:53 | Getters |
 | `getGalleryCache` | ui/gallery/gallery.js:111 | the three Gallery areas' lists, each as { category: [entries] }. |
 | `getGalleryCache` | ui/gallery/galleryState.js:44 | Getters |
@@ -306,7 +307,6 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `getIdsWithSecondaries` | ui/draw/drawTabState.js:35 | Getter |
 | `getIDsWithSecondaries` | ui/draw/secondaryObjects.js:69 | Returns an array of primary IDs that possess at least one secondary object. |
 | `getLineEquation` | draw/drawUtilities.js:740 | the equation of the line through two points, as text ("y = mx + b", or "x = c" when vertical). |
-| `getLineIntersection` | draw/drawParametrics.js:133 | Traditional line segment intersection using the Determinant/Cramer's Rule approach. |
 | `getMidpointSet` | classes/linkedCircles.js:118 | Returns the predefined midpoint array for a given circle count. |
 | `getMidpointSet` | classes/overlayClass.js:127 | Returns the predefined midpoint array for a given circle count. |
 | `getPatternsCaptionMenuItems` | ui/patterns/patternsMenuCmds.js:243 | the caption menu for a pattern (Help, Show Script, Script history, Edit Manifest, Archive ...). |
@@ -394,7 +394,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `loadSecondary` | ui/draw/secondaryObjects.js:79 | Fetches the JSON content of a secondary object. |
 | `loadSecondaryObjectInTab` | ui/draw/drawNav.js:377 | reads one saved setting and opens it in a subtab as a copy of its object with those settings. |
 | `loadThumbnailSettings` | ui/thumbnailSettings.js:45 | Called once when this file loads (below). |
-| `magicCandidates` | ui/figures/figureMagic.js:158 | Every magic point on the layer's infrastructure, as candidates { layer, arm, t, x, y, feature }. |
+| `magicCandidates` | ui/figures/figureMagic.js:148 | Every magic point on the layer's infrastructure, as candidates { layer, arm, t, x, y, feature }. |
 | `main` | node/check_ports.mjs:23 | checks that ports 5173 (Vite) and 5174 (the Node service) are free, and stops start-up with a message naming any that are in use. |
 | `makeArchiveItem` | ui/menuCmds.js:154 | Returns an Archive menu item. |
 | `makeDrawInstance` | ui/draw/drawInstance.js:32 | a private copy of a registry object with its own params (see the header). |
@@ -412,13 +412,13 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `manifestRoots` | node/safePaths.mjs:33 | the absolute paths of the folders that may hold manifests. |
 | `mapPoint` | draw/drawTransform.js:162 | being drawn (drawState.transform). |
 | `mapTabIdToKey` | ui/setUI.js:51 | a tab button's id as the tab's name ("draw-tab" gives "draw"). |
-| `markdownToHtml` | node/copyBuildDocs.mjs:64 | a Markdown document as the HTML of a page body. |
+| `markdownToHtml` | node/copyBuildDocs.mjs:65 | a Markdown document as the HTML of a page body. |
 | `markFarthest` | draw/shapers.js:190 | the working part of simplified. |
 | `markListsForRedraw` | ui/thumbnailSettings.js:94 | Each tab that lists its items with pictures builds its list again the next time it is opened (the same needsUpdate flag a manifest rebuild uses). |
 | `markSelectedThumbnail` | ui/thumbnails.js:7 | thumbnails.js Thumbnail grids (draw, mark the selected one) and making a cropped canvas thumbnail. |
 | `markTabClean` | ui/draw/drawNav.js:259 | clears a subtab's changed mark. |
 | `markTabDirty` | ui/draw/drawNav.js:239 | marks a subtab as changed since it was opened (a mark on its label). |
-| `measureParametricBounds` | draw/drawParametrics.js:200 | Evaluates the curve functions across all sample points to find the mathematical min/max bounding box. |
+| `measureParametricBounds` | draw/drawParametrics.js:178 | Evaluates the curve functions across all sample points to find the mathematical min/max bounding box. |
 | `mesh` | draw/connectors.js:151 | a grid given as rows (an array of arrays of points). |
 | `midpoint` | draw/drawUtilities.js:493 | the point half way between a and b. |
 | `mirrored` | draw/shapers.js:134 | every point reflected across the line through a and b. |
@@ -466,7 +466,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `openScriptHistory` | ui/scriptHistory.js:72 | the side panel of a script's saved versions. |
 | `openSweepPanel` | ui/draw/drawSweep.js:116 | The side panel: setting, from, to, how many, Sweep. |
 | `outside` | draw/shapers.js:236 | only the points outside the shape (a hole left in a pattern). |
-| `page` | node/copyBuildDocs.mjs:143 | a complete help page around a body. |
+| `page` | node/copyBuildDocs.mjs:144 | a complete help page around a body. |
 | `pairsFor` | draw/ringObject.js:50 | the lines for a list of points, by the stitch setting. |
 | `pairwise` | draw/connectors.js:49 | point i of A joined to point i+offset of B. |
 | `para` | ui/scriptHistory.js:215 | a paragraph holding text. |
@@ -483,7 +483,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `pointPickerDotId` | ui/controls/shared/helpers.js:9 | Generate a unique dot ID for point picker overlays |
 | `polygonPoints` | draw/curves.js:169 | a regular polygon of the given number of sides, corners on a circle of radius r, the first corner at the top, n points spread round its sides. |
 | `polyline` | draw/connectors.js:140 | each point joined to the next. |
-| `polyline` | ui/figures/figureMagic.js:59 | The arm as a list of canvas points, each with its t along the arm. |
+| `polyline` | ui/figures/figureMagic.js:60 | The arm as a list of canvas points, each with its t along the arm. |
 | `positionMenu` | ui/menuManager.js:66 | places the menu just below the button that opened it. |
 | `prepareCategoryFolder` | node/writerRequests.mjs:22 | Finds <rootDir>/<category>, makes its images/ folder if it is missing, and checks its manifest.json exists. |
 | `prepareSharedCanvas` | ui/thumbnailMaker.js:258 | Puts the shared canvas in #sketchpad on a white page, as running a script does. |
@@ -515,7 +515,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `rebuildControls` | ui/controls/rendering/rebuild.js:33 | CONTROL PANEL REBUILD TRIGGER PURPOSE: Provides a self-contained rebuild mechanism for dynamic |
 | `rebuildInstances` | ui/figures/figureLayers.js:245 | For a figure that was read from a file (Phase 10): makes one live object per saved layer, in the same order, the way insertLayer() makes one. |
 | `rectanglePoints` | draw/curves.js:159 | a rectangle of half-width r and half-height r * ratio, with n points spread round its sides from the top left corner. |
-| `redrawFigure` | ui/figures/figureDraw.js:64 | Clears the canvas and draws every visible layer, bottom to top. |
+| `redrawFigure` | ui/figures/figureDraw.js:65 | Clears the canvas and draws every visible layer, bottom to top. |
 | `reflectionFileName` | ui/home/homeHelp.js:45 | a title turned into a file name: letters, digits and spaces kept, everything else dropped, spaces as underscores. |
 | `reflowNotes` | ui/notes.js:73 | Header notes are hard-wrapped for the editor. |
 | `refreshGalleryFromManifestEdit` | ui/gallery/galleryMenuCmds.js:260 | forgets the Gallery and Home lists and reads them again, after an edit. |
@@ -555,8 +555,8 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `reportProblems` | ui/errorReport.js:90 | For a check that finds several problems (the registry check, a figure file check): each problem text is reported as its own error. |
 | `resampled` | draw/shapers.js:148 | n points spaced evenly by distance along the path the points make (corner to corner, not closed). |
 | `resetActiveDrawObject` | ui/draw/drawMenuCmds.js:306 | puts the open object's settings back to its defaults (Reset Parameters). |
-| `resetCanvas` | draw/drawState.js:70 | Clears the bitmap and resets the context state. |
-| `resetDrawStateForScript` | draw/drawState.js:54 | Puts drawState back to its starting values before a pattern or gallery script runs, so nothing one script leaves behind reaches the next: the point list (pts... |
+| `resetCanvas` | draw/drawState.js:71 | Clears the bitmap and resets the context state. |
+| `resetDrawStateForScript` | draw/drawState.js:55 | Puts drawState back to its starting values before a pattern or gallery script runs, so nothing one script leaves behind reaches the next: the point list (pts... |
 | `resetFiguresState` | ui/figures/figuresState.js:84 | Reset (used by init) NOTE: Does NOT clear figuresRegistry -- that cache persists across navigation and is only cleared by explicit cache |
 | `resetFigureTab` | ui/figures/figuresSave.js:302 | Throws away the changes since the last save: reads the saved file again and rebuilds the figure from it. |
 | `resetGalleryState` | ui/gallery/galleryState.js:71 | forgets the area, category, list and position. |
@@ -636,7 +636,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `setDrawSubtabs` | ui/draw/drawNav.js:65 | builds the Draw subtab bar: Categories, then a subtab for each open object. |
 | `setDrawText` | ui/draw/drawCategories.js:39 | shows the Draw categories in #text. |
 | `setFiguresAction` | ui/figures/figures.js:232 | Builds the Figures controls in the permanent #button div, under the Commands button, in this order: Show All checkbox      (figure subtabs only) |
-| `setFiguresCaption` | ui/figures/figuresCommands.js:132 | title    - caption text (default "Figures") withMenu - true on a figure subtab: shows the "v" menu The menu items are built fresh each time the "v" is pressed |
+| `setFiguresCaption` | ui/figures/figuresCommands.js:133 | title    - caption text (default "Figures") withMenu - true on a figure subtab: shows the "v" menu The menu items are built fresh each time the "v" is pressed |
 | `setFiguresRegistry` | ui/figures/figuresState.js:66 | Setters |
 | `setFiguresSketchpad` | ui/figures/figures.js:328 | Moves the one shared drawing canvas (window.drawCanvas, used by every tab) into this tab's #sketchpad region, unless it is already there. |
 | `setFiguresSubtabs` | ui/figures/figuresNav.js:75 | figuresSave.js asks for a figure to be shown (after Save, or opening a saved one) with this event, because it cannot import this file. |
@@ -686,7 +686,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `showHomeAlert` | ui/homeAlert.js:74 | Two parts, each shown only when it has something to say and has not been dismissed: - the newest manifest check, when it found problems; |
 | `showHomeResultsError` | ui/home/homeResults.js:156 | a message in the canvas area saying the item could not be shown. |
 | `showIdeabookCategories` | ui/gallery/galleryNav.js:200 | the Ideabook view: a frame per category of pictures. |
-| `showLine` | ui/draw/drawStep.js:75 | draw up to line k (1 is the first line) and update the readout. |
+| `showLine` | ui/draw/drawStep.js:99 | draw up to line k (1 is the first line) and update the readout. |
 | `showNextGalleryItem` | ui/gallery/galleryResults.js:187 | shows the item after the current one (the last wraps to the first). |
 | `showNotesOverlay` | ui/overlay.js:225 | Shows a file's header notes in the same "help" overlay layer and with the same toolbar and body classes as showHelpOverlay. |
 | `showOffcanvas` | ui/offcanvas.js:23 | Unified offcanvas display function. |
@@ -707,10 +707,11 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `spacingProblems` | ui/figures/figurePrint.js:150 | { ok, message, pairs: [[nailA, nailB, mm]], nails }. |
 | `spiralPoints` | draw/curves.js:119 | an Archimedean spiral from the centre out to r, turns turns. |
 | `startServer` | node/sketchpadServer.mjs:114 | DESCRIPTION Creates and starts the HTTP server. |
-| `startStepping` | ui/draw/drawStep.js:39 | draw everything once to count the lines, then show the controls with the last line marked. |
+| `startStepping` | ui/draw/drawStep.js:50 | draw everything once to count the lines, then show the controls with the last line marked. |
 | `statusForError` | node/sketchpadServer.mjs:93 | A plain Error thrown by a handler for bad input has no system error code and says what is wrong with the request. |
+| `stepLayer` | ui/draw/drawStep.js:74 | called by the figure redraw before each layer draws. |
 | `stitcher` | draw/drawUtilities.js:553 |    returns an array of lines |
-| `stopStepping` | ui/draw/drawStep.js:50 | remove the controls and draw the whole object again. |
+| `stopStepping` | ui/draw/drawStep.js:62 | remove the controls and draw the whole picture again. |
 | `stripExt` | node/maintain_manifests.mjs:414 | Removes the specified extension from a string. |
 | `summaryLines` | node/maintain_manifests.mjs:266 | The lines that go at the top of the log: the problems, then the files added to manifests. |
 | `superellipsePoints` | draw/curves.js:110 | \|x\|^p + \|y\|^p = 1. |
@@ -725,14 +726,14 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `switchUtilityTab` | ui/utilities/utilitiesNav.js:104 | shows one Utilities subtab and remembers it. |
 | `syncLayerToCanvas` | ui/canvasLayerManager.js:152 | Sizes and positions the named canvas layer to exactly match the dimensions of referenceCanvas. |
 | `syncSystemStateAfterRebuild` | ui/rebuildSync.js:16 | Global Sync: Wipes the manifest cache and sets needsUpdate for all tabs. |
-| `tableRow` | node/copyBuildDocs.mjs:56 | the cells of one Markdown table line ("\| a \| b \|"). |
+| `tableRow` | node/copyBuildDocs.mjs:57 | the cells of one Markdown table line ("\| a \| b \|"). |
 | `templatePages` | ui/figures/figurePrint.js:327 | The template as { pages: [svg text], sheets: { rows, cols }, widthMm, heightMm, nails }. |
 | `textColorOn` | ui/figures/figureLayerPanel.js:185 | Black or white, whichever reads better on the given background. |
 | `thumbFromEntryPath` | ui/thumbnailSettings.js:136 | Home lists entries from every tab, each with the path of its file: /patterns/<category>/<name>.js /gallery/<domain>/<category>/<name>.js (or an image) |
 | `tick` | ui/errorReport.js:168 | Acknowledges one error in the log. |
 | `timed` | ui/instrument.js:47 | work is a function that returns a promise (or a plain value). |
 | `timesTable` | draw/connectors.js:117 | round a loop of n points, point i joined to point (i*factor) mod n. |
-| `titleOf` | node/copyBuildDocs.mjs:136 | the first heading of a Markdown document, else the fallback. |
+| `titleOf` | node/copyBuildDocs.mjs:137 | the first heading of a Markdown document, else the fallback. |
 | `toCanvas` | ui/interactor.js:157 | Handles live in object space. |
 | `toggleAccordionSection` | ui/controls/widgets/accordionWidget.js:223 | Opens a closed section (and closes the others, so one section is open at a time) or closes an open one. |
 | `toggleIdeabookScript` | ui/gallery/galleryResults.js:328 | Run script / Show image. |
@@ -753,7 +754,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `updateGalleryCaption` | ui/gallery/galleryMenuCmds.js:61 | the caption for the item shown: its category and title, Prev and Next, and the menu. |
 | `updateLayerInfo` | ui/figures/figureLayerPanel.js:202 | Fills the "Layer N . |
 | `updatePatternsCaption` | ui/patterns/patternsMenuCmds.js:53 | Title rule: "{category}: {title}" |
-| `updateReadout` | ui/draw/drawStep.js:85 | slider range and position, and the words under it. |
+| `updateReadout` | ui/draw/drawStep.js:109 | slider range and position, and the words under it. |
 | `updateSecondariesDiscovery` | ui/draw/drawNav.js:324 | asks the service which objects have saved settings, so their category entries can say so. |
 | `updateUtilitiesCaption` | ui/utilities/utilitiesMenuCmds.js:37 | the caption for the utility shown: its category and title, and the menu. |
 | `upgradeFigureV1` | ui/figures/figureModel.js:167 | Fills in any format field a figure is missing, with its default, so a file written before a field existed opens the same as a new one. |
@@ -769,7 +770,7 @@ Made by `npm run dictionary` from the comments above each function (tests/functi
 | `weldOf` | ui/figures/figureWeldModel.js:47 | The weld group point n belongs to, or null. |
 | `wireDrawCommandsButton` | ui/draw/drawMenuCmds.js:472 | the Commands button opens the Draw Maintenance panel. |
 | `wireEditManifestHandlers` | ui/editManifestDialog.js:185 | wireEditManifestHandlers - UPDATED (NO UseCustom BUTTON) |
-| `wireFiguresCommandsButton` | ui/figures/figuresCommands.js:65 | The Commands button at the top left opens a slide-in panel ("offcanvas", a Bootstrap term) with two buttons: Rebuild & Validate  asks the Node service to reb... |
+| `wireFiguresCommandsButton` | ui/figures/figuresCommands.js:66 | The Commands button at the top left opens a slide-in panel ("offcanvas", a Bootstrap term) with two buttons: Rebuild & Validate  asks the Node service to reb... |
 | `wireGalleryCommandsButton` | ui/gallery/galleryMenuCmds.js:335 | the Commands button opens the Gallery Maintenance panel. |
 | `wireHomeCommandsButton` | ui/home/homeMenuCmds.js:208 | the Commands button opens the Home Maintenance panel. |
 | `wireInstance` | ui/figures/figureLayers.js:206 | Attaches the callbacks that interactor.js and the weld code use to one layer's live object. |

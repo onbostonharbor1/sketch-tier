@@ -45,6 +45,7 @@
    ============================================================ */
 
 import { armsOf, armPoint } from "./figurePoints.js";
+import { findIntersections } from "/draw/intersections.js";
 
 const CUSP_DEGREES = 100;   // a turn sharper than this counts as a cusp
 const MAX_PER_KIND = 400;   // more tips or cusps than this: the curve is noise, not features
@@ -64,18 +65,6 @@ function polyline(arm, xform) {
   for (let i = arm.from; i <= arm.to; i++) out.push({ t: i / arm.steps, ...armPoint(arm, i / arm.steps, xform) });
   return out;
 } // end polyline
-
-
-// Where segments p1-p2 and p3-p4 cross, as { u, v } (fractions along
-// each), or null. Ends that only touch count; parallel lines never cross.
-function crossing(p1, p2, p3, p4) {
-  const d = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
-  if (Math.abs(d) < 1e-9) return null;
-  const u = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / d;
-  const v = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / d;
-  if (u < -1e-9 || u > 1 + 1e-9 || v < -1e-9 || v > 1 + 1e-9) return null;
-  return { u, v };
-} // end crossing
 
 
 // Tips and cusps of one list arm, in order along it.
@@ -129,14 +118,15 @@ function crossings(tabState, layerIndex, arm, pts) {
       if (li === layerIndex && other.id === arm.id) continue;
       const qts  = polyline(other, xform);
       const hits = [];
-      for (let j = 0; j < pts.length - 1; j++) {
-        for (let m = 0; m < qts.length - 1; m++) {
-          const h = crossing(pts[j], pts[j + 1], qts[m], qts[m + 1]);
-          if (!h) continue;
-          const t = pts[j].t + (pts[j + 1].t - pts[j].t) * h.u;
-          if (hits.some((e) => Math.abs(e.t - t) < 1e-6)) continue;     // the same spot from two segments
-          hits.push({ t, x: pts[j].x + (pts[j + 1].x - pts[j].x) * h.u, y: pts[j].y + (pts[j + 1].y - pts[j].y) * h.u });
-        }
+      // The grid search of draw/intersections.js: this arm (path 0) against
+      // the other (path 1) only; ends that touch count, as before.
+      const result = findIntersections([pts, qts], { mode: "between", countEnds: true, mergeDistance: 0 });
+      for (const h of result.points) {
+        const mine = h.a.path === 0 ? h.a : h.b;                         // the crossing as seen on this arm
+        const j = mine.segment;
+        const t = pts[j].t + (pts[j + 1].t - pts[j].t) * mine.t;
+        if (hits.some((e) => Math.abs(e.t - t) < 1e-6)) continue;       // the same spot from two segments
+        hits.push({ t, x: h.x, y: h.y });
       }
       // Ends that merely meet (a corner, a weld) are not crossings.
       const real = hits.filter((e) => e.t > 1e-6 && e.t < 1 - 1e-6);
