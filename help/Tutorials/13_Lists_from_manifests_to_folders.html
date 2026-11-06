@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>13 Lists: from manifests to folders</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 13: Lists: from manifests to folders</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Every list in Sketchpad (the categories of Patterns, Gallery, Utilities, Figures and Draw's saved settings, and Home's
+statuses) used to come from manifest.json files. Since 4 November they come from the folders themselves. This tutorial tells
+the story, reads the new code, and traces a file from saving to appearing.</p>
+<ul>
+<li>13.1 The history: why manifests were fragile</li>
+<li>13.2 libraryIndex, line by line</li>
+<li>13.3 The two requests</li>
+<li>13.4 ManifestManager on the page</li>
+<li>13.5 The fallback</li>
+<li>13.6 What still writes manifests</li>
+<li>13.7 The Edit Manifest dialog</li>
+<li>13.8 Archive</li>
+<li>13.9 Rebuild and Validate</li>
+<li>13.10 The Home list</li>
+<li>13.11 A file from saving to appearing</li>
+<li>13.12 How it was proven</li>
+</ul>
+
+<h2>13.1 The history: why manifests were fragile</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>docs/old/ (the batch-1 documents), help/Overview/Subsystems/manifest.html, node/maintain_manifests.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each category folder had a manifest.json listing its items, and each library a directoryRegistry.json listing its
+categories. A list was only as right as its manifest: a script saved in VS Code did not appear until the manifest was edited or
+rebuilt; an entry whose file had gone broke the list; a start-up rebuild (maintain_manifests.mjs, run by sketchpad.bat) tried to
+keep them in step and stopped start-up when it failed; and Home's list (home/manifest.json) had to be rebuilt from all the
+others after every edit.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open any manifest.json and its folder side by side.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>List the four ways a manifest could disagree with its folder.</p></div>
+
+<h2>13.2 libraryIndex, line by line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/libraryIndex.mjs: <code>LIBRARIES</code>, <code>categoriesOf</code>, <code>itemsOf</code>, <code>listLibrary</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>LIBRARIES</code> names the eight libraries and the kind of file that is an item in each (scripts .js; pictures for the Ideabook
+and gallery Patterns; .json for figures and saved settings). <code>categoriesOf</code> reads the folders: directoryRegistry.json's order
+first, then any other folder, A to Z, skipping images, scripts, archive and hidden folders. <code>itemsOf</code> reads a folder's files of
+the right kind (thumbnails and list files excepted), then takes the manifest's entries as notes: an entry whose file is gone is
+dropped; files with no entry come after, titled by their file name. <code>listLibrary</code> puts it together, leaving out a folder not in
+the registry that holds no items.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>node -e 'import("./node/libraryIndex.mjs").then(async m =&gt; console.log((await m.listLibrary({basedir:"patterns"})).categories))'</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make a scratch folder in patterns/ with one .js file; run the line above again.</p></div>
+
+<h2>13.3 The two requests</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>listLibrary</code> and <code>listHomeItems</code> in node/libraryIndex.mjs; the dispatcher in node/sketchpadService.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>listLibrary { basedir }</code> answers <code>{ categories, items }</code>, where items[i] belongs to categories[i], each entry
+<code>{ filename, path, title, ...notes }</code>: exactly the shape the page always read from manifests, so no tab changed.
+<code>listHomeItems</code> walks the libraries the same way and returns every item that has a status, sorted by title.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>(await import('/ui/nodeLayer.js')).nodeDispatch('listLibrary', { basedir: 'utilities/Tools' })</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Compare the answer with utilities/Tools' folders and manifests.</p></div>
+
+<h2>13.4 ManifestManager on the page</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/manifest.js: <code>get</code>, <code>loadOrCache</code>, <code>getCategoryMap</code>, <code>register</code>, <code>invalidate</code>, <code>clearCache</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Tabs ask <code>manifest.get(basedir)</code>. For the eight libraries it asks the service for <code>listLibrary</code> and keeps the answer in its
+cache, with the category names in its registry cache. <code>getCategoryMap</code> gives { category: [entries] }. <code>invalidate(key)</code> forgets
+one library and calls the tabs registered for it; <code>clearCache</code> forgets all.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>loadOrCache</code>; open Patterns.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find which tab registers a refresh callback, and what it does.</p></div>
+
+<h2>13.5 The fallback</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>loadOrCache</code> in ui/manifest.js, after the listLibrary attempt.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Without the service (a read-only copy of Sketchpad), the request fails and the old path runs: directoryRegistry.json and
+the manifest files are read directly. So the manifests still matter for a copy with no service.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Stop the Node service, reload, open Patterns: still listed (from manifests).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find the check that treats an answer without lists as a failure.</p></div>
+
+<h2>13.6 What still writes manifests</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/manifestRequests.mjs (<code>editManifestEntry</code>, <code>archiveItem</code>), node/figureFiles.mjs, node/writerRequests.mjs, node/thumbnailRequests.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Edit Manifest writes a title or status into an entry; Archive moves a file and removes its entry; saving a figure, Create
+Pattern and Create Gallery PNG add entries; thumbnail tools note pictures. All of this is now notes: if it went wrong, the item
+would still appear, just with its file name as title.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Edit Manifest on a pattern, then open its folder's manifest.json.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Delete an entry by hand and confirm the item still appears.</p></div>
+
+<h2>13.7 The Edit Manifest dialog</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/editManifestDialog.js (<code>openEditManifestDialog</code>, <code>validateEditManifestSpec</code>, <code>applyEditManifest</code>); ui/menuCmds.js (<code>makeEditManifestItem</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The caption menu's Edit Manifest opens a form in the forms overlay with the entry's fields; Save sends them to the service,
+which writes the manifest, then the complete rebuild runs so every list and Home show the change.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Edit a status and watch Home.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how the dialog knows which entry to edit (the match field).</p></div>
+
+<h2>13.8 Archive</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/archiveItem.js; node/manifestRequests.mjs (<code>archiveItem</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Archive moves the item's file into the category's archive folder and takes it out of the manifest, then the lists are
+read again. Archive folders are skipped by the index, so the item leaves its list.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Archive a test item and find it in the archive folder.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read <code>archiveItem</code> and find the path safety check.</p></div>
+
+<h2>13.9 Rebuild and Validate</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/maintain_manifests.mjs; ui/rebuildSync.js (<code>formatRebuildReportShared</code>, <code>syncSystemStateAfterRebuild</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Still available in each Maintenance panel: it brings the manifests in line with the folders and reports problems and
+additions, then marks every tab to start afresh. It is no longer run at start-up and nothing depends on it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Home &gt; Commands &gt; Rebuild &amp; Validate.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read the report's PROBLEMS and ADDED sections.</p></div>
+
+<h2>13.10 The Home list</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/home/homeManifest.js (<code>loadHomeManifest_async</code>, <code>groupHomeEntriesByStatus</code>); <code>listHomeItems</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Home asks for <code>listHomeItems</code> and groups the items by status, one frame per status. Statuses live as notes in the
+libraries' manifests; Ideabook pictures had theirs cleared on 5 November.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Set a status with Edit Manifest and reload Home.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where an empty status is skipped.</p></div>
+
+<h2>13.11 A file from saving to appearing</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>All of the above.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Save patterns/circles/new.js in VS Code. Nothing happens yet: there is no file watcher (Node's is unreliable on Windows).
+Reload the page (or Rebuild): Patterns asks <code>manifest.get("patterns")</code>, which asks the service, which reads the folder and
+finds new.js with no manifest entry, so it lists it after the others, titled new.js. categories.js draws it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints in <code>loadOrCache</code> and the service's <code>itemsOf</code> (the Node terminal shows nothing; use console.log in a copy).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Time how long from saving to seeing it.</p></div>
+
+<h2>13.12 How it was proven</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>The commit message of the lists change (git log --grep "Lists from the folders"); tests/nodeSmoke.mjs, the listLibrary block.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Before switching, every library's new lists were compared item by item with the manifests: identical. The service test
+builds a scratch library and checks the order, the notes, a file with no entry, an entry with no file, a folder with only
+pictures, and refusal of a folder outside the libraries.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:node</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a case to the scratch library test (for example a file with an upper-case extension).</p></div>
+
+</body>
+</html>

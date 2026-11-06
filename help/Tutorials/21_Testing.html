@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>21 Testing</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 21: Testing</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>For the parts you choose not to read line by line, the tests are the reader. This tutorial explains what each test does and
+how to read and extend it.</p>
+<ul>
+<li>21.1 Why tests replace reading</li>
+<li>21.2 test:tabs</li>
+<li>21.3 test:regression</li>
+<li>21.4 The Node tests</li>
+<li>21.5 test:errors, test:node, test:history, test:ideabook</li>
+<li>21.6 Lint and the import and id checks</li>
+<li>21.7 The Vite-restart trap</li>
+</ul>
+
+<h2>21.1 Why tests replace reading</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Help &gt; Design &gt; Subsystems &gt; Tests and checks.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A black box is acceptable only with a written contract and tests that check exactly that contract. Then a change that
+breaks it fails a test, even if nobody reads the code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>None.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Pick one black-box part (the library index) and write its contract in five sentences, then find the tests for each.</p></div>
+
+<h2>21.2 test:tabs</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>tests/tabSwitch.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A Playwright script drives the real app in a browser: it clicks tabs, opens items, drags handles, inserts layers, welds,
+prints, sweeps, steps and much more, collecting problems and failing on any page error or console error. It runs in stages
+named by <code>stage = "..."</code>, so a failure says where.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:tabs</code> (about eight minutes).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read one stage and change an expected value to see a failure message.</p></div>
+
+<h2>21.3 test:regression</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>tests/regression.mjs; tests/regression/approved.json and approved/.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Every Draw object, pattern and gallery script is drawn and compared with its approved copy: the lines' geometry exactly
+(a fingerprint of every line's ends), or the picture within an allowance. Changes are listed with a report (approved, now,
+overlay, flicker, difference). An intended change is approved with <code>-- accept &lt;name&gt;</code>; an item may get its own allowance in
+tolerance.json.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:regression</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Change one line colour in a copy of an object, run it, and read the report.</p></div>
+
+<h2>21.4 The Node tests</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>tests/shapersConnectors.mjs, tests/controlConventions.mjs, tests/intersections.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Pure functions are tested in Node without a browser: shapers, connectors and curves (27), controls by name (6), the
+intersection search (11, including agreement with an every-pair search and a timing check).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:shapers</code>, <code>npm run test:controls</code>, <code>npm run test:intersections</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a test for a shaper of your choosing.</p></div>
+
+<h2>21.5 test:errors, test:node, test:history, test:ideabook</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>tests/errorReport.mjs, tests/nodeSmoke.mjs, tests/scriptHistory.mjs, tests/ideabook.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The error bar, log, checklist, Home subtabs and time limit; the Node service's requests on a scratch copy of the folders;
+Script history; every Ideabook hint script.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run each.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read the scratch-copy setup at the top of tests/nodeSmoke.mjs.</p></div>
+
+<h2>21.6 Lint and the import and id checks</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>eslint.config.mjs; tests/importCheck.mjs; tests/idCheck.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Lint (<code>npm run lint:globals</code>) reports undeclared globals: zero errors is required (a few warnings in gallery scripts are
+known). The import check confirms every import resolves; the id check confirms the region table matches index.html.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run all three.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Use an undeclared variable in a copy of a file and read the lint error.</p></div>
+
+<h2>21.7 The Vite-restart trap</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Tutorial 10.9.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>After editing source files while Vite runs, restart Vite before browser tests, or a test may see a second copy of a
+module.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>None.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>None.</p></div>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>14 Each tab in depth</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 14: Each tab in depth</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Tutorials 6 and 7 covered Draw and Figures. This one goes through the other tabs file by file, and the parts of Draw and
+Figures that are about the tab rather than the drawing.</p>
+<ul>
+<li>14.1 Home: state, Categories, Results</li>
+<li>14.2 Home's newer subtabs</li>
+<li>14.3 The alert bar</li>
+<li>14.4 Draw as a tab</li>
+<li>14.5 Patterns</li>
+<li>14.6 Gallery</li>
+<li>14.7 Utilities</li>
+<li>14.8 Figures as a tab</li>
+</ul>
+
+<h2>14.1 Home: state, Categories, Results</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/home/home.js (HomeTabSpec, <code>initHomeTab</code>, <code>restoreHomeTab</code>, <code>ensureHomeSavedState</code>), homeState.js (<code>incrementHomeResultsRenderToken</code>), homeNav.js, homeResults.js (<code>renderHomeResults</code>, <code>isImagePath</code>, <code>deriveHomeOriginFromPath</code>), homeMenuCmds.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Home remembers its view and the item open in <code>uiState.home.saved</code>. Categories shows one frame per status. Clicking an
+item either shows it in Results (a script runs on the canvas, a picture shows in #text) or launches another tab (a Draw object,
+a figure). Results uses a render token: each render takes a number, and a slow earlier render that finishes late sees its number
+is out of date and does nothing, so you never see the wrong item.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Click two Home items quickly and watch the token in the debugger.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where a Draw object item launches the Draw tab.</p></div>
+
+<h2>14.2 Home's newer subtabs</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/home/homeErrors.js, homeChecklist.js (<code>parseChecklist</code>), homeHelp.js (<code>renderHomeHelp</code>, <code>reflectionFileName</code>), homeNotes.js, homeTickList.js (<code>renderTickList</code>); node/homeListRequests.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Errors and Checklist share one list display: checkboxes, Show all, Purge ticked, and for the checklist Add item. Errors are
+read from the logs (tutorial 17); the checklist is home/checklist.md, rewritten whole through <code>writeChecklist</code>. Help is a jsTree
+of four groups (Design, Reflections, Build Documents, Tutorials) beside a page pane; New reflection writes a page and opens the
+help editor. Notes shows home/notes.md.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Use each subtab.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how the checklist keeps lines that are not items.</p></div>
+
+<h2>14.3 The alert bar</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/homeAlert.js (<code>showHomeAlert</code>, <code>parseMaintenanceSummary</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>On Home, a yellow bar appears when errors are not yet ticked, or when the last manifest check found problems; each part
+has its own Dismiss, remembered for the present count or log.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Make an error, reload Home.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where a dismissed part is remembered.</p></div>
+
+<h2>14.4 Draw as a tab</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/draw.js, drawNav.js, drawMenuCmds.js (<code>wireDrawCommandsButton</code>), drawCategories.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Draw keeps a subtab per open object, marks changed ones, validates saved-settings subtabs whose files have gone, and has
+a Maintenance panel. Its restore path rebuilds the subtab bar and shows the active object as left.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open three objects, switch tabs, come back.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read <code>validateOpenSecondaryTabs</code> and say when it closes a subtab.</p></div>
+
+<h2>14.5 Patterns</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/patterns/patterns.js (PatternsTabSpec, <code>initPatternsTab</code>, <code>restorePatternsTab</code>, <code>rehydratePatternsState</code>), patternsNav.js, patternsDisplay.js (<code>renderPatternThumbGrid</code>, <code>showSelectedPattern</code>, <code>onPrev</code>, <code>onNext</code>), patternsMenuCmds.js, patternsState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Patterns lists categories, shows a picture grid for a category, runs a pattern on the canvas with its caption and
+controls, and steps with Prev and Next (wrapping round). The caption menu has Help, Show Script, Script history, Edit Manifest,
+thumbnail and Archive.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run a pattern and step through its category.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where Prev wraps from the first to the last.</p></div>
+
+<h2>14.6 Gallery</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/gallery/gallery.js (<code>ensureGalleryCacheLoaded</code>, <code>getGalleryCache</code>), galleryNav.js, galleryResults.js (<code>showGalleryResultsImages</code>, <code>showGalleryResultsScripts</code>, <code>showGalleryImage</code>, <code>showGalleryScript</code>, <code>normalizeGalleryEntryPath</code>), galleryMenuCmds.js, galleryState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Three areas share one cache: Ideabook and Patterns are pictures, Scripts are scripts. Results shows a picture in #text or
+runs a script on the canvas, with Prev and Next through the category; Ideabook images get the Run script button when a hint
+exists.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Step through an Ideabook category with Next.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how an entry's path is turned into a URL.</p></div>
+
+<h2>14.7 Utilities</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/utilities/utilities.js (UtilityTabSpec, <code>initUtilityTab</code>, <code>restoreUtilityTab</code>), utilitiesNav.js, utilitiesDisplay.js, utilitiesMenuCmds.js, utilitiesState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Tools and Lab are categories of scripts; running one shows its drawing or its HTML result, the latter in the Result
+subtab. The Utilities Commands panel holds the timing tools.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run Show Logs, then Validate Draw Registry.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how a utility's HTML result reaches #text.</p></div>
+
+<h2>14.8 Figures as a tab</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figures.js (FiguresTabSpec, <code>setFiguresAction</code>), figuresNav.js (subtabs, <code>addCaptionTools</code>, <code>updateFigureButtons</code>), figureLayerPanel.js (<code>renderLayerPanel</code>), figuresCommands.js, figuresDisplay.js, figuresState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The Figures tab has a Categories subtab (saved figures and Create Figure) and a subtab per open figure. The caption carries
+the tools (Line, Parabola, the shape palette, Curve, Template, the active layer's name and Show). The left column holds Show All,
+Points Mode and Insert, all tab-extra. The number strip shows the layers in their colours; clicking one makes it active.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open two figures and switch between them.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where the palette buttons are greyed in points mode.</p></div>
+
+</body>
+</html>

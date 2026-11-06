@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>07 Figures</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 7: Figures</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>A figure is several Draw objects (layers) arranged together, with discs that become nails, welds that join points, and print
+aids that make the template. It is the largest part of Sketchpad and the part most worth knowing well. Read the tutorials in
+order: each builds on the one before.</p><p>Help &gt; Design &gt; Tabs &gt; Figures is the overview to read first.</p>
+<ul>
+<li>7.1 The figure data model</li>
+<li>7.2 Inserting layers</li>
+<li>7.3 Drawing a figure</li>
+<li>7.4 Layer transforms: move and rotate</li>
+<li>7.5 Points mode: discs</li>
+<li>7.6 Magic points</li>
+<li>7.7 Welds</li>
+<li>7.8 Break apart</li>
+<li>7.9 Templates as guide layers</li>
+<li>7.10 Print aids</li>
+<li>7.11 Saving and opening</li>
+<li>7.12 Stepping in Figures</li>
+</ul>
+
+<h2>7.1 The figure data model</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureModel.js (<code>createEmptyFigure</code>, <code>newLayerFields</code>, <code>upgradeFigureV1</code>, <code>snapshotOfFigure</code>, <code>hasUnsavedChanges</code>, <code>checkFigureFormat</code>); docs/FIGURE_FORMAT_V1.md.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A figure is plain data in <code>uiState.figures.tabs[tabId].figure</code>: name and category; <code>layers</code> (each with its registry id,
+a permanent lid such as L1, objectVersion, role, includeInOutput, visible, params and transform); <code>points</code> (the discs, each
+with a number n that is never reused, a layer, and either a position or an anchor on an arm); <code>welds</code>; <code>drawOrder</code> (layer
+indexes, top first); <code>activeLayer</code>; <code>nextPoint</code>; and the print settings <code>units</code>, <code>scale</code> and <code>nail</code>. Layer numbers never change:
+a deleted layer stays as a marked entry. The working objects that draw each layer live beside it in <code>instances</code>, rebuilt from the
+data. <code>snapshotOfFigure</code> and <code>hasUnsavedChanges</code> compare against the last save; <code>checkFigureFormat</code> lists any problems when a
+file is opened.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console on a figure: <code>uiState.figures.tabs[uiState.figures.activeSubtab].figure</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Save a small figure and read its .json beside docs/FIGURE_FORMAT_V1.md, field by field.</p></div>
+
+<h2>7.2 Inserting layers</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureLayers.js (<code>insertLayer</code>, <code>offsetParams</code>, <code>listInsertableObjects</code>, <code>wireInstance</code>, <code>rebuildInstances</code>); ui/figures/figuresNav.js (<code>addCaptionTools</code>); ui/figures/figureInsertPanel.js (<code>openInsertPanel</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Layers come from the caption buttons (Line, Parabola, Rectangle, Polygon, Ellipse), the Curve list, the Insert Object list
+and the Insert... picture panel. <code>insertLayer(tabId, key)</code> makes a private copy of the registry object, shifts its handles a
+little so a second copy does not sit exactly on the first (<code>offsetParams</code>), adds the layer data, puts it at the top of
+drawOrder, makes it active and redraws. <code>wireInstance</code> connects the copy's controls and handles to the figure.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>insertLayer</code>; press Rectangle.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Insert the same object twice and compare their params: what did <code>offsetParams</code> change?</p></div>
+
+<h2>7.3 Drawing a figure</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureDraw.js (<code>redrawFigure</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>redrawFigure</code> clears the canvas, then draws the layers bottom to top in paint order: drawOrder, with the active layer
+lifted to the top while it is chosen. Each layer gets its transform, bounds and stitch-end collector set in drawState, is dimmed
+if it is not active, runs update() and draw() inside the time-limit clock and the stepping pass, and is caught on its own if it
+fails, so the other layers still draw. Roles decide what shows: guides (templates) are left out of Show All and Final; scaffold
+is shown while working and in Show All but never in Final or print. After the layers come the discs, the magic-point marks, the
+spacing marks, the weld marks and the centroid.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint at the top of the layer loop; watch <code>drawState.transform</code> change per layer.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make a layer scaffold (caption menu) and see where it disappears: Final, print, Show All.</p></div>
+
+<h2>7.4 Layer transforms: move and rotate</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/drawTransform.js; ui/figures/figureCentroid.js (<code>drawCentroid</code>, <code>centroidHit</code>, <code>activateCentroid</code>, <code>geometry</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each layer's transform is an angle and an offset. Dragging the centroid changes the offset (<code>translateTransform</code>);
+selecting it shows the bounding box, whose handle rotates the layer about its centre (<code>rotateTransformAbout</code>). The object
+itself never changes; drawLine maps its lines, and handles and discs are mapped the same way.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: the active layer's <code>transform</code> before and after a rotation.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Rotate a layer 90 degrees, save, reopen: where is the angle stored?</p></div>
+
+<h2>7.5 Points mode: discs</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figurePoints.js (<code>findCandidate</code>, <code>addAnchoredPoint</code>, <code>addFreePoint</code>, <code>moveFreePoint</code>, <code>deletePoint</code>, <code>refreshPoints</code>, <code>drawFigurePoints</code>, <code>armsOf</code>, <code>armPoint</code>); ui/figures/figurePointer.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>In points mode a click on the active layer either selects a disc, places a disc anchored on one of the layer's arms (from
+the object's <code>infrastructure()</code>), or places a free disc. An anchored disc remembers its arm and how far along it is (t), so it
+rides along when the object changes; <code>refreshPoints</code> recomputes every anchored disc's position before drawing. Disc numbers are
+never reused. Free discs can be dragged; anchored ones cannot.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>findCandidate</code>; click near a line in points mode.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Put a disc half way along a Parabola arm, change the step count, and explain why it stays put.</p></div>
+
+<h2>7.6 Magic points</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureMagic.js (<code>magicCandidates</code>, <code>findFeature</code>, <code>curveFeatures</code>, <code>crossings</code>, <code>drawMagicMarks</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Beyond the evenly spaced points, some places are worth a disc: the middle of a straight arm, a lobe tip, a cusp, and a
+crossing with another arm. Each has a name ("mid arm1", "tip ring #3", "cross L2.arm1 #1"), so a disc placed on one finds
+it again after the shape changes (<code>findFeature</code>). Crossings use the fast search of tutorial 2.9; they are drawn as purple rings
+with a cross, the others as open diamonds.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>crossings</code>; tick Points Mode on two crossing lines.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Place a disc on a crossing, move one line, and watch the disc follow.</p></div>
+
+<h2>7.7 Welds</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureWelds.js (<code>weldHandleDrop</code>, <code>toggleWeldAt</code>, <code>discOnHandle</code>, <code>cornerPartners</code>), figureWeldModel.js (<code>createOrJoinWeld</code>, <code>removeFromWeld</code>, <code>weldOf</code>), figureWeldMove.js (<code>propagateAfterChange</code>, <code>applyFollowerMove</code>, <code>translateWholeLayer</code>), figureWeldMarks.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A weld is a group of discs that should stay together: <code>figure.welds</code> is a list of groups, members named by disc number.
+Dropping a handle on another layer's handle snaps them and welds them (<code>weldHandleDrop</code>). When a welded point moves, the other
+members follow (<code>propagateAfterChange</code>): their handles are moved, or a whole layer is moved when the weld calls for it. Whether
+a group still meets is not stored; the marks are worked out on each draw, black when they meet and red when not. If a layer's
+point count changes, the weld is not changed: you fix it by hand.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>propagateAfterChange</code>; drag a welded handle.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Weld three parabolas at one corner, then drag the corner: trace which members move and why.</p></div>
+
+<h2>7.8 Break apart</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureBreakApart.js (<code>canBreakApart</code>, <code>breakApartLayer</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A composite object, such as a polygon of stitched parabolas or Inverse Star, can be replaced by its pieces: separate
+layers (lines and parabolas) that each can be edited, welded where they met.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Insert a Regular Polygon, caption menu &gt; Break apart.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Count the layers and welds made for a 5-sided polygon, then explain the count.</p></div>
+
+<h2>7.9 Templates as guide layers</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureTemplates.js (<code>registerTemplates</code>, <code>insertTemplate</code>, <code>TEMPLATE_CHOICES</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The Template... list inserts a guide: a shape drawn grey to draw against, never printed and left out of Show All. Templates
+are registry objects marked as templates, added to the registry only for Figures.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Insert a template and toggle Show All.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what marks an object as a template and where Draw hides them.</p></div>
+
+<h2>7.10 Print aids</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figurePrint.js (<code>nailsOf</code>, <code>spacingProblems</code>, <code>setPrintSize</code>, <code>setNailSize</code>, <code>templatePages</code>, <code>printTemplate</code>, <code>oneSheetSVG</code>, <code>saveOneSheetSVG</code>, <code>toUnits</code>, <code>fromUnits</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>nailsOf</code> turns the figure into nails: every disc on a layer that prints, a weld group as one nail, unwelded discs on one
+spot as one nail, or the stitch ends if there are no discs. Scale is millimetres per canvas pixel, set by Print size from the
+width you want (asked in inches unless switched). The spacing check rings pairs closer than nail diameter plus clearance; it
+never stops printing. Print template makes sheets of true-size SVG with a cover page, calibration line and alignment marks;
+the one-sheet SVG is the whole template in one file, nails optionally coloured red, green, orange, blue, yellow in turn.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>(await import('/ui/figures/figurePrint.js')).nailsOf(uiState.figures.tabs[uiState.figures.activeSubtab]).nails.length</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Weld two discs and confirm the nail count drops by one.</p></div>
+
+<h2>7.11 Saving and opening</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figuresSave.js (<code>saveFigureAs</code>, <code>saveFigureTab</code>, <code>sendSave</code>, <code>openSavedFigure</code>, <code>copyFigureTab</code>, <code>resetFigureTab</code>, <code>archiveFigureTab</code>, <code>writeFigureThumbnail</code>); node/figureFiles.mjs (<code>saveFigure</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Save As asks for a name and category, and the Node service writes figures/&lt;category&gt;/&lt;name&gt;.json atomically (written
+beside, then renamed). A picture is written for the category list. Opening reads the file, checks it (<code>checkFigureFormat</code>),
+upgrades an older format, and rebuilds the layers' instances. Closing an unsaved figure asks first. Copy, Reset and Archive
+are in the caption menu.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>sendSave</code>; Save As.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Open a saved figure, change it, close it: find the code that asks before losing changes.</p></div>
+
+<h2>7.12 Stepping in Figures</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figuresCommands.js (the Step through the drawing item), ui/draw/drawStep.js (<code>stepLayer</code>), ui/figures/figureDraw.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The same stepping as Draw: the figure redraw calls the step passes and <code>stepLayer(i)</code> before each layer. The whole figure
+is stepped bottom layer first, or, with Active layer only, just the active layer while the others draw in full. The readout
+names the layer.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Step a two-layer figure and watch the layer number change in the readout.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Use Active layer only to find a fault in one layer of a busy figure.</p></div>
+
+</body>
+</html>

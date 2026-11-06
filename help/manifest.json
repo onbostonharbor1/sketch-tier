@@ -89,5 +89,29 @@
   },
   "Reflections": [
     "About_Reflections"
+  ],
+  "Tutorials": [
+    "01_The_big_picture",
+    "02_Drawing_the_core",
+    "03_Draw_objects_the_registry",
+    "04_Controls",
+    "05_Handles_and_interaction",
+    "06_The_Draw_tab",
+    "07_Figures",
+    "08_Scripts_Patterns_Gallery_and_Utilities",
+    "09_The_page_and_its_regions",
+    "10_Tab_switching_setUI",
+    "11_Subtabs_captions_and_menus",
+    "12_Category_frames",
+    "13_Lists_from_manifests_to_folders",
+    "14_Each_tab_in_depth",
+    "15_Thumbnails",
+    "16_The_Node_service",
+    "17_Errors_checks_and_safety",
+    "18_Help_and_documentation",
+    "19_State_in_full",
+    "20_End_to_end_traces",
+    "21_Testing",
+    "22_Working_practices"
   ]
 }

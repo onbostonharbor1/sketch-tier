@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>01 The big picture</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 1: The big picture</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>This first tutorial is the map. It says what Sketchpad is for, how the page is built, what happens when it starts, where
+state lives and how the folders are laid out. Everything later fills in one part of this map.</p><p>Have VS Code open on the repository, the app running (sketchpad.bat), and the browser's developer tools (F12) at hand.</p>
+<ul>
+<li>1.1 What Sketchpad is for</li>
+<li>1.2 The page: fixed regions</li>
+<li>1.3 Start-up, step by step</li>
+<li>1.4 The two state objects</li>
+<li>1.5 Folders: what lives where</li>
+<li>1.6 Reading a file</li>
+</ul>
+
+<h2>1.1 What Sketchpad is for</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>CLAUDE.md, the section "What Sketchpad is for". Then docs/TIERS.md, section 2, for what was added in November 2026.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Sketchpad has two purposes, and the code serves both. The first is a printable, true-size template for driving nails:
+that is why figures have discs, welds, units, print sizes, spacing checks and the one-sheet SVG. The second is a place to
+sketch: to try ideas cheaply. That is why there are sliders on everything, handles you can drag, Sweep, stepping, and
+objects such as Circular Parabola (Multi) and Linked Circles that exist because they are interesting.</p><p>When you read any part of the code, ask which purpose it serves. Most of the Figures code serves the first; most of the Draw
+tab and the controls serve the second; the drawing core serves both.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>No code: open the app and, for each tab, say aloud which purpose it serves.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find one feature that serves both purposes equally (stepping is a good candidate: it finds errors in a template and it shows how a design is built).</p></div>
+
+<h2>1.2 The page: fixed regions</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>index.html, from the DIV STRUCTURE comment to the end of the body. Then ui/regions.js and ui/uiUtilities.js (<code>clearDivs</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The page never builds its main areas on the fly. index.html declares them once: the tab row (#mainTabs), the left column
+(#button, holding the Commands button), the subtab row (#subtabs), the caption (#caption), the canvas area (#sketchpad),
+the text area (#text), the controls area (#action), the error bar (#errorBar), the Home alert bar (#alertBar), the side panel
+(#offcanvasPanel) and the overlays.</p><p>When a tab is shown, <code>clearDivs()</code> empties every region the region table lists, and the tab fills in what it needs. #button
+itself is never emptied, because the Commands button lives there; anything a tab adds to it carries the class <code>tab-extra</code>,
+and <code>clearDivs()</code> removes just those. This is the "no ad hoc divs" rule: content goes into fixed regions, never into new
+top-level divs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>document.querySelectorAll('#button .tab-extra').length</code> on the Figures tab (several), then on Home (0).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read <code>clearDivs</code> and list every region it clears. Compare with the regions in index.html: which one is never cleared, and why?</p></div>
+
+<h2>1.3 Start-up, step by step</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>main.js (top to bottom), then <code>onDomContentLoaded</code> in ui/setUI.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>main.js is a list of imports. Their order is the start-up order: the error reporter first (so anything that fails
+later is reported), then the classes, then drawState (which makes the shared canvas and the <code>ctx</code> getter) and the drawing
+files, then every registry file (each puts its object on <code>window</code> as drawRegistry_&lt;name&gt;), then drawRegistry.js, which
+gathers them into <code>window.drawRegistry</code>. Near the end, main.js runs the registry check (<code>checkDrawRegistry</code>,
+ui/registryCheck.js) and reports any fault to the red bar.</p><p>When the page has loaded, <code>onDomContentLoaded</code> (ui/setUI.js) runs: it starts the menu manager, the overlays and the canvas
+layers, wires the six tab buttons to <code>handleTabChange</code>, and calls <code>setUI("START_APP")</code>, which shows Home. Tab state is not
+kept across a reload: every tab starts fresh.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: open ui/setUI.js, set a breakpoint on the first line of <code>onDomContentLoaded</code>, reload, then step over each line (F10).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a deliberate mistake to a copy of a registry object (for instance remove its <code>draw</code>), reload, and see the start-up check report it. Undo afterwards.</p></div>
+
+<h2>1.4 The two state objects</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/uiState.js (all of it) and the <code>drawState</code> object at the top of draw/drawState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Barry's rule: no implicit globals. Any value shared across files is declared in one of two objects. <code>uiState</code> holds
+the interface: which tab is active, each tab's open subtabs and remembered views, the launch request between tabs, the
+Home and Figures settings, thumbnails, instrumentation. <code>drawState</code> holds the drawing: canvas size, Final mode, the layer
+transform and bounds, the print-aid collector, stepping, and the time limit.</p><p>Because each value has one home, you can always find who reads and writes it with a search for its name. Tutorial 19 goes
+through both objects field by field.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>uiState</code> (it is also on window, for debugging) and expand it; then <code>(await import('/draw/drawState.js')).drawState</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Search the code for <code>uiState.figures.hitRadius</code>: where is it declared, who reads it, who changes it?</p></div>
+
+<h2>1.5 Folders: what lives where</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>The top of the repository in VS Code's Explorer. Then CLAUDE.md, "Architecture in brief".</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>ui/</code> is the interface: tabs (ui/home, ui/draw, ui/patterns, ui/gallery, ui/utilities, ui/figures), controls
+(ui/controls), and the shared pieces (setUI, categories, caption, menus, overlays, errors). <code>draw/</code> is the drawing: drawLine and
+its helpers, nodes, stitching, shapers, connectors, curves, intersections, parametrics, transforms, drawState. <code>classes/</code> holds
+Point, Line, StringThing and Parametric. <code>drawRegistry/</code> holds one file per Draw object. <code>node/</code> is the local service.</p><p>The libraries are folders of your own content: patterns/, gallery/ (Ideabook, Patterns, Scripts), utilities/ (Tools, Lab),
+figures/. help/ is the help (Overview, Reflections, BuildDocs, Tutorials); docs/ the build documents; tests/ the tests; home/
+holds Home's notes and checklist.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>None needed.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Without searching, guess which folder holds: the weld code, the rose curve's points, the error bar, the thumbnail writer. Then check.</p></div>
+
+<h2>1.6 Reading a file</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Any file, for example draw/connectors.js. Then docs/FUNCTIONS.md, and tests/functionDictionary.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Every source file starts with a header comment saying what it does; the Notes popup shows the header of scripts.
+Every function has a comment just above it (since the November comment sweep). <code>npm run dictionary</code> gathers the first
+sentence of each into docs/FUNCTIONS.md, alphabetically, with the file and line. When you meet an unfamiliar name, look it up
+there first; Ctrl+click in VS Code then takes you to it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run dictionary</code>, then open docs/FUNCTIONS.md and search for <code>drawLine</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Pick three functions in docs/FUNCTIONS.md whose one-line summary you find unclear, read the functions, and write a better sentence (then tell me, or change the comment yourself).</p></div>
+
+</body>
+</html>

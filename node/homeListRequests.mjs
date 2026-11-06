@@ -23,7 +23,7 @@ import path from "path";
 import { writeFileAtomicSync } from "./serviceFileHelpers.mjs";
 
 const MAX_CHARS = 1000000;                                   // writeChecklist: a list, not a book
-const HELP_FOLDERS = ["Overview", "Reflections", "BuildDocs"]; // listHelpTopics: the folders Home > Help shows
+const HELP_FOLDERS = ["Overview", "Reflections", "BuildDocs", "Tutorials"]; // listHelpTopics: the folders Home > Help shows
 
 /* writeChecklist: the request (see the header above). */
 export async function writeChecklist(payload = {}) {
@@ -44,7 +44,7 @@ export async function writeChecklist(payload = {}) {
    (or its file name), and the subfolder it is in ("" at the top).
    Only the three folders Home > Help shows may be asked for.
 
-   Payload:  { folder: "Overview" | "Reflections" | "BuildDocs" }
+   Payload:  { folder: "Overview" | "Reflections" | "BuildDocs" | "Tutorials" }
    Returns:  { request: "listHelpTopics", status: "ok",
                topics: [ { path: "/help/Overview/Tabs/draw.html", title, group: "Tabs" } ] }
    =========================================================== */

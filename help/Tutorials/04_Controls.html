@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>04 Controls</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 4: Controls</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>The sliders, pickers and lists beside every drawing are built from each object's <code>controls</code> description. This tutorial
+follows a control from its description to the screen, through each kind of widget, the two grouping systems, controls by name
+alone, and what happens when you move one.</p>
+<ul>
+<li>4.1 From description to screen</li>
+<li>4.2 Each widget</li>
+<li>4.3 Showing and hiding controls (control groups)</li>
+<li>4.4 Controls by name alone</li>
+<li>4.5 When a control changes</li>
+</ul>
+
+<h2>4.1 From description to screen</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/controls/controlsCore.js (<code>buildParameterControls</code>), ui/controls/builders/dataBuilder.js (<code>buildDrawParameterData</code>, <code>buildScriptParameterData</code>), ui/controls/rendering/renderer.js (<code>renderParameterControls</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>buildParameterControls(info, tabId, render)</code> decides where the controls come from: a Draw object (info.drawRegistry) or
+a script (info.controls). A data builder turns each entry into a plain item: key, label, widget, min, max, step, options and
+the current value (from info.parameters, else the default). The group filter (4.3) drops items that should be hidden. The
+renderer then builds each item's widget (<code>buildSingleControl</code>) into #action, or into the interface area for controls marked as
+interface controls.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in <code>buildDrawParameterData</code>; open any Draw object; look at the items array it returns.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read the renderer and find where a hidden control is skipped.</p></div>
+
+<h2>4.2 Each widget</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/controls/widgets/: rangeWidget.js (<code>setRangeControl</code>, <code>setRangeControlUnified</code>), checkboxWidget.js, colorWidget.js, selectWidget.js, radioWidget.js, textWidget.js (<code>setDefaultControl</code>), accordionWidget.js, thumbnailWidget.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each widget function gets the field, the label, the description, the current value, the info object, the key and the
+tab id, and builds one control. Sliders show their minimum, maximum and value, keep values in range (<code>clampValue</code>) and write
+the value (<code>applyValue</code>). Checkboxes, colour pickers, lists and radio buttons write their value on change. The text box is the
+fallback. The accordion holds sections of buttons; the thumbnail grid offers pictures to choose from.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open Draw &gt; Rose: find each widget kind on screen and in its code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what a select does with a numeric option value (it turns "3" back into 3).</p></div>
+
+<h2>4.3 Showing and hiding controls (control groups)</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/controls/builders/groupFilter.js (<code>filterControlsByActiveGroups</code>), Help &gt; Design &gt; Subsystems &gt; Control Grouping System.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A select can declare <code>showsGroup: true</code>; other controls declare <code>belongsToGroup: "name"</code>. Only the controls belonging to
+the group the select currently names are shown (plus any with no group). Changing such a select rebuilds the controls. Used by
+objects whose settings depend on a mode.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open an object with a mode select (In Ellipse or Linked Circles) and change the mode.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a group to a copy of a script's controls and watch controls appear and disappear.</p></div>
+
+<h2>4.4 Controls by name alone</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/controls/builders/conventions.js (<code>CONVENTIONS</code>, <code>GROUPS</code>, <code>expandSchema</code>); tests/controlConventions.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A control declared by name only (<code>lineWidth: true</code>) is filled from the conventions table: widget, label, range, step and
+default. One change keeps the rest (<code>{ lineWidth: { max: 3 } }</code>). A group stands for several: <code>{ style: "group" }</code> becomes
+colour, line width and transparency. Anything written in full is untouched. <code>expandSchema</code> is applied by the data builders,
+the group filter and the renderer, so all three see the same filled-in description.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:controls</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Write a tiny script with <code>controls: { style: "group", steps: true }</code> and run it in Utilities &gt; Lab.</p></div>
+
+<h2>4.5 When a control changes</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>The <code>applyValue</code> functions in rangeWidget.js; <code>onParamChange</code> and <code>redrawHandler</code> set in ui/draw/drawRunner.js (<code>drawActiveTab</code>); figures: ui/figures/figureLayerPanel.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A widget writes the new value into info.parameters (which for a Draw object is the object's params), calls
+<code>info.onParamChange</code> (Draw marks the subtab as changed), and calls <code>info.redrawHandler</code>, which for the Draw tab is
+<code>drawActiveTab</code>: update() then draw(). Nothing is saved separately: the value is already where it lives ("written through
+immediately").</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in a slider's <code>applyValue</code>; move it; step until <code>drawActiveTab</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what <code>redrawHandler</code> is for a figure layer's controls.</p></div>
+
+</body>
+</html>

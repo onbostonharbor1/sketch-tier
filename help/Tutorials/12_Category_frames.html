@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>12 Category frames</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 12: Category frames</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>The frames of pictures or names you click to open items are drawn by one file, ui/categories.js, which knows nothing about
+tabs or lists. Each tab hands it a description.</p>
+<ul>
+<li>12.1 The descriptor</li>
+<li>12.2 renderCategories, line by line</li>
+<li>12.3 Pictures in frames</li>
+<li>12.4 Each tab's frames</li>
+<li>12.5 The isolation rule</li>
+</ul>
+
+<h2>12.1 The descriptor</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>The header of ui/categories.js; <code>buildCategoryDescriptor</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A descriptor is a list of frames, each with a title and items; an item has a name, an onClick, and optionally a picture
+path (thumb) and a has-subitems flag. Every decision (what the frames are, what a click does) is made by the tab before it
+calls categories.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>renderCategories</code>; open Patterns; look at the descriptor argument.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Write a two-frame descriptor in the console and render it into #text.</p></div>
+
+<h2>12.2 renderCategories, line by line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>renderCategories</code>, <code>buildCategoryFrameElement</code>, <code>buildCategoryItemElement</code>, <code>setActiveItem</code>, <code>clearCategoryFrame</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>For each frame it builds a titled box; for each item an element showing the picture or the name, with the name as hover
+text and the click handler attached; <code>setActiveItem</code> marks the one chosen. It fails at once, with a clear message, if the
+descriptor is malformed.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Elements panel on a frame.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Pass an item without onClick and read the message.</p></div>
+
+<h2>12.3 Pictures in frames</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/thumbnailSettings.js (<code>thumbFromEntryPath</code>, <code>patternsThumb</code>, <code>galleryThumb</code>, <code>figureThumb</code>, <code>drawThumb</code>, <code>setThumbnailsOn</code>, <code>setThumbnailSize</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>When pictures are on, an item with a thumb shows its picture at the chosen size, falling back to its name if the file is
+missing. Each library keeps pictures as images/thumb_&lt;name&gt;.png beside its items; the helpers build those paths.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Utilities &gt; Tools &gt; Thumbnails: toggle pictures and change the size.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Rename one thumbnail file and see the name appear in its place.</p></div>
+
+<h2>12.4 Each tab's frames</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawCategories.js (<code>renderDrawCategories</code>), ui/patterns/patternsNav.js (<code>showCategoryList</code>), ui/gallery/galleryNav.js (<code>showIdeabookCategories</code>, <code>showPatternsCategories</code>, <code>showScriptsCategories</code>), ui/utilities/utilitiesDisplay.js (<code>setUtilityCategories</code>), ui/figures/figuresDisplay.js, ui/home/homeNav.js (<code>buildHomeCategoryDescriptor</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Draw's frames come from the registry's categories (curves and shapes among them), marking objects with saved settings.
+Patterns, Gallery, Utilities and Figures come from the library lists (tutorial 13). Home's come from statuses.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open each tab's categories.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where Draw marks an object as having saved settings.</p></div>
+
+<h2>12.5 The isolation rule</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>The header of ui/categories.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>categories.js must not know about tabs, manifests or lists. Keeping it ignorant is what lets one file draw every tab's
+frames, and lets the lists change (as they did in November) without touching it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>None.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Search categories.js for <code>uiState</code>: what is the only thing it reads, and why is that acceptable?</p></div>
+
+</body>
+</html>

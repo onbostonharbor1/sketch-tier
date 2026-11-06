@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>18 Help and documentation</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 18: Help and documentation</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Sketchpad documents itself in several ways: the Help browser and its editor, Notes from header comments, Home &gt; Help, the
+build documents, the function dictionary and the checking guide.</p>
+<ul>
+<li>18.1 The Help browser</li>
+<li>18.2 The help editor</li>
+<li>18.3 Notes from header comments</li>
+<li>18.4 Home &gt; Help</li>
+<li>18.5 Build documents</li>
+<li>18.6 The function dictionary</li>
+<li>18.7 The checklist, guide and screenshots</li>
+</ul>
+
+<h2>18.1 The Help browser</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/help.js (<code>loadHelpManifest</code>, <code>buildHelpItem</code>), ui/helpTree.js (<code>buildHelpJsTreeData</code>, <code>initHelpJsTree</code>), node/generateHelpManifest.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Before Vite starts, generateHelpManifest scans help/ and writes help/manifest.json, a tree of folders and page names. The
+caption menu's Help opens the browser: a jsTree built from the manifest beside a pane that loads the chosen page's body.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open Help from any caption menu.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Run <code>node node/generateHelpManifest.mjs</code> and read help/manifest.json.</p></div>
+
+<h2>18.2 The help editor</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/helpEditor.js (<code>openHelpEditorTinyMCE</code>, <code>buildFullHelpHtmlDocument</code>, <code>saveHelpFile</code>); node/writerRequests.mjs (<code>writeHelpFile</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>TinyMCE, a rich-text editor, is loaded only when a page is edited (so starting the app stays quick). Save wraps the
+edited body in a full page with its title and writes it through <code>writeHelpFile</code>, which only writes inside help/.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Edit a reflection (tutorial 18.4).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what the editor does on Cancel.</p></div>
+
+<h2>18.3 Notes from header comments</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/notes.js (<code>extractHeaderNotes</code>); ui/menuCmds.js (<code>makeNotesItem</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The Notes item shows the comment at the top of a script or object file. Writing a good header is therefore also writing
+the Notes.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open Notes on a pattern.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Improve one script's header and look at its Notes.</p></div>
+
+<h2>18.4 Home &gt; Help</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/home/homeHelp.js; node/homeListRequests.mjs (<code>listHelpTopics</code>); Help &gt; Design &gt; Subsystems &gt; Home Help.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Four groups: Design (help/Overview by subfolder), Reflections (help/Reflections, your topics by title, New reflection and
+Edit), Build Documents (help/BuildDocs, A to Z) and Tutorials (help/Tutorials, these pages, in order). The lists come from the
+service, so a new page shows at once.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open each group.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make a reflection, then find its file.</p></div>
+
+<h2>18.5 Build documents</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/copyBuildDocs.mjs (<code>markdownToHtml</code>, <code>titleOf</code>); npm run help:builddocs; docs/ and docs/old.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The build documents in docs/ are copied into help/BuildDocs, Markdown converted to HTML by a small converter (headings,
+paragraphs, lists, tables, code, quotes, rules, bold, italic, code, links and pictures), PDFs shown in a frame. docs/old, the
+superseded documents, is left out.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run <code>npm run help:builddocs</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Write a Markdown table in a docs file and see it converted.</p></div>
+
+<h2>18.6 The function dictionary</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>tests/functionDictionary.mjs; docs/FUNCTIONS.md.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Reads every function declaration in ui/, draw/, classes/, drawRegistry/ and node/, takes the first sentence of the comment
+above it (or the first comment inside it), and writes the table alphabetically.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run <code>npm run dictionary</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find the one function listed without a comment, and why.</p></div>
+
+<h2>18.7 The checklist, guide and screenshots</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>home/checklist.md, docs/CHECKING_GUIDE.md, docs/images/check/.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The checklist is the list of hand checks (Home &gt; Checklist); the guide is the long form of each check with pictures of
+correct results; the pictures were taken from the running app by a small Playwright script.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open the guide in Build Documents beside the checklist.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a check of your own with Add item.</p></div>
+
+</body>
+</html>

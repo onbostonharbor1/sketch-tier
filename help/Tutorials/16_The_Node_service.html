@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>16 The Node service</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 16: The Node service</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Anything that reads or writes files goes through a small Node program on port 5174. The page reaches it through Vite. This
+tutorial goes from the server's front door to each family of requests, then the page side and Codespaces.</p>
+<ul>
+<li>16.1 The server</li>
+<li>16.2 The dispatcher</li>
+<li>16.3 Path safety</li>
+<li>16.4 Atomic writes</li>
+<li>16.5 The request families</li>
+<li>16.6 The page side</li>
+<li>16.7 Vite's role</li>
+<li>16.8 Codespaces</li>
+</ul>
+
+<h2>16.1 The server</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/sketchpadServer.mjs (<code>isRequestAllowed</code>, <code>statusForError</code>, the request handling).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>It listens on 127.0.0.1:5174, accepts POST /dispatch with a JSON body <code>{ requestName, payload }</code>, and refuses a request
+whose Origin is not Sketchpad's page or whose Host is not its own (which blocks other web pages and DNS-rebinding tricks).
+Bodies are limited in size. A bad request answers 400 with its message; anything else that fails answers 500.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>curl -s -X POST localhost:5174/dispatch -H 'Content-Type: application/json' -d '{"requestName":"listLogFiles","payload":{}}'</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Send the same with <code>-H 'Origin: https://example.com'</code> and see it refused.</p></div>
+
+<h2>16.2 The dispatcher</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/sketchpadService.mjs (the table, <code>dispatchService</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A table maps each request name to its function, listed by family at the top of the file. <code>dispatchService</code> looks the name
+up and calls it with the payload.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read the table.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Count the requests in each family.</p></div>
+
+<h2>16.3 Path safety</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/safePaths.mjs (<code>isInside</code>, <code>manifestRoots</code>, <code>RequestError</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Every path built from request text is resolved and checked to lie inside its allowed folder, so a request cannot reach
+files elsewhere (no ../ escapes).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Find each use of <code>isInside</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Send writeHelpFile with a helpPath containing .. and read the refusal.</p></div>
+
+<h2>16.4 Atomic writes</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/serviceFileHelpers.mjs (<code>writeFileAtomicSync</code>, <code>writeJsonFileSync</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A file is written beside its target under a temporary name, then renamed over it. A rename is all or nothing, so a crash
+part way never leaves half a file.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read <code>writeFileAtomicSync</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>List every request that writes through it.</p></div>
+
+<h2>16.5 The request families</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/figureFiles.mjs, thumbnailRequests.mjs, writerRequests.mjs (<code>writeHelpFile</code>, pattern and gallery writers), secondaryRequests.mjs, manifestRequests.mjs, logAndEditorRequests.mjs (<code>appendErrorLog</code>, <code>listLogFiles</code>, <code>readLogFile</code>, <code>openInEditor</code>), scriptHistoryRequests.mjs, homeListRequests.mjs (<code>writeChecklist</code>, <code>listHelpTopics</code>), libraryIndex.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Figures (save), thumbnails, writers (help pages, patterns, gallery PNGs), saved Draw settings, manifest edits and archive,
+logs and open-in-editor, VS Code script history, Home's checklist and help lists, and the library index. Each file's header
+describes its requests.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read two headers.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Trace <code>openInEditor</code>: how does it refuse an editor not on its list?</p></div>
+
+<h2>16.6 The page side</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/nodeLayer.js (<code>nodeDispatch</code> and the helpers).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>nodeDispatch(name, payload)</code> posts to /dispatch on the page's own server and returns the JSON. If nothing answers, or Vite
+answers for a missing service, it throws a plain message: "The Node service did not answer ... start it with npm run dev:all".</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Stop the service, try Save As: read the message.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how the helper tells Vite's error page from the service's JSON.</p></div>
+
+<h2>16.7 Vite's role</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>vite.config.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Vite serves the page and passes /dispatch to the service. It marks a request from Sketchpad's own page, whatever address
+the page was reached at, as coming from localhost:5173, so the service accepts it; a request from another site keeps its own
+origin and is refused. <code>allowedHosts</code> lets the page be reached at a Codespace's address.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read vite.config.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Explain why the page no longer needs to know the service's port.</p></div>
+
+<h2>16.8 Codespaces</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>.devcontainer/devcontainer.json; Help &gt; Design &gt; Subsystems &gt; Running in a Codespace.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A Codespace installs the packages once and starts Vite and the service each time it opens; port 5173 is forwarded. Work
+done there must be committed and pushed. Open in VS Code opens the Codespace's browser editor; Script history shows the
+Codespace's own versions.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open the repository in a Codespace from the iPad.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Save a figure there and pull it on the PC.</p></div>
+
+</body>
+</html>

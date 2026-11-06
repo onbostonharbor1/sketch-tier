@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>22 Working practices</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 22: Working practices</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>How work on Sketchpad is organised: branches and merging, how a phase goes from idea to checklist, and working from the
+iPad.</p>
+<ul>
+<li>22.1 Branches, merging and the checklist</li>
+<li>22.2 How a phase is done</li>
+<li>22.3 Working from the iPad</li>
+</ul>
+
+<h2>22.1 Branches, merging and the checklist</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>CLAUDE.md (How to work with Barry); PHASES.md; home/checklist.md; docs/CHECKING_GUIDE.md.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each piece of work is done on a branch, which you review and merge into claude1 (fast-forward, only when you ask). The
+working branch is deleted afterwards, so only main and claude1 remain. Before merging, you go through the checklist with the
+guide beside it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>git log --oneline claude1..claude/tier-a</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read the commits of one phase and match each to a checklist line.</p></div>
+
+<h2>22.2 How a phase is done</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>PHASES.md, docs/TIERS.md, any phase's commits.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Discussion first; building only after your go. The work is done in small, described commits; tests are extended
+(test:tabs with every phase); the regression test is run before review; docs, help and the checklist are updated in the same
+branch; anything deferred is listed with the reason.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read docs/TIERS.md sections 5 to 9.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Pick a deferred item and write what it would need.</p></div>
+
+<h2>22.3 Working from the iPad</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Help &gt; Design &gt; Subsystems &gt; Running in a Codespace; .devcontainer/.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A Codespace runs everything in the cloud; Safari shows the app and a browser VS Code. Commit and push work done there;
+stop the Codespace when finished.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open the repository in a Codespace.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make a reflection in the Codespace, push it, and see it on the PC.</p></div>
+
+</body>
+</html>

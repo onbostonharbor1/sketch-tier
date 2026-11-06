@@ -14,6 +14,9 @@
        Build Documents   help/BuildDocs, A to Z: the build documents of
                          docs/, copied and converted to HTML by
                          npm run help:builddocs (node/copyBuildDocs.mjs)
+       Tutorials         help/Tutorials, in order (their titles start with
+                         the tutorial number): detailed walks through every
+                         part of Sketchpad
 
      "New reflection..." asks for a title, creates help/Reflections/
      <name>.html, and opens it in the help editor (TinyMCE, the same
@@ -36,7 +39,8 @@ import { nodeDispatch }                          from "/ui/nodeLayer.js";
 const GROUPS = [
   { id: "design",      label: "Design",          folder: "Overview" },
   { id: "reflections", label: "Reflections",     folder: "Reflections" },
-  { id: "builddocs",   label: "Build Documents", folder: "BuildDocs" }
+  { id: "builddocs",   label: "Build Documents", folder: "BuildDocs" },
+  { id: "tutorials",   label: "Tutorials",       folder: "Tutorials" }
 ];
 
 

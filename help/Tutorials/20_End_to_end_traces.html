@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>20 End-to-end traces</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 20: End-to-end traces</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>These traces follow one action from the click to the screen through every file it touches. They are the capstone: each one
+ties several earlier tutorials together. For each, set the breakpoints named, perform the action, and write down the call stack
+at each stop.</p>
+<ul>
+<li>20.1 Opening the app</li>
+<li>20.2 A Draw object: open, drag, slide</li>
+<li>20.3 A figure: three layers, a weld, print</li>
+<li>20.4 A gallery script, then its history</li>
+<li>20.5 An error, from where it happens to the ticked log line</li>
+<li>20.6 A file saved in VS Code, until it appears on Home</li>
+</ul>
+
+<h2>20.1 Opening the app</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>main.js, ui/errorReport.js, draw/drawState.js, drawRegistry/drawRegistry.js, ui/registryCheck.js, ui/setUI.js, ui/home/home.js, ui/home/homeManifest.js, node/libraryIndex.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Imports run in order (1.3); the registry is checked; <code>onDomContentLoaded</code> starts menus, overlays and layers and wires the
+tabs; setUI(START_APP) applies the Home theme and starts Home with init(false); Home builds its subtabs and caption, shows the
+alert bar if needed, and asks for listHomeItems; the service reads the folders; Home groups by status and categories.js draws the
+frames.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints: <code>onDomContentLoaded</code>, <code>initHomeTab</code>, <code>loadHomeManifest_async</code>, <code>renderCategories</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Time each step with Record timings.</p></div>
+
+<h2>20.2 A Draw object: open, drag, slide</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawCategories.js, drawNav.js (<code>addDrawSubtab</code>), drawRunner.js (<code>drawActiveTab</code>), the object's file, ui/interactor.js (<code>moveHandle</code>), ui/controls (a slider's <code>applyValue</code>), draw/drawUtilities.js (<code>drawLine</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Clicking an item opens a subtab and calls drawActiveTab: controls built, update, draw (each line through drawLine), handles
+armed. Dragging a handle goes through moveHandle, update and redraw. Moving a slider writes the param and calls the redraw.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints: <code>addDrawSubtab</code>, <code>drawActiveTab</code>, <code>moveHandle</code>, a slider's <code>applyValue</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Note how many times drawLine runs for one slider move.</p></div>
+
+<h2>20.3 A figure: three layers, a weld, print</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureLayers.js (<code>insertLayer</code>), figureDraw.js, figureWelds.js (<code>weldHandleDrop</code>), figureWeldMove.js, figurePrint.js (<code>nailsOf</code>, <code>printTemplate</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Create Figure; insert three layers; drop one handle on another (weld); drag the weld and watch partners follow; set Print
+size; Print template, which turns discs and welds into nails and builds the sheets.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints: <code>insertLayer</code>, <code>weldHandleDrop</code>, <code>propagateAfterChange</code>, <code>nailsOf</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Predict the nail count before printing.</p></div>
+
+<h2>20.4 A gallery script, then its history</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/gallery/galleryResults.js (<code>showGalleryScript</code>), ui/scriptRunner.js, ui/scriptHistory.js, node/scriptHistoryRequests.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Clicking a script loads it fresh, resets drawState, runs runPattern inside the clock, arms handles and builds controls.
+Script history asks the service for VS Code's saved versions and shows them with Run and Compare.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints: <code>showGalleryScript</code>, <code>executeScriptToCanvas</code>, <code>fillPanel</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Run an older version and compare it with the current one.</p></div>
+
+<h2>20.5 An error, from where it happens to the ticked log line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Any drawing code, the nearest choke point, ui/errorReport.js, node/logAndEditorRequests.mjs (<code>appendErrorLog</code>), ui/errorChecklist.js, ui/home/homeErrors.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>An error is thrown in a drawing; it rises to the choke point, which calls reportError; the bar shows it; appendErrorLog
+writes the line; Tick writes Acknowledged; Home &gt; Errors reads every log and leaves it out.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints: <code>reportError</code>, <code>writeToLog</code>, <code>acknowledge</code>, <code>errorStates</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Purge it and read the log.</p></div>
+
+<h2>20.6 A file saved in VS Code, until it appears on Home</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/libraryIndex.mjs, ui/manifest.js, ui/home/homeManifest.js, Edit Manifest.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Save a new pattern; reload; it appears in Patterns (listLibrary). Give it a status with Edit Manifest; the manifest note is
+written; the complete rebuild runs; Home asks listHomeItems and shows it under that status.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints: <code>loadOrCache</code>, <code>applyEditManifest</code>, <code>loadHomeManifest_async</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Do it for a picture in the Ideabook too.</p></div>
+
+</body>
+</html>

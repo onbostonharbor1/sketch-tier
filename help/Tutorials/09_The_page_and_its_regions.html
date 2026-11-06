@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>09 The page and its regions</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 9: The page and its regions</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Before following a tab switch you need to know the stage it plays on: the fixed regions of the page, how they are cleared,
+the styles and themes, and the canvas host and its layers.</p>
+<ul>
+<li>9.1 index.html, line by line</li>
+<li>9.2 The region table</li>
+<li>9.3 clearDivs</li>
+<li>9.4 Styles</li>
+<li>9.5 Themes per tab</li>
+<li>9.6 The canvas host</li>
+<li>9.7 Canvas layers</li>
+</ul>
+
+<h2>9.1 index.html, line by line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>index.html, all of it, starting at the DIV STRUCTURE comment.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The comment at the top draws the page as a tree. The body follows it: #wrapper holds the tab row (#mainTabs, one button
+per tab), then the left column (#button with the Commands button, and the left areas tabs fill), then the main column:
+#subtabs, #caption, #errorBar, #alertBar, #sketchpad-wrapper with #sketchpad (the canvas host), #text and #action. Outside the
+wrapper: the side panel (#offcanvasPanel), the overlay container with its help, forms and debug panels, and the Prev/Next
+overlay. Every id here is used by name in the code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Elements panel (F12): expand #wrapper and match each element to the comment.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find an id in index.html that the code never uses (check:ids would report it).</p></div>
+
+<h2>9.2 The region table</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/regions.js; tests/idCheck.mjs (npm run check:ids).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>ui/regions.js lists the regions a tab may fill and <code>clearDivs</code> clears, and the selector for the tab-extra elements of
+#button. <code>npm run check:ids</code> checks every id in the table really exists in index.html, so the table cannot drift.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run check:ids</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a fake id to the table in a copy and run the check.</p></div>
+
+<h2>9.3 clearDivs</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/uiUtilities.js (<code>clearDivs</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Called at every tab start: it empties each listed region and removes the tab-extra elements from #button. It is
+deliberately small: the rule is that teardown stays minimal, because a tab rebuilds what it needs from its own state.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>clearDivs</code>; switch tabs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find a tab that adds elements to #button and check each carries the tab-extra class.</p></div>
+
+<h2>9.4 Styles</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>css/ (each file), index.html's links.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The look comes from a few plain stylesheets: the base styles (which replaced Bootstrap's), the tabs and their themes,
+the offcanvas and accordion, the controls, the category frames and the help. There is no framework.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Elements panel: select a subtab button and read which rules apply.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Change one theme colour in a copy of the CSS and reload.</p></div>
+
+<h2>9.5 Themes per tab</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>applyTheme</code> in ui/setUI.js; the theme-* rules in css/.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each tab has a theme class (theme-home, theme-draw ...) put on #wrapper by <code>applyTheme</code> at the start of a switch; the CSS
+gives each its colours. That is why the whole page changes colour with the tab.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>document.getElementById('wrapper').className</code> on two tabs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where the theme name comes from for each tab (the TabSpec's <code>theme</code>).</p></div>
+
+<h2>9.6 The canvas host</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawRunner.js (<code>drawActiveTab</code> moving the canvas), ui/scriptRunner.js (<code>attachCanvasToRegion</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>There is one shared canvas; a tab that draws moves it into #sketchpad and shows #sketchpad-wrapper. A tab that does not
+draw hides the wrapper. Nothing ever makes a second drawing canvas for the page.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console on Home then Draw: <code>document.getElementById('sketchpad-wrapper').style.display</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find every place the canvas is appended into a region.</p></div>
+
+<h2>9.7 Canvas layers</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/canvasLayerManager.js (<code>initCanvasLayers</code>, <code>syncLayerToCanvas</code>); the overlay layers in index.html.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Above the shared canvas sit transparent canvases for things that are not part of the drawing: the interaction layer
+(handles), the guides layer. Each is kept the same size and position as the shared canvas, so marks line up. They are cleared
+and redrawn independently of the drawing.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Elements panel: find the layer canvases over #sharedCanvas.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Draw on the interaction layer from the console and see it sit over the drawing.</p></div>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>19 State, in full</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 19: State, in full</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Two objects hold the state the code shares, and a few other places hold what must outlive a page or a session. This tutorial
+goes through them field by field.</p>
+<ul>
+<li>19.1 uiState, field by field</li>
+<li>19.2 drawState, field by field</li>
+<li>19.3 What is kept where</li>
+<li>19.4 Written through immediately</li>
+</ul>
+
+<h2>19.1 uiState, field by field</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/uiState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>activeTab</code>. <code>launch</code>: the request from one tab to another (pending, sourceTab, targetTab, sourceType, registryKey,
+figurePath). <code>homeAlert</code>: what the alert bar has dismissed. Per tab: <code>home</code> (needsUpdate, showAllErrors, showAllChecks, saved
+view and item), <code>draw</code> (needsUpdate, activeSubtab, tabs), <code>patterns</code>, <code>gallery</code>, <code>utilities</code>, and <code>figures</code> (activeSubtab, tabs
+each holding a figure and its instances, hitRadius, snap radius, printUnits). <code>thumbnails</code> (on, size). <code>instrument</code> (on,
+entries).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>uiState</code> and expand each part.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find each field's readers with a search, and note any field nothing reads.</p></div>
+
+<h2>19.2 drawState, field by field</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/drawState.js, the drawState object and DRAW_STATE_START.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>title</code>, <code>canvasWidth</code>, <code>canvasHeight</code>, <code>debug</code>; <code>final</code> (Final mode: points only); <code>pts</code> and <code>ctr</code> (old numbered points
+and their counter); <code>transform</code> and <code>bounds</code> (set per figure layer); <code>collect</code> (stitch ends while a figure layer draws); <code>step</code>
+(stepping); <code>timeLimit</code>, <code>deadline</code>, <code>clockWhat</code>, <code>clockCalls</code> (the time limit). <code>resetDrawStateForScript</code> puts it back to its
+start values (keeping the canvas size) before each script.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: the drawState during stepping, and during a figure layer's draw (breakpoint in redrawFigure).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find a field a script might add, and see it removed on the next script.</p></div>
+
+<h2>19.3 What is kept where</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/thumbnailSettings.js (localStorage), ui/patterns/patterns.js (sessionStorage), the libraries (files).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>In memory only: uiState and drawState, so a reload starts every tab fresh. In the browser's local storage: the thumbnail
+settings. In session storage: Patterns' remembered view. In files: figures, saved settings, scripts, help, notes, the checklist,
+logs and pictures.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Application panel (F12): Local Storage and Session Storage.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Reload and list what survived.</p></div>
+
+<h2>19.4 Written through immediately</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>CLAUDE.md (Design rules); any control's <code>applyValue</code>; any tab's saved-state writes.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A change is written where it lives the moment it is made: a slider writes the object's params, opening an item writes the
+tab's saved state. So a tab switch has nothing to save, and setUI never calls save(). It is why tab switching is simple and why
+nothing is lost by switching.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Move a slider, switch tab and back: the value is there, with no save step anywhere.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find a place where state is copied instead of written through, if any, and think about whether it matters.</p></div>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>06 The Draw tab</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 6: The Draw tab</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>The Draw tab shows one registry object at a time, each in its own subtab, with its controls. This tutorial goes through the
+tab's state and subtabs, the redraw, the caption menu, saved settings, Sweep and stepping.</p>
+<ul>
+<li>6.1 Tab state and subtabs</li>
+<li>6.2 drawActiveTab, line by line</li>
+<li>6.3 The caption menu</li>
+<li>6.4 Saved settings (secondary objects)</li>
+<li>6.5 Sweep</li>
+<li>6.6 Stepping</li>
+</ul>
+
+<h2>6.1 Tab state and subtabs</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/draw.js (<code>initDrawTab</code>, <code>restoreDrawTab</code>, <code>saveDrawState</code>), ui/draw/drawNav.js (<code>setDrawSubtabs</code>, <code>addDrawSubtab</code>, <code>switchTab</code>, <code>deleteTab</code>, <code>markTabDirty</code>, <code>markTabClean</code>), ui/draw/drawTabState.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each open object has an entry in <code>uiState.draw.tabs</code>, keyed by subtab id ("tab-cycloid"), holding its registry object,
+its parameters and flags. The subtab bar has Categories, then one subtab per open object with an x to close it. Opening an
+object that is already open switches to it. A subtab is marked changed when a setting moves (<code>markTabDirty</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>uiState.draw.tabs</code> after opening two objects.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Close the active subtab and find in <code>deleteTab</code> which neighbour becomes active.</p></div>
+
+<h2>6.2 drawActiveTab, line by line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawRunner.js (<code>drawActiveTab</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>It finds the active subtab's info, puts the shared canvas into #sketchpad, clears it, keeps the overlay layers in step,
+sets the redraw and change handlers, builds the controls, then calls update(params) and draw() inside the stepping pass and
+the time-limit clock, and draws the scaffold guides. Any error is caught here and reported (a choke point).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint on its first line; move any slider.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>List every other file that calls <code>drawActiveTab</code>.</p></div>
+
+<h2>6.3 The caption menu</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawMenuCmds.js (<code>getDrawCaptionMenuItems</code> or the item list, <code>createPngFromActiveDrawObject</code>, <code>createPatternFromActiveDrawObject</code>, <code>copyActiveDrawObject</code>, <code>resetActiveDrawObject</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The v button opens Help, Notes, Save as PNG (a picture into the Gallery), Save as Pattern (a pattern script written from
+the object's present settings), Copy Object, Reset Parameters, Sweep a setting, and Step through the drawing.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Save a Draw object as a pattern and open the new file in VS Code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read how Save as Pattern turns params into a script.</p></div>
+
+<h2>6.4 Saved settings (secondary objects)</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/secondaryObjects.js; ui/draw/drawNav.js (<code>showSecondaryOffcanvas</code>, <code>loadSecondaryObjectInTab</code>, <code>validateOpenSecondaryTabs</code>); node/secondaryRequests.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>An object's settings can be saved as a named .json under drawRegistry/&lt;object&gt;/. They are listed from the folder, opened
+as a copy of the object with those settings, saved again, or archived. The Draw category frame marks objects that have any.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open one in Draw and then its file in VS Code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Save one, then find it in the folder and in the list.</p></div>
+
+<h2>6.5 Sweep</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawSweep.js (<code>sweepableSettings</code>, <code>sweepValues</code>, <code>sweepPictures</code>, <code>sweepGrid</code>, <code>parseValueList</code>, <code>openSweepPanel</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Sweep draws the object once per value of a setting into small pictures. Each picture uses a private copy of the object
+(<code>makeDrawInstance</code>), draws on the shared canvas, and is copied down. A second setting gives a grid; a typed list replaces From
+and To. Clicking a picture gives the object those values. The open object is redrawn afterwards, so the canvas ends as it
+began.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sweep a setting and look at <code>sweepValues</code> for a slider with a step that does not start at 0.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Sweep two settings with lists "3, 5, 8" and "1, 2".</p></div>
+
+<h2>6.6 Stepping</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/draw/drawStep.js (<code>startStepping</code>, <code>beginStepPass</code>, <code>endStepPass</code>, <code>stepLayer</code>, <code>showLine</code>, <code>updateReadout</code>), and the stepping part of <code>drawLine</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Stepping sets <code>drawState.step</code>. drawLine then counts every line, records it, draws only the first k and marks line k. Each
+redraw starts the count again (begin and end step passes), so dragging while stepping works. The controls sit in the left
+column as tab-extra; when they are removed by a tab switch, drawLine notices and stops stepping. In Figures the same code steps
+the whole figure or the active layer only.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console while stepping: <code>(await import('/draw/drawState.js')).drawState.step.lines.length</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Step through Cycloid and say at which line the second loop begins.</p></div>
+
+</body>
+</html>

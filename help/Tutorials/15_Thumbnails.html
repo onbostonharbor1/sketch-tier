@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>15 Thumbnails</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 15: Thumbnails</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>The pictures in the category frames are files made by Sketchpad itself. This tutorial says where they live, how each kind is
+drawn, and how the tools regenerate and check them.</p>
+<ul>
+<li>15.1 Where pictures live</li>
+<li>15.2 Making a picture</li>
+<li>15.3 Regenerate and Check Missing Images</li>
+<li>15.4 Writing a picture</li>
+</ul>
+
+<h2>15.1 Where pictures live</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/thumbnailSettings.js (the path helpers); any library's images folder.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each library keeps pictures beside its items, in an images folder, named thumb_&lt;name&gt;.png, 200 by 200 pixels: for
+example patterns/circles/images/thumb_circle.png, drawRegistry/rose/images/thumb_rose.png. They are committed with the
+code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open a few images folders.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find the picture for one Ideabook image and one figure.</p></div>
+
+<h2>15.2 Making a picture</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/thumbnailMaker.js (<code>listThumbnailTargets</code>, <code>renderTarget</code>, <code>prepareSharedCanvas</code>, <code>loadImage</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>listThumbnailTargets</code> lists what should have a picture, by set (Patterns, Gallery scripts, Gallery images, Draw,
+Figures). <code>renderTarget</code> draws each: a script is run on the canvas, a Draw object drawn with its defaults, a figure drawn, an
+image loaded and scaled; the canvas is copied down to 200 by 200.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>renderTarget</code>; Regenerate thumbnails for Draw.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find why animated scripts are skipped.</p></div>
+
+<h2>15.3 Regenerate and Check Missing Images</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>regenerateThumbnails</code>, <code>findMissingThumbnails</code> in ui/thumbnailMaker.js; utilities/Tools/Thumbnails.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Regenerate makes every picture of the chosen sets and reports how many were made, skipped and failed (five animated
+scripts are skipped; voronoi fails to load). Check Missing Images lists items with no picture file.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run Check Missing Images.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Delete one picture and run it again.</p></div>
+
+<h2>15.4 Writing a picture</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>node/thumbnailRequests.mjs (<code>writeThumbnail</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The page sends the picture as base64 with its kind, area, category and name; the service checks the names, builds the
+images folder path and writes the file.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read <code>writeThumbnail</code> and find the name checks.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find the largest request body the service accepts (sketchpadServer.mjs).</p></div>
+
+</body>
+</html>

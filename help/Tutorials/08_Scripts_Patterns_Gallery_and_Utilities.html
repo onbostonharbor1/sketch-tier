@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>08 Scripts: Patterns, Gallery and Utilities</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 8: Scripts: Patterns, Gallery and Utilities</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Most of your own drawing work is scripts: patterns, gallery scripts, utilities and the Ideabook hints. They all run through
+one script runner. This tutorial covers the runner, writing each kind of script, the playpen and promotion rule, Script
+history and the Ideabook.</p>
+<ul>
+<li>8.1 The script runner</li>
+<li>8.2 Writing a pattern script</li>
+<li>8.3 Gallery scripts: the playpen and promotion</li>
+<li>8.4 Utilities: Tools and Lab</li>
+<li>8.5 Script history</li>
+<li>8.6 The Ideabook</li>
+</ul>
+
+<h2>8.1 The script runner</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/scriptRunner.js: <code>loadScriptModule</code>, <code>executeScriptToCanvas</code>, <code>executeScriptToText</code>, <code>normalizeScriptInfo</code>, <code>buildControlsIfPresent</code>, <code>runScriptByPath</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A script is a module that exports <code>runPattern()</code>. <code>loadScriptModule(path)</code> imports it fresh each time (a time stamp on
+the address), so an edit in VS Code runs as saved. <code>executeScriptToCanvas</code> puts drawState back as it was at load
+(<code>resetDrawStateForScript</code>), clears the canvas, starts the time-limit clock, runs <code>runPattern()</code>, stops the clock, then reads the
+script's <code>scriptInfo</code> (<code>normalizeScriptInfo</code>): if it is interactive its handles are armed, and if it has controls they are built.
+<code>executeScriptToText</code> is for utilities that return HTML.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>executeScriptToCanvas</code>; run a pattern.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what <code>resetDrawStateForScript</code> removes, and why that stops one script's leftovers reaching the next.</p></div>
+
+<h2>8.2 Writing a pattern script</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Any short script in patterns/ (for example patterns/fundamental/), then a longer interactive one.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A pattern exports <code>runPattern()</code> and usually a <code>scriptInfo</code> describing its parameters and controls, so the runner builds
+sliders and calls the script again on each change. It draws through drawLine (or the drawing helpers), so Final mode, stepping
+and the time limit apply. Header comments at the top become its Notes.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open a pattern, caption menu &gt; Show Script.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Copy a small pattern, give it one slider through scriptInfo, and save it into a patterns folder: it appears in the list at once (tutorial 13).</p></div>
+
+<h2>8.3 Gallery scripts: the playpen and promotion</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>gallery/Scripts/ (any folder); CLAUDE.md, the promotion rule.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Gallery scripts are where ideas are tried, freely, with their own copies of routines if need be (several carry the old
+intersection search). They are never promoted as they are: reusable code is pulled into draw/, you minimise it, and only then
+does it become a registry object.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open gallery/Scripts/Curve Stitch/manyRowsColumns.js, the best example of exploration.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Pick a routine a gallery script defines for itself and find its cleaner equivalent in draw/ (shapers, connectors, curves or intersections).</p></div>
+
+<h2>8.4 Utilities: Tools and Lab</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/utilities/ (utilities.js, utilitiesDisplay.js <code>runUtilityEntry</code>, <code>displayUtilityResult</code>); utilities/Tools and utilities/Lab.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Utilities are scripts too. Tools are maintenance jobs (Show Logs, Validate Draw Registry, Thumbnails); Lab holds
+experiments. Some draw; others return HTML, which is shown in #text (the Result subtab).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Utilities &gt; Tools &gt; Stuff &gt; Show Logs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read utilities/Tools/Stuff/showLogs.js and find how it gets the log list.</p></div>
+
+<h2>8.5 Script history</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/scriptHistory.js (<code>openScriptHistory</code>, <code>fillPanel</code>, <code>showDiff</code>); node/scriptHistoryRequests.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>VS Code keeps earlier saved versions of files. Script history lists them for a script, and lets you run any version or
+compare it with the current one, line by line. Nothing is written: it only reads VS Code's history folder.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Edit a pattern in VS Code twice, saving each time, then caption menu &gt; Script history.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find in node/scriptHistoryRequests.mjs where the history folder is looked for on Windows.</p></div>
+
+<h2>8.6 The Ideabook</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/caption.js (the extra Run script button), gallery/Ideabook/&lt;category&gt;/scripts/, gallery/Ideabook/scripts/ideabookRoutines.js and pursuitEngine.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each Ideabook image may have a hint script named after it (with &amp; , # ? % + ; written as _). The caption's Run script
+button runs it. The hints are sketches of how the picture might be built, using shared routines written StringThing's way:
+defaults for everything, nothing refused, all through drawLine. The pursuit engine is kept in its own file because it is to
+become a draw function.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Gallery &gt; Ideabook &gt; Pursuit, open an image, press Run script.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read one hint script's header: what did it guess, and is the guess right?</p></div>
+
+</body>
+</html>

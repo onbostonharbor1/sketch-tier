@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>17 Errors, checks and safety</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 17: Errors, checks and safety</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Errors are caught in a few places only, shown in one bar, written once to a log, and kept as a checklist until ticked.
+Alongside them sit the start-up and file checks, the time limit and the timing tools.</p>
+<ul>
+<li>17.1 Choke points</li>
+<li>17.2 reportError</li>
+<li>17.3 Ticking, Show all and purging</li>
+<li>17.4 Uncaught and async errors</li>
+<li>17.5 The registry check</li>
+<li>17.6 The figure-file check</li>
+<li>17.7 The time limit</li>
+<li>17.8 Instrumentation</li>
+</ul>
+
+<h2>17.1 Choke points</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>CLAUDE.md (Errors); <code>drawActiveTab</code> (ui/draw/drawRunner.js), <code>redrawFigure</code> (ui/figures/figureDraw.js), <code>activateWithReport</code> (ui/setUI.js), the file-opening code (ui/figures/figuresSave.js <code>openSavedFigure</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Errors are caught only where the app can carry on after one: a Draw redraw, each figure layer's draw, a tab switch, opening
+a file. Each catches, calls <code>reportError(where, err)</code>, and goes on (the other layers still draw; the old tab state is kept). Logic
+elsewhere does not scatter try/catch: an error rises to the nearest choke point.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Search the ui/ folder for <code>reportError(</code> and list the places.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Explain why a try/catch inside a drawing function would hide errors you want to see.</p></div>
+
+<h2>17.2 reportError</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/errorReport.js (<code>reportError</code>, <code>reportProblems</code>, <code>placeOf</code>, <code>writeToLog</code>, <code>showBar</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>An error gets a key (where plus message). A new key is shown in the red bar with its file and line (<code>placeOf</code> reads it from
+the stack) and appended once to utilities/logfiles/errors_&lt;date&gt;.txt; a repeat only counts up in the bar. Uncaught errors and
+async errors are caught by window handlers installed when the file loads. The file never throws itself.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>setTimeout(() =&gt; { throw new Error("probe") }, 0)</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make the same error three times: read the count in the bar and the single line in the log.</p></div>
+
+<h2>17.3 Ticking, Show all and purging</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/errorChecklist.js (<code>errorStates</code>, <code>openErrors</code>, <code>acknowledge</code>, <code>purge</code>, <code>readErrorStates</code>); ui/home/homeErrors.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Ticking writes "Acknowledged: &lt;key&gt;" to the log; purging writes "Purged: &lt;key&gt;". <code>errorStates</code> reads every error log in
+order: an error line opens its key, Acknowledged ticks it, Purged removes it, the same error after a tick opens again. Home &gt;
+Errors shows the result; the log keeps every line as history.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open a log in VS Code after ticking and purging.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Work <code>errorStates</code> by hand on a five-line example log, then check with the test in tests/errorReport.mjs, section 8.</p></div>
+
+<h2>17.4 Uncaught and async errors</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>The window "error" and "unhandledrejection" handlers at the end of ui/errorReport.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>An error nothing caught (a script's own bug, a failed promise) still reaches the bar, labelled "Uncaught error" or
+"Uncaught error (in an async step)". A failed image or script load is ignored there.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>Promise.reject(new Error("async probe"))</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how an error already reported is not reported twice (the sketchpadReported mark).</p></div>
+
+<h2>17.5 The registry check</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/registryCheck.js (<code>checkRegistryEntry</code>, <code>checkDrawRegistry</code>); tutorial 3.10.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Run at start-up on every object; a fault goes to the bar. Validate Draw Registry also draws each object to check it draws
+only through drawLine.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Utilities &gt; Tools &gt; Validate Draw Registry.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>List the rules in <code>checkRegistryEntry</code> from memory, then check.</p></div>
+
+<h2>17.6 The figure-file check</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/figures/figureModel.js (<code>checkFigureFormat</code>, <code>upgradeFigureV1</code>); Utilities &gt; Tools &gt; Check Figure Files.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>When a figure file is opened, its format, its layers (registry ids that exist, lids, roles), its points and welds, and its
+drawOrder are checked; problems are reported by name. Older files are upgraded first. Check Figure Files runs the check on every
+saved figure.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run Check Figure Files.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Break a copy of a figure file (a layer id that does not exist) and open it.</p></div>
+
+<h2>17.7 The time limit</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/drawState.js (<code>startClock</code>, <code>stopClock</code>, <code>checkClock</code>, the canvas wrappers); Help &gt; Design &gt; Subsystems &gt; The time limit on drawings.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A timer cannot stop running code, so drawings stop themselves: every drawing call checks the clock (drawLine, and the
+canvas's lineTo, arc, stroke and fill, wrapped once), every 256 calls, and throws once the deadline set at a choke point has
+passed. The message lands in the bar; what was drawn stays.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Run the console line in the checking guide, N10.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find which drawings are not covered (pure calculation, later animation frames).</p></div>
+
+<h2>17.8 Instrumentation</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/instrument.js (<code>timed</code>, <code>setInstrumenting</code>, <code>clearTimings</code>, <code>formatTimings</code>); Utilities &gt; Commands.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>timed(label, fn)</code> measures how long something takes when timing is on. Tab switches, list reads and service requests are
+wrapped. Record timings, then Show timings, lists them: the first place to look when something feels slow.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Record timings, switch tabs, open a pattern, Show timings.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Wrap a slow function of your own in <code>timed</code> and see it listed.</p></div>
+
+</body>
+</html>

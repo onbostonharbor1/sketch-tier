@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>05 Handles and interaction</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 5: Handles and interaction</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Handles are the red dots you drag. One controller, the interactor, owns the mouse on the canvas for one armed object at a
+time. This tutorial follows a drag from the mouse to the redraw, the arrow-key nudge, handles under a figure layer's
+transform, and how objects react.</p>
+<ul>
+<li>5.1 The interactor: arming, hit testing, dragging</li>
+<li>5.2 Nudging with the arrow keys</li>
+<li>5.3 Handles under a layer transform</li>
+<li>5.4 How objects react to a moved handle</li>
+</ul>
+
+<h2>5.1 The interactor: arming, hit testing, dragging</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/interactor.js: <code>armInteractor</code>, <code>disarmInteractor</code>, <code>getCanvasCoords</code>, <code>moveHandle</code>, <code>render</code>, <code>refreshInteractor</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Only one object's handles are live at a time; arming hands the interactor that object's params.points and a redraw
+function. A mouse press is turned into canvas coordinates (<code>getCanvasCoords</code>, allowing for the canvas being shown larger or
+smaller than its pixels); if it falls within the hit radius of a handle, that handle is pressed and selected. Moving the mouse
+calls <code>moveHandle(i, x, y)</code>, the single place every handle move goes through, which writes the point and asks the object to
+update and redraw. <code>render</code> draws the handles on the interaction layer.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in <code>moveHandle</code>; drag a handle on Draw &gt; Parabola.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what disarms the interactor when a tab changes or an overlay opens.</p></div>
+
+<h2>5.2 Nudging with the arrow keys</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/interactor.js, the key handling around the selected handle.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A pressed handle stays selected. Arrow keys move it 1 pixel, 10 with Shift, through the same <code>moveHandle</code>, so a nudge
+behaves exactly like a tiny drag.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Click a handle and press the arrow keys; watch the readout of a slider that depends on it, if any.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where Shift changes the step to 10.</p></div>
+
+<h2>5.3 Handles under a layer transform</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/drawTransform.js (<code>mapPoint</code>, <code>inverseTransform</code>, <code>applyTransform</code>); ui/interactor.js (<code>toObject</code>, <code>toCanvas</code>, settings.getTransform); ui/figures/figurePoints.js (<code>layerTransform</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>In Figures a layer can be moved and rotated, but its object still draws in its own coordinates; drawLine maps every line
+through the layer's transform. Handles must be mapped the same way: drawn at the mapped position (<code>toCanvas</code>) and, when the
+mouse moves, the canvas position mapped back into the object's coordinates (<code>toObject</code>, using <code>inverseTransform</code>). That is why a
+handle stays under the mouse even on a rotated layer. Discs use the same transform (figurePoints.js).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Figures: rotate a layer (centroid, then the box handle), then drag one of its handles.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Explain why there is no ctx.rotate anywhere: what would break in hit testing if there were?</p></div>
+
+<h2>5.4 How objects react to a moved handle</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Each registry object's <code>update()</code>: Line, Parabola, and the ring maker (draw/ringObject.js).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>An object's update decides what a moved handle means. Line moves as a whole when its midpoint moves; Parabola's corner
+handles reshape its arms; ring objects move when the centre moves and resize when the size handle moves. In Figures, a welded
+handle also moves its partners (tutorial 7).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoints in two objects' update functions; drag each handle.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Design (on paper) what a third handle on Rose could do, and which lines of update() would change.</p></div>
+
+</body>
+</html>

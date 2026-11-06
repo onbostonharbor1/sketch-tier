@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>03 Draw objects (the registry)</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 3: Draw objects (the registry)</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>A Draw object is one file in drawRegistry/ that knows its settings, its controls and how to draw itself. This tutorial
+takes an object apart, walks through simple, stitched, node-ring and curve-library objects, and then goes through making a
+new one, naming it, and the checks it must pass.</p>
+<ul>
+<li>3.1 Anatomy of a registry object</li>
+<li>3.2 A simple one: Line</li>
+<li>3.3 A stitched one: Parabola, then Inverse Star</li>
+<li>3.4 Node-ring objects: Mystic Rose and Cycloid</li>
+<li>3.5 The ring-object maker: how Rose is built</li>
+<li>3.6 Interesting ones: Circular Parabola (Multi) and Linked Circles</li>
+<li>3.7 Parametrics as a registry object</li>
+<li>3.8 Making a new object, start to finish</li>
+<li>3.9 Registry names are permanent</li>
+<li>3.10 The registry check</li>
+</ul>
+
+<h2>3.1 Anatomy of a registry object</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/drawLine.js (short and complete). Then ui/registryCheck.js (<code>checkRegistryEntry</code>) for the fields every object must have.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>An object is a plain JavaScript object put on <code>window</code> as drawRegistry_&lt;name&gt;. Its parts: <code>name</code> (shown in menus), <code>id</code>
+(its registry key, permanent), <code>version</code>, <code>category</code>, <code>handleNames</code> (what each handle is), <code>params</code> (its settings, including
+<code>points</code>, the handle positions), <code>controls</code> (the sliders and pickers for its params), and four functions. <code>init()</code> builds its
+working pieces (elements) from params; <code>update(incoming)</code> brings them in line after a change; <code>draw()</code> draws, only through
+drawLine; <code>infrastructure()</code>, optional, lists the lines that can carry discs in Figures.</p><p>The registry object is a single shared copy. Figures and Sweep make private copies with <code>Object.create(entry)</code> and their own
+<code>structuredClone(entry.params)</code>, then call <code>init()</code>; that is how two layers of the same object have different settings.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>Object.keys(window.drawRegistry)</code> and <code>window.drawRegistry.parabola.params</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>For drawLine.js, write down the order init, update and draw run in when you drag the midpoint handle, then check with breakpoints.</p></div>
+
+<h2>3.2 A simple one: Line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/drawLine.js, all of it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Line has three handles: the two ends and the midpoint. <code>init()</code> fills params.points if empty and builds a Line and a
+StringThing. <code>update()</code> looks at whether the midpoint handle moved: if it did, the whole line moves (<code>moveMidpointTo</code>);
+otherwise the ends were dragged and the line takes them. Then the params and handles are written back from the Line so they
+agree. <code>infrastructure()</code> says the line is one arm with its two end points, so in Figures a disc can sit on either end.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in Line's <code>update</code>; drag the midpoint, then an end, and see which branch runs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Change <code>infrastructure()</code> in a copy so the line offers 10 points along its length (steps: 10, to: 10) and try Points Mode in Figures.</p></div>
+
+<h2>3.3 A stitched one: Parabola, then Inverse Star</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/parabola.js; drawRegistry/inverseStar.js with draw/drawRegular.js (<code>drawInverseStar</code>, <code>createArms</code>, <code>createParabs</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Parabola has four handles (two arms, each with a start and an end) and a step count; it stitches arm 1 to arm 2 point for
+point. Inverse Star builds a ring of nodes, makes spokes from the centre and sides between nodes, turns each into an arm of
+points, and stitches each spoke to a side, so the curves bow outward. Both show the older pattern: params feed a StringThing,
+and a draw function in draw/ does the work.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in <code>drawInverseStar</code>; move the Nodes slider; step into <code>createArms</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find Truncate and Shorten in Inverse Star's controls and work out from <code>changeLine</code> what each removes.</p></div>
+
+<h2>3.4 Node-ring objects: Mystic Rose and Cycloid</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/mysticRose.js, drawRegistry/cycloid.js; draw/drawUnicorns.js (<code>drawMysticRose</code>, <code>drawCycloid</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>These start from one ring of nodes. Mystic Rose joins every node to every other; Cycloid joins node i to node
+(i x loops) mod n, the times-table rule. Their only handle is the centre. Their <code>infrastructure()</code> returns the node ring as one
+arm, so in Figures every node can carry a disc.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>window.drawRegistry.cycloid.infrastructure</code> and read it; then in Figures insert a Cycloid and tick Points Mode.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Predict how many lines Mystic Rose draws with 20 nodes (n(n-1)/2), then count them with stepping.</p></div>
+
+<h2>3.5 The ring-object maker: how Rose is built</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/rose.js (about twenty lines), draw/ringObject.js (<code>makeRingObject</code>), draw/curves.js (<code>rosePoints</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The twelve curve and shape objects are all the same kind of object, so one maker builds them. rose.js says only what is
+Rose's own: name, id, category, the points function, and its extra setting (Petals). <code>makeRingObject</code> adds everything else:
+the centre and size handles, Points, Stitch, Skip, Factor, colour and line width; <code>update()</code> keeps the size handle and the Size
+slider in step (whichever changed last wins); <code>draw()</code> gets the points and joins them by the stitch setting with a connector;
+<code>infrastructure()</code> offers the points for discs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in the maker's <code>update</code>; drag Rose's size handle, then move the Size slider.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make a thirteenth curve in a copy: a points function in curves.js and a file like rose.js, then register it (3.8).</p></div>
+
+<h2>3.6 Interesting ones: Circular Parabola (Multi) and Linked Circles</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/circularParabolaMulti.js; drawRegistry/linkedCircles.js with draw/drawLinkedCircles.js (<code>buildCirclePairs</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>These exist because they are good to play with. Circular Parabola (Multi)'s second handle separates and joins four
+copies. Linked Circles draws several circles and links them by a style: pairwise (each to the next), ring (and the last back
+to the first) or all to all; that is what makes tubes and rings from a few circles. Linked Circles is the one object the
+registry check flags: it strokes its circles itself rather than through drawLine (known, left as is).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open each in Draw and drag the handles slowly.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read <code>buildCirclePairs</code> and predict the pairs for 5 circles in each style.</p></div>
+
+<h2>3.7 Parametrics as a registry object</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>drawRegistry/parametrics.js (<code>buildCurveFromParams</code>, <code>setVariantAndRedraw</code>, its handles), draw/drawParametrics.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Parametrics chooses among curve variants from a menu, then hands <code>buildCurveFromParams</code> the settings the drawing code
+needs. Its centre handle moves the curve and its size handle zooms it. Show Intersection Dots turns on the crossing search
+(2.9).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Draw &gt; Parametrics: choose two variants, tick the dots, drag the size handle.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where the zoom from the size handle reaches <code>autoFitParametricToCanvas</code>.</p></div>
+
+<h2>3.8 Making a new object, start to finish</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Any two registry files; main.js (the registry imports); drawRegistry/drawRegistry.js; docs/registryNames.md.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Steps: write drawRegistry/&lt;name&gt;.js (or a points function plus a small file for a curve); import it in main.js; add it to
+the object in drawRegistry/drawRegistry.js under its permanent key; record the name in docs/registryNames.md if it could be
+confused with another; reload and check the red bar stays empty (the start-up check); open it in Draw; run
+<code>npm run test:regression</code> and approve it (<code>-- accept &lt;name&gt;</code>); make its thumbnail (Utilities &gt; Tools &gt; Thumbnails &gt;
+Regenerate, Draw). The promotion rule: an idea grows in a gallery script first, reusable code moves into draw/, you minimise
+it, and only then does it become a registry file.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>None.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Do it for a trivial object (a single circle of points with polyline), then delete it.</p></div>
+
+<h2>3.9 Registry names are permanent</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>CLAUDE.md (Design rules), docs/registryNames.md.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Saved figures store each layer's object by its registry key. Renaming a key would break every figure that uses it. So
+names are chosen once, from the shape drawn, descriptively; an ambiguous one (polygon, ellipse, archimedeanSpiral) is
+explained in docs/registryNames.md. The menu name (<code>name</code>) can change freely; the key cannot.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open a saved figure .json in VS Code and find the <code>id</code> of each layer.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find the one old key whose name and menu name differ (drawLine and Line).</p></div>
+
+<h2>3.10 The registry check</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/registryCheck.js (<code>checkRegistryEntry</code>, <code>checkDrawRegistry</code>); Utilities &gt; Tools &gt; Validate Draw Registry.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>At start-up every object is checked: name, an id equal to its key, a whole-number version, a category, true/false for
+firstOrder and interactive, elements, the four functions, params and controls, handleNames matching the handles after init,
+and every slider's default inside its range. Validate Draw Registry also draws each object to see it draws only through
+drawLine. A fault goes to the red bar, naming the object and the rule.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Utilities &gt; Tools &gt; Validate Draw Registry.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Give a copy of an object a slider default outside its range and read the message.</p></div>
+
+</body>
+</html>

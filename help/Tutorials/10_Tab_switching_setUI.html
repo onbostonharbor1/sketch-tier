@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>10 Tab switching (setUI)</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 10: Tab switching (setUI)</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Every click on a main tab goes through one file, ui/setUI.js. It decides whether a tab starts fresh or is restored, keeps
+fast clicks from tangling, reports failures by stage, and carries requests from one tab to another. Read this tutorial with
+the debugger open: tab switching is easier to watch than to read.</p>
+<ul>
+<li>10.1 The six TabSpecs</li>
+<li>10.2 The decision order</li>
+<li>10.3 Fast clicks: the chain and the ticket</li>
+<li>10.4 Stages and reporting</li>
+<li>10.5 The launch intent</li>
+<li>10.6 needsUpdate and the complete rebuild</li>
+<li>10.7 Start-up</li>
+<li>10.8 A full trace: Draw, Figures, Draw</li>
+<li>10.9 The Vite trap</li>
+</ul>
+
+<h2>10.1 The six TabSpecs</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/setUI.js (<code>TabRegistry</code>), then each tab's spec: HomeTabSpec (ui/home/home.js), DrawTabSpec (ui/draw/draw.js), PatternsTabSpec, GalleryTabSpec, UtilityTabSpec, FiguresTabSpec.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A TabSpec is an object describing a tab: its name and theme, the regions it uses, <code>init(restored)</code> to start it,
+<code>restore()</code> to show it again from its remembered state, <code>save()</code> to give that state, and builders for its subtabs, caption,
+text, action and sketchpad. setUI knows nothing about what a tab shows; it only calls these.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>(await import('/ui/home/home.js')).HomeTabSpec</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Compare two TabSpecs and list what differs.</p></div>
+
+<h2>10.2 The decision order</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>activateTab</code>, <code>initTab</code>, <code>restoreTab</code> in ui/setUI.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>For the tab clicked: if its <code>needsUpdate</code> is set (after a rebuild), clear it and start the tab with init(true); otherwise,
+if it has remembered state (<code>uiState.&lt;tab&gt;.saved</code>), restore it; otherwise start it fresh with init(false). Both init and restore
+are preceded by <code>clearDivs</code>. The first start (START_APP) is Home. Then <code>uiState.activeTab</code> is set and the tab button marked.</p><p>Note what is not here: nothing calls a tab's save() when you leave it. State is written through immediately as you work, so
+by the time you leave, <code>uiState.&lt;tab&gt;.saved</code> already says where you were.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>activateTab</code>; click Patterns twice, once after opening a pattern.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find a tab whose saved state is set the moment you open an item, and the line that sets it.</p></div>
+
+<h2>10.3 Fast clicks: the chain and the ticket</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>setUI</code> and <code>activationChain</code>, <code>latestTicket</code> in ui/setUI.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Switches run one at a time: each call waits for the one before (the chain). Every call takes a ticket number; when its
+turn comes, if a newer click has arrived meanwhile, it does nothing. So clicking four tabs quickly ends on the last one, with
+its own content and colours, never a mixture.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Click three tabs as fast as you can; the last wins.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Explain what would go wrong without the ticket (two switches interleaving).</p></div>
+
+<h2>10.4 Stages and reporting</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>activateWithReport</code> and <code>runSetUI</code> in ui/setUI.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>runSetUI</code> does the work in named stages: disable overlays, apply theme, activate the tab, then the launch intent. If
+anything throws, <code>activateWithReport</code> reports it with the stage it reached ("Switching to the draw tab (stage ...)") to the
+red bar, and timing is recorded for instrumentation.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Utilities &gt; Commands &gt; Record timings, switch tabs, Show timings.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Make a tab's init throw in a copy and read the message.</p></div>
+
+<h2>10.5 The launch intent</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>runSetUI</code> (the launch intent stage), <code>uiState.launch</code>, and the readers: <code>consumeLaunchIfForDraw</code> (ui/draw/draw.js), the Figures launch from Home.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>One tab can ask another to open something: Home opens a Draw object or a saved figure. It fills <code>uiState.launch</code>
+(pending, source and target tab, what to open) and calls setUI for the target. The target reads the request during its start
+and clears it; runSetUI clears whatever is left after. The request survives until read, which is why it works even when the
+target is restored rather than started.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console before clicking a Draw item on Home: watch <code>uiState.launch</code> change.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Trace a Home-to-Figures launch through every function it touches.</p></div>
+
+<h2>10.6 needsUpdate and the complete rebuild</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/rebuildSync.js (<code>syncSystemStateAfterRebuild</code>), and the per-tab refresh functions after an edit (<code>refreshGalleryFromManifestEdit</code> and friends).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>After an edit that changes lists (Edit Manifest, Archive, Save figure), the list caches are forgotten and every tab is
+marked <code>needsUpdate</code>, so the next time you show it, it starts with init(true) and reads everything again. Nothing is patched in
+memory.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>Object.keys(uiState).filter(k =&gt; uiState[k] &amp;&amp; uiState[k].needsUpdate)</code> after an Edit Manifest.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find who clears needsUpdate (activateTab).</p></div>
+
+<h2>10.7 Start-up</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>onDomContentLoaded</code> in ui/setUI.js, and tutorial 1.3.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Menus, overlays, canvas layers, the tab buttons' click handlers, then setUI(START_APP). If that fails, a message is put in
+#text naming the stage, so you never get a blank page.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Reload with a breakpoint in <code>onDomContentLoaded</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what is shown if the first switch fails.</p></div>
+
+<h2>10.8 A full trace: Draw, Figures, Draw</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>All of the above, with breakpoints in <code>setUI</code>, <code>activateTab</code>, <code>clearDivs</code>, <code>initDrawTab</code>, <code>restoreDrawTab</code> and FiguresTabSpec's init.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Click Draw (fresh: init(false) builds the subtabs and categories), open Cycloid (its state is written to uiState.draw),
+click Figures (fresh init), click Draw again: this time the Draw tab has state and is restored, showing Cycloid as you left it.
+Write down every function in order.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Use the Call Stack panel at each breakpoint.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Repeat after Rebuild &amp; Validate: which path runs now?</p></div>
+
+<h2>10.9 The Vite trap</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>Help &gt; Design &gt; Subsystems &gt; Tests and checks (One trap).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>When a source file is edited while Vite is running, Vite serves the changed file under a new address. A test that imports
+the plain address then gets a second, fresh copy of the module, including a second uiState that thinks Home is active. It looks
+like a tab-switching bug but is not one. Restart Vite before running browser tests after editing code.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>None.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>None: just remember it.</p></div>
+
+</body>
+</html>

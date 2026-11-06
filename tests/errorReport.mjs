@@ -220,8 +220,9 @@ try {
     await page.locator("#subtabs button", { hasText: "Help" }).click();
     await page.waitForTimeout(1500);
     const groups = await page.evaluate(() => [...document.querySelectorAll("#homeHelpTree > ul > li > a")].map((a) => a.textContent));
-    check(groups.length === 3 && /^Design \(\d+\)/.test(groups[0]) && /^Reflections \(\d+\)/.test(groups[1]) && /^Build Documents \(\d+\)/.test(groups[2]),
-          "three groups: Design, Reflections, Build Documents (" + groups.join(" | ") + ")");
+    check(groups.length === 4 && /^Design \(\d+\)/.test(groups[0]) && /^Reflections \(\d+\)/.test(groups[1]) && /^Build Documents \(\d+\)/.test(groups[2])
+          && /^Tutorials \(22\)/.test(groups[3]),
+          "four groups: Design, Reflections, Build Documents, Tutorials (" + groups.join(" | ") + ")");
     await page.locator("#homeHelpTree a", { hasText: "Tier A" }).first().click();
     await page.waitForTimeout(800);
     const shown = await page.evaluate(() => document.getElementById("homeHelpPane").innerHTML);

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>11 Subtabs, captions and menus</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 11: Subtabs, captions and menus</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Below the main tabs are the subtab bar, the caption with its v menu, the Commands button, the side panel and the overlays.
+They are shared by every tab; each tab only describes what goes in them.</p>
+<ul>
+<li>11.1 The shared subtab builder</li>
+<li>11.2 Each tab's subtab bar</li>
+<li>11.3 The caption bar</li>
+<li>11.4 The caption menu</li>
+<li>11.5 The menu manager</li>
+<li>11.6 The Commands button and Maintenance panels</li>
+<li>11.7 The side panel</li>
+<li>11.8 Overlays</li>
+<li>11.9 The Prev and Next overlay</li>
+</ul>
+
+<h2>11.1 The shared subtab builder</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/resultsViewController.js (<code>buildSubtabBar</code>, <code>buildSubtabButton</code>, <code>activateSubtab</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A tab describes its subtabs with an adapter: a CSS class, a function giving the active id, and a list of tabs, each with
+an id, a label, an onClick and an optional condition (Results appears only when an item is open). <code>buildSubtabBar</code> builds the
+row from that; <code>activateSubtab</code> marks one active.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Read <code>buildHomeAdapter</code> (ui/home/homeNav.js) beside <code>buildSubtabBar</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a subtab to a copy of an adapter and see it appear.</p></div>
+
+<h2>11.2 Each tab's subtab bar</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/home/homeNav.js, ui/draw/drawNav.js (<code>setDrawSubtabs</code>), ui/patterns/patternsNav.js, ui/gallery/galleryNav.js, ui/figures/figuresNav.js, ui/utilities/utilitiesNav.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Home: Categories, Results, Errors, Checklist, Help, Notes. Draw: Categories plus one closable subtab per open object.
+Patterns: Categories and the Pattern subtab. Gallery: Ideabook, Patterns, Scripts and Results. Figures: Categories plus a
+subtab per open figure. Utilities: Tools, Lab, Result. Draw and Figures build their own bars because their subtabs open and
+close.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open and close two Draw objects and two figures.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find why Draw's subtab bar does not use the shared builder.</p></div>
+
+<h2>11.3 The caption bar</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/caption.js (<code>setCaptionBar</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The caption shows the item's title, Prev and Next when a list can be stepped, the v button for the caption menu, and any
+extra buttons (the Ideabook's Run script). Each tab calls <code>setCaptionBar</code> with what it wants.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open a gallery image and an Ideabook image: compare the captions.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how the Run script button is added only on Ideabook images.</p></div>
+
+<h2>11.4 The caption menu</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/menuCmds.js (<code>makeHelpItem</code>, <code>makeNotesItem</code>, <code>makeShowScriptItem</code>, <code>makeEditManifestItem</code>, <code>makeArchiveItem</code>, <code>makeScriptHistoryItem</code>, <code>makeThumbnailItem</code>), and each tab's get...CaptionMenuItems.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each tab builds a list of items: label, disabled, tooltip, onClick. Common items come from menuCmds.js so they behave the
+same everywhere (Help, Notes, Show Script, Edit Manifest, Archive, Script history, thumbnail). The Figures menu is the longest
+and is built fresh each time, so items grey out correctly (no figure, points mode, no active layer).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open the v menu in each tab.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Read the Figures menu builder and find the rule that greys Break apart.</p></div>
+
+<h2>11.5 The menu manager</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/menuManager.js (<code>open</code>, <code>positionMenu</code>, <code>close</code>, <code>validateItems</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Opens a list of items below the button that asked, closes on a click outside it or after an item runs, and checks every
+item has a label and an action.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Breakpoint in <code>open</code>; click v.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what stops two menus being open at once.</p></div>
+
+<h2>11.6 The Commands button and Maintenance panels</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/commandsButton.js (<code>setCommandsButtonLabel</code>, <code>setCommandsButtonHandler</code>), each tab's wire...CommandsButton.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The Commands button at the top of the left column is permanent; each tab sets its label ("Draw Commands") and what it
+does, usually opening its Maintenance panel in the side panel (Rebuild &amp; Validate and the tab's own tools).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Press Commands on each tab.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find what Draw's Maintenance panel offers that Home's does not.</p></div>
+
+<h2>11.7 The side panel</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/offcanvas.js (<code>showOffcanvas</code>, <code>showPanel</code>, <code>hideOffcanvas</code>, <code>onEscape</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>One permanent panel slides in from the right with a title and a body, over a dimmed backdrop. It closes on its X, a
+click on the backdrop, or Escape. Sweep, Script history, Insert by picture and the Maintenance panels use it.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open Sweep and press Escape.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find how a caller fills the body (buildBody or bodyHtml).</p></div>
+
+<h2>11.8 Overlays</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/overlay.js (<code>overlayManager</code>, <code>initOverlay</code>, <code>showHelpOverlay</code>, <code>showNotesOverlay</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>The overlay container holds three panels: help (the Help browser and editor), forms (dialogs such as Edit Manifest) and
+debug. <code>overlayManager</code> shows one, hides one, or clears all; the close button clears all and resets the panel's size.
+Showing an overlay disarms the interactor so a drag cannot happen underneath.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Open Help, then Edit Manifest; close each.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find where the interactor is disarmed when an overlay shows.</p></div>
+
+<h2>11.9 The Prev and Next overlay</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>ui/nextPrevOverlay.js (<code>enableNextPrevOverlay</code>, <code>disableNextPrevOverlay</code>, <code>disableAllNextPrevOverlays</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Some views put Prev and Next arrows over the canvas. They are turned off at the start of every tab switch, so a tab never
+inherits another's arrows.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Find a view that enables them.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find the stage of runSetUI that disables them.</p></div>
+
+</body>
+</html>

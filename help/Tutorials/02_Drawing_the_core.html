@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>02 Drawing: the core</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+  <style>.tut-label{margin-bottom:0} .tut-part p{margin-top:2px} h2{margin-top:28px}</style>
+</head>
+<body>
+
+<h1>Tutorial 2: Drawing: the core</h1>
+<p class="note">Written 6 November 2026 for Sketchpad on branch claude/tier-a. Files and functions are named rather than
+given line numbers, so the text stays right as lines move: in VS Code press Ctrl+P to open a file and Ctrl+Shift+O to jump to a
+function, or look it up in docs/FUNCTIONS.md. "Watch it" lines use the browser's developer tools (F12): Sources to set a
+breakpoint, Console to run a line.</p>
+<p>Everything Sketchpad draws ends as lines on a canvas, and almost every line goes through one function, <code>drawLine</code>. This
+tutorial starts at the canvas, reads <code>drawLine</code> closely, and then goes through the building blocks that make the points
+lines are drawn between: classes, nodes, the old stitchers, the shapers and connectors, curves, intersections and
+parametric curves.</p>
+<ul>
+<li>2.1 The canvas, ctx and the layer canvases</li>
+<li>2.2 drawLine, line by line</li>
+<li>2.3 Point, Line and StringThing</li>
+<li>2.4 Nodes: rings of points</li>
+<li>2.5 The old stitchers</li>
+<li>2.6 Shapers</li>
+<li>2.7 Connectors</li>
+<li>2.8 Curves</li>
+<li>2.9 Intersections</li>
+<li>2.10 Parametric curves</li>
+<li>2.11 Colour and background helpers</li>
+</ul>
+
+<h2>2.1 The canvas, ctx and the layer canvases</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/drawState.js: the self-running setup at its end, <code>resetCanvas</code>, and the <code>ctx</code> getter. Then ui/canvasLayerManager.js (<code>initCanvasLayers</code>, <code>syncLayerToCanvas</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>There is one shared drawing canvas (#sharedCanvas), made once when drawState.js loads and kept in <code>window.drawCanvas</code>.
+Code draws on it through <code>ctx</code>, which is not a plain variable but a getter on <code>window</code>: it hands back the context of the
+active canvas layer if one is set, else the shared canvas's own context. That is why old code can say <code>ctx.lineTo(...)</code>
+without importing anything.</p><p>On top of the shared canvas sit transparent layer canvases (the interaction layer for handles, the guides layer).
+<code>syncLayerToCanvas</code> keeps each the same size and position as the shared canvas, so a handle drawn on the interaction layer
+lands exactly over the line it belongs to. <code>resetCanvas</code> clears the shared canvas to its size in drawState.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>window.drawCanvas.width</code>, then <code>ctx === window.drawCanvas.getContext('2d')</code> (true when no layer is active).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find every place <code>resetCanvas</code> is called. Why does the figure redraw call it but stepping never does?</p></div>
+
+<h2>2.2 drawLine, line by line</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p><code>drawLine</code> in draw/drawUtilities.js, from its first line to <code>} // end drawLine</code>. Then <code>mapPoint</code> and <code>noteBounds</code> in draw/drawTransform.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Read it in its stages. First the arguments: <code>drawLine</code> accepts a Line object (then colour and width follow) or two
+points (or two indexes into drawState.pts, turned into points by <code>numbersToPoints</code>). Then the time limit: <code>checkClock()</code>
+throws once a drawing has run too long (tutorial 17). Then the layer transform: the two ends are noted for the layer's
+bounds (<code>noteBounds</code>) and mapped through <code>drawState.transform</code> (<code>mapPoint</code>); outside a figure layer both do nothing. Then the
+print-aid collector: while a figure layer draws, each end is pushed to <code>drawState.collect</code>, which is how a figure without
+discs can still be printed. Then stepping (tutorial 6): count, record, draw only the first k, mark line k. Then Final mode:
+if <code>drawState.final</code> is true, only the two end points are drawn as dots. Otherwise the line is stroked with its colour and
+width, inside ctx.save() and ctx.restore() so nothing leaks.</p><p>The rule that every registry object draws only through drawLine is what makes all of these features work everywhere at
+once.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint on the first line of <code>drawLine</code>; open Draw &gt; Line; step through one call (F10) and watch pt1 and pt2 change at the transform.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Predict what happens to a figure's printed nails if an object drew one of its lines with ctx.lineTo instead of drawLine. Then check <code>drawState.collect</code> in the code to confirm.</p></div>
+
+<h2>2.3 Point, Line and StringThing</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>classes/classes.js: <code>class Point</code>, <code>class Line</code>, <code>class StringThing</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A Point is an x and a y, with helpers (<code>distanceTo</code>, <code>isNear</code>, <code>isSame</code>). A Line has a start and an end and knows its
+midpoint, its length and how to move (<code>moveMidpointTo</code>, <code>setStart</code>, <code>setEnd</code>). StringThing is the settings bag most older
+objects carry: colour, line width, number of nodes, ellipse size, scales, midpoint, truncate and shorten, and so on. Objects
+build one in <code>init()</code> from their params and pass it to the drawing functions as <code>thing</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>const { Point } = await import('/classes/classes.js'); new Point(0,0).distanceTo(new Point(3,4))</code> gives 5.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Open drawRegistry/drawLine.js: find where it makes its Line and its StringThing, and where <code>update()</code> keeps params.points in step with the Line.</p></div>
+
+<h2>2.4 Nodes: rings of points</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/createNodes.js (<code>createNodes</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Most curve-stitch objects start from a ring of points round an ellipse. <code>createNodes(thing)</code> makes them from the
+thing's settings: how many nodes, the ellipse's half-widths times the x and y scales, a rotation, a spacing bias (bunching the
+nodes towards some angles) and jitter (moving them a little at random, by a chosen mode). The nodes are plain Points; what is
+done with them (spokes, sides, chords) is up to the object.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console, on Draw &gt; Mystic Rose: <code>createNodes</code> is imported by its registry file; set a breakpoint in it and move the Nodes slider.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Change Mystic Rose's X Scale and predict the nodes before looking.</p></div>
+
+<h2>2.5 The old stitchers</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/drawUtilities.js: <code>stitcher</code>, <code>drawManyLines</code>, <code>drawLinesAround</code>, <code>drawLinesWithin</code>. draw/drawRegular.js: <code>createArms</code>, <code>changeLine</code>, <code>createParab</code>, <code>drawParab</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Before November, joining points was done by a few long routines that mixed several jobs: choosing points, reversing,
+truncating and shortening, wrapping round, and drawing. <code>stitcher(arm1, arm2)</code> pairs two arms point for point.
+drawRegular.js builds stars and polygons: spokes from the middle (<code>createLinesFromNodesMiddle</code>), sides between nodes
+(<code>createLinesFromNodesOuter</code>), points along each (<code>createArms</code>, trimmed by <code>changeLine</code>), then stitches pairs of arms.</p><p>You found these hard to follow because the cases are tangled together. They still draw the registry objects; the shapers and
+connectors are the clean replacement for new work.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint in <code>drawInverseStar</code> (draw/drawRegular.js); open Draw &gt; Inverse Star; step into <code>createParabs</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Write down, for Inverse Star, which arm is joined to which. Then compare with how the same rule would read using <code>pairwise</code>.</p></div>
+
+<h2>2.6 Shapers</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/shapers.js, every function. Tests: tests/shapersConnectors.mjs.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A shaper takes an array of points and returns a new array; it never changes its input and never draws. <code>linePoints</code>
+and <code>arcPoints</code> make points; <code>reversed</code>, <code>part</code>, <code>everyNth</code> and <code>rotateStart</code> rearrange them; <code>translated</code>, <code>rotated</code>,
+<code>scaled</code> and <code>mirrored</code> move them; <code>resampled</code> spaces them evenly along the path; <code>simplified</code> drops points that change
+nothing; <code>inside</code>, <code>outside</code> and <code>isInside</code> clip to a shape. Every moved point is made by <code>moved(p, x, y)</code>, a copy of the old
+point with only x and y changed, so a Point stays a Point and a z value rides along for later depth work.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:shapers</code> and read the test names; each is a small worked example.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>In the console, import shapers.js and connectors.js and draw <code>pairwise(part(A, 0, 10), reversed(B))</code> with <code>drawPairs</code> for two lines of your choosing.</p></div>
+
+<h2>2.7 Connectors</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/connectors.js, every function; <code>drawPairs</code> in draw/drawUtilities.js.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A connector takes one or two arrays and returns pairs [a, b]: the lines to draw. <code>pairwise</code> joins i to i (with an
+offset, wrapping, or spreading the shorter arm across the longer); <code>corner</code> is the classic corner stitch; <code>chords</code> joins i to
+i + skip; <code>growingChords</code> lets the skip grow; <code>timesTable</code> joins i to i x factor; <code>allPairs</code> joins everything; <code>polyline</code> joins
+neighbours; <code>mesh</code> joins a grid. A connector knows nothing about reversing or ranges: those are shapers applied first.
+<code>drawPairs</code> sends each pair through drawLine.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>const C = await import('/draw/connectors.js'); C.corner({x:100,y:100},{x:100,y:400},{x:400,y:400},10).length</code> gives 11.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Use <code>timesTable</code> on 100 points round a circle with factors 2, 3 and 2.5; say what each draws before drawing it.</p></div>
+
+<h2>2.8 Curves</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/curves.js, every function, and <code>ring</code> and <code>alongCorners</code> especially.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Each curve function gives n points of one closed curve, centred and sized. Most use the helper <code>ring</code>, which calls a
+small formula for each of n evenly spaced angles: the rose is r = cos(k t); the Lissajous figure is x = sin(a t + phase),
+y = sin(b t); epicycloids and hypocycloids are circles rolling round circles; the superellipse bends a circle towards a square
+or a star. The rectangle and polygon use <code>alongCorners</code>, which spreads points evenly by distance round a list of corners, so
+nails fall evenly along the sides.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>(await import('/draw/curves.js')).rosePoints({x:0,y:0}, 1, 8, {k:2})</code> and look at the eight points.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Add a new curve formula to a copy of curves.js (for example a figure-eight, x = sin t, y = sin t cos t) and draw its points with polyline.</p></div>
+
+<h2>2.9 Intersections</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/intersections.js (<code>findIntersections</code>, <code>crossingOf</code>) and Help &gt; Design &gt; Subsystems &gt; Intersections.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p><code>crossingOf</code> is the algebra for one pair of segments: where they cross, and how far along each (0 to 1). <code>findIntersections</code>
+applies it to whole paths quickly: it builds a grid, notes each segment in the squares its box touches, and tests a segment only
+against segments already in its squares. A stamp per segment (<code>seenBy</code>) stops a pair sharing several squares from being tested
+twice. Options set the grid size, which neighbours to skip, end margins, merging of near-duplicates, self or between, closed
+paths, and limits on count and time.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Terminal: <code>npm run test:intersections</code> (watch the 20,000-point timing).</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Run it on a figure-eight with <code>closed: true</code> and <code>closed: false</code>, and on two crossing figure-eights with each <code>mode</code>; predict the counts first.</p></div>
+
+<h2>2.10 Parametric curves</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>classes/parametric.js, then draw/drawParametrics.js: <code>drawParametric</code>, <code>autoFitParametricToCanvas</code>, <code>drawPolar</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>A Parametric holds two functions, x(t) and y(t), and the list of t values to sample. <code>drawParametric</code> first fits the
+curve to the canvas (measuring its bounds, then scaling and centring it, with the zoom and centre handles applied), then walks
+the samples drawing a segment each step. The "circuit breaker" stops early when the curve comes back to its start heading the
+same way, so a closed curve is not drawn twice over. With Show intersections on, the points drawn are handed to
+<code>findIntersections</code> afterwards and each crossing gets a red dot.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Sources: breakpoint at the INTERSECTIONS step near the end of <code>drawParametric</code>; Draw &gt; Parametrics; tick Show Intersection Dots.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Change the circuit breaker's 2-pixel closeness to 20 in a copy and see what a curve looks like when it stops too early.</p></div>
+
+<h2>2.11 Colour and background helpers</h2>
+<div class="tut-part"><p class="tut-label"><b>Read</b></p><p>draw/color.js (<code>calculateTintAndShade</code>, <code>colourNameToHex</code>), draw/background.js (<code>background</code>).</p></div>
+<div class="tut-part"><p class="tut-label"><b>What happens</b></p><p>Small helpers some scripts use: a lighter and a darker version of a colour, a colour name as its hex code, and a filled
+background with an optional grid. They draw directly on the canvas (the background is not a line), so the time limit's canvas
+check applies to them but stepping does not.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Watch it</b></p><p>Console: <code>(await import('/draw/color.js')).colourNameToHex('papayawhip')</code>.</p></div>
+<div class="tut-part"><p class="tut-label"><b>Try</b></p><p>Find a pattern script that calls <code>background</code> and change its colour.</p></div>
+
+</body>
+</html>
