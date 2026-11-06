@@ -54,5 +54,15 @@
     "path": "weaving.js",
     "title": "weaving.js",
     "status": "favorite"
+  },
+  {
+    "filename": "joinedParabsBand",
+    "path": "joinedParabsBand.js",
+    "title": "Joined Parabolas with a band"
+  },
+  {
+    "filename": "joinedParabsBandLinked",
+    "path": "joinedParabsBandLinked.js",
+    "title": "Joined Parabolas with a linked band"
   }
 ]
