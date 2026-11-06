@@ -172,6 +172,7 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 | A29 clickable badges | Belongs with the library index (A24) | After A24 |
 | A31 settings page | Which values come first | Your list |
 | A3 stepping in Figures and scripts | Built for Draw; Figures needs its own controls | A small phase |
+| Asset manager (Barry, 6 Nov): templates, grid patterns (layouts), backgrounds | Three new kinds of object with no home yet; each needs saving, listing, previewing and placing in a figure, and backgrounds need importing and scaling (made in outside drawing tools, not in Sketchpad) | Your spec; probably subtabs in Utilities (Templates, Grids, Backgrounds) sharing one save/list/import path, before any top-level Backgrounds tab. Related: idea I-22 |
 | Comment standard | 323 functions have no comment above them (`docs/FUNCTIONS.md`) | Your go for a comments-only sweep |
 
 **Not applicable in V1.** A28 duplicate ids: registry keys can't be duplicated in V1's hand-kept list.
