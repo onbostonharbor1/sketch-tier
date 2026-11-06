@@ -33,6 +33,7 @@
      getFiguresCaptionMenuItems(title)
    ============================================================ */
 
+import { startStepping } from "/ui/draw/drawStep.js";
 import { setCaptionBar }            from "/ui/caption.js";
 import { setPrintSize, setNailSize, spacingProblems, printTemplate,
          saveOneSheetSVG, toUnits, unitName } from "./figurePrint.js";
@@ -224,6 +225,16 @@ export async function getFiguresCaptionMenuItems(title) {
 
   // Deletes the active layer and its discs; welds to other layers keep their
   // other members. There is no undo yet, so it asks first.
+  const stepItem = {
+    label:    "Step through the drawing",
+    disabled: !(ts0 && ts0.figure),
+    tooltip:  "Draw the figure one line at a time, in drawing order; the current line is marked in red. 'Active layer only' steps just the active layer.",
+    onClick:  () => {
+      const id = uiState.figures.activeSubtab;
+      startStepping({ redraw: () => redrawFigure(id),
+                      activeLayer: () => uiState.figures.tabs[id]?.figure?.activeLayer });
+    }
+  };
   const onTopItem = {
     label:    "Keep this layer on top",
     disabled: !(ts0 && ts0.figure && ts0.figure.activeLayer >= 0),
@@ -361,6 +372,7 @@ export async function getFiguresCaptionMenuItems(title) {
     snapRadiusItem,
     deletePointItem,
     breakApartItem,
+    stepItem,
     onTopItem,
     deleteLayerItem,
     saveItem,

@@ -31,7 +31,8 @@ export let drawState = {
   // can still be printed as nails. Null except while a figure layer draws.
   collect: null,
   // Stepping view (Tier A step 2, ui/draw/drawStep.js): null, or
-  // { limit, count, lines }. While set, drawLine counts every line, draws
+  // { limit, count, lines, box, redraw, activeLayer, onlyActive, counting,
+  // layer }. While set (and counting is not false), drawLine counts every line, draws
   // only the first `limit`, marks line number `limit`, and records each
   // line it is asked for in `lines`.
   step: null

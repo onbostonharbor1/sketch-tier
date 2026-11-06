@@ -31,6 +31,7 @@
      redrawFigure(tabId, { dim })
    ============================================================ */
 
+import { beginStepPass, endStepPass, stepLayer } from "/ui/draw/drawStep.js";
 import { reportError } from "/ui/errorReport.js";
 import { resetCanvas, drawState } from "/draw/drawState.js";
 import { uiState }               from "/ui/uiState.js";
@@ -89,6 +90,7 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   const paintOrder = figure.drawOrder.includes(active)
     ? [active, ...figure.drawOrder.filter((n) => n !== active)]
     : figure.drawOrder;
+  beginStepPass();                     // stepping (drawStep.js): count lines from zero
   for (let k = paintOrder.length - 1; k >= 0; k--) {
     const i = paintOrder[k];
     // Guides (templates) are for drawing against: Show All and Final leave
@@ -98,6 +100,7 @@ export function redrawFigure(tabId, { dim = true } = {}) {
     if (!figure.layers[i].visible && !showAll) continue;
 
     const inst = instances[i];
+    stepLayer(i);                      // stepping: is this layer's every line counted?
     // save()/restore() bracket each layer so its alpha (dimming) and any
     // style it sets do not leak into the next layer.
     ctx.save();
@@ -125,6 +128,7 @@ export function redrawFigure(tabId, { dim = true } = {}) {
   }
 
   drawState.final = wasFinal;
+  endStepPass();                       // stepping: bring the slider and readout up to date
 
   // Discs are always shown, in both modes, by the same visibility and dimming
   // rules as the layers. Anchored ones follow their layers, so refresh first.

@@ -437,10 +437,10 @@ function drawLine(arg1, arg2, arg3 = "blue", arg4 = 1) {
     // draw only the first `limit`; mark the last one drawn.
     // ------------------------------------------------------------
     if (drawState.step && !drawState.step.box.isConnected) drawState.step = null;   // controls gone: tab switched
-    if (drawState.step) {
+    if (drawState.step && drawState.step.counting !== false) {
         const step = drawState.step;
         step.count++;
-        step.lines.push({ a: { x: pt1.x, y: pt1.y }, b: { x: pt2.x, y: pt2.y }, color });
+        step.lines.push({ a: { x: pt1.x, y: pt1.y }, b: { x: pt2.x, y: pt2.y }, color, layer: step.layer });
         if (step.count > step.limit) return;
         if (step.count === step.limit) {
             ctx.save();

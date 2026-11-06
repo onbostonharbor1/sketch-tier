@@ -1708,13 +1708,14 @@ await page.locator("#subtabs button", { hasText: "Categories" }).first().click()
 await page.waitForTimeout(700);
 ti = await catInfo();
 if (ti.pictures < 3 || ti.firstWidth !== "60px") problems.push("[thumbnails] Patterns list at size 60: " + JSON.stringify(ti));
-// Gallery Scripts has no picture files yet: every item falls back to its name.
+// Gallery Scripts: pictures since 5 November 2026; the few scripts that cannot have one
+// (animated ones, voronoi) fall back to their name.
 await page.click("#gallery-tab");
 await page.waitForTimeout(900);
 await page.locator("#subtabs button", { hasText: "Scripts" }).first().click();
 await page.waitForTimeout(1200);
 ti = await catInfo();
-if (ti.labels < 10) problems.push("[thumbnails] missing pictures should show the name instead: " + JSON.stringify(ti));
+if (ti.labels < 1 || ti.pictures < 50) problems.push("[thumbnails] pictures, and names where a picture is missing: " + JSON.stringify(ti));
 await page.evaluate(async () => { const m = await import("/ui/thumbnailSettings.js"); m.setThumbnailSize(50); });
 
 /* ---- Regenerate thumbnails and Check Missing Images (service stubbed; nothing is written) ---- */
@@ -1768,13 +1769,13 @@ if (figRes.made !== 1 || figRes.failed.length || figRes.tempLeft || thumbWrites.
 await page.unroute("**/figures/directoryRegistry.json");
 await page.unroute("**/figures/Boxes/manifest.json");
 await page.unroute("**/figures/Boxes/Demo.json");
-// Missing-picture check: the Draw objects have no picture files yet, so all are reported.
+// Missing-picture check: every Draw object and pattern has a picture since 5 November 2026.
 const missing = await page.evaluate(async () => {
   const m = await import("/ui/thumbnailMaker.js");
   const r = await m.findMissingThumbnails(["Draw", "Patterns"]);
   return { total: r.total, missingDraw: r.missing.filter((t) => t.set === "Draw").length, missingPatterns: r.missing.filter((t) => t.set === "Patterns").length };
 });
-if (missing.missingDraw < 10 || missing.total < 100) problems.push("[missing images] " + JSON.stringify(missing));
+if (missing.missingDraw !== 0 || missing.missingPatterns !== 0 || missing.total < 100) problems.push("[missing images] " + JSON.stringify(missing));
 page.off("dialog", acceptDialog);
 await page.unroute("**/dispatch");
 
@@ -2502,6 +2503,31 @@ const roseDraw = await page.evaluate(() => {
 if (roseDraw.ink < 500 || roseDraw.sliders < 6 || !roseDraw.stitch) problems.push("[draw rose] " + JSON.stringify(roseDraw));
 await page.click("#figures-tab"); await page.waitForTimeout(800);       // the next stage starts on Figures
 
+/* Stepping in Figures: the whole figure in drawing order, then the active layer only. */
+stage = "stepping in figures";
+await newFigure();
+await page.click("#figureInsert_drawLine"); await page.waitForTimeout(300);
+await page.click("#figureInsert_parabola"); await page.waitForTimeout(300);
+await page.locator("#caption .caption-buttons button", { hasText: /^v$/ }).click(); await page.waitForTimeout(400);
+await page.locator(".caption-menu-item", { hasText: "Step through the drawing" }).click(); await page.waitForTimeout(800);
+const stepInfo = () => page.evaluate(async () => {
+  const { drawState } = await import("/draw/drawState.js");
+  const s = drawState.step;
+  return s ? { total: s.lines.length, limit: s.limit, text: document.getElementById("drawStepText").textContent,
+               layers: [...new Set(s.lines.map((l) => l.layer))] } : null;
+});
+const whole = await stepInfo();
+await page.check("#drawStepOnlyActive"); await page.waitForTimeout(600);
+const onlyActive = await stepInfo();
+await page.click("#drawStepFirst"); await page.waitForTimeout(300);
+const firstLine = await stepInfo();
+await page.click("#drawStepDone"); await page.waitForTimeout(300);
+const done = await stepInfo();
+if (!whole || whole.layers.length !== 2 || !(onlyActive.total < whole.total) || JSON.stringify(onlyActive.layers) !== "[1]"
+    || !/^Line 1 of \d+ \(layer 2\)/.test(firstLine.text) || done !== null) {
+  problems.push("[stepping in figures] " + JSON.stringify({ whole, onlyActive, firstLine, done }));
+}
+
 stage = "pursuit handle";
 await newFigure();
 await page.selectOption("#figureInsertSelect", "regularPursuit");
@@ -2567,4 +2593,4 @@ if (problems.length) {
   for (const p of problems) console.log(" ", p);
   process.exit(1);
 }
-console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, sweep over two settings, curve library and shape palette, no errors");
+console.log("\nPASS: 6 tabs x 2 passes, plus Draw and Patterns with an open item, plus the Notes menu item, plus the Figures shell, insert, points mode and 7b centroid, move and rotate, 7c break apart, 7d infrastructure, 8 welds, fast tab clicks, Utilities Result, Gallery script path, side panel, accordion, Edit Manifest dialog, Show Script, lazy help editor, Draw handle drag, launch intent, cycloid radius, color control, delete layer, save and reopen, figure file format, settings stay private, copy, reset, archive, Figures launch from Home, thumbnails, regenerate thumbnails, complete rebuild, home alert, instrumentation, 8 next pass (handle-to-handle welds), 8b magic points, 9 print aids, templates, break apart inverse star, parametric handles, draw handles after a slider, sweep, insert by picture, pursuit handle, stepping view, inches and one-sheet SVG, sweep over two settings, curve library and shape palette, stepping in figures, no errors");
