@@ -222,4 +222,7 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
   covers `drawLine` and scripts drawing on the canvas directly. Loops that never draw, and later animation frames, are not
   covered.
 - **Left before the next tier:** A12 undo, A18 crash recovery.
+- Idea recorded (Oceania `docs/V2_IDEAS.md`, I-22): cells with corner and midpoint binding points, content as a function
+  mapped to each cell, layouts of rectangles of different sizes, colour fields underneath. Prototypes: Alternating Shapes,
+  Combinations.
 
