@@ -33,6 +33,7 @@ Do one phase at a time. After each, stop and wait for him to review, play with i
 | T2 | Tier A step 2: stepping view on the Draw tab (Step through the drawing) | Built on `claude/tier-a` |
 | T3 | Tier A step 3: error checklist (Tick in the bar, Home > Errors), Home > Notes | Built on `claude/tier-a` |
 | T4 | Tier A, 4 Nov: Codespaces, Home > Checklist, Show all and Purge, inches and one-sheet SVG, clipping, Sweep over two settings, regression views, function dictionary, intersections mark, controls by name, layer on top. Deferred items: docs/TIERS.md section 5 | Built on `claude/tier-a` |
+| T7 | Stepping in Figures; fast tunable intersections; time limit on drawings | Built on `claude/tier-a` |
 | T6 | Curve library (9 curves) and shape palette (rectangle, polygon, ellipse) | Built on `claude/tier-a` |
 | T5 | Home > Help (Design, Reflections, Build Documents), lists from the folders (manifests are notes only), comment sweep | Built on `claude/tier-a` |
 

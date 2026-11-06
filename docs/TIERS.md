@@ -212,3 +212,14 @@ Barry, 4 Nov: do everything not yet done; defer anything that can go wrong and w
 - **Help:** Overview page *Curve library and shape palette*; Draw and Figures pages note them.
 - **Left before the next tier:** A12 undo, A18 crash recovery, A3 stepping in Figures.
 
+## 9. Done 6 November 2026
+
+- **A3 stepping in Figures:** built (e9341f7). Caption menu > Step through the drawing; whole figure in drawing order,
+  or Active layer only; the readout names the layer.
+- **Intersections:** `draw/intersections.js` (1a6066d), a grid search, tunable, equal to testing every pair and far
+  faster (20,000 points in about 35 ms). Parametrics and the Figures crossing marks use it.
+- **Time limit:** (7fcc85e) a drawing past `drawState.timeLimit` (2 s) is stopped with a message, keeping what it drew;
+  covers `drawLine` and scripts drawing on the canvas directly. Loops that never draw, and later animation frames, are not
+  covered.
+- **Left before the next tier:** A12 undo, A18 crash recovery.
+

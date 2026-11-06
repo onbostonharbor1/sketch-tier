@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Intersections: a fast, tunable search</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>Intersections: a fast, tunable search</h1>
+
+<p class="note">Written 6 November 2026. Code: <code>draw/intersections.js</code>. Used by Parametrics
+(<code>draw/drawParametrics.js</code>) and the crossing marks in Figures (<code>ui/figures/figureMagic.js</code>). Tests:
+<code>npm run test:intersections</code>.</p>
+
+<p><code>findIntersections(paths, options)</code> takes one or more paths (arrays of points, joined in order) and returns
+every place where a segment crosses another: a path with itself, or two paths with each other. It draws nothing.</p>
+
+<h2>Why it is fast</h2>
+<p>The old searches tested every new segment against every earlier one: n &times; n work, 200 million tests for a
+20,000-point curve. The new one lays an invisible grid over the paths, notes each segment in the grid squares its box
+touches, and tests a segment only against those already in its squares. Crossing segments always share a square, so
+nothing is missed, and the answer is exactly the every-pair answer (the tests check this on random paths). A
+20,000-point curve with over a thousand crossings takes about 35 ms.</p>
+
+<h2>The settings</h2>
+<table>
+<tr><th>Option</th><th>Default</th><th>What it does</th></tr>
+<tr><td><code>cellSize</code></td><td>twice the average segment length</td><td>grid square size in pixels</td></tr>
+<tr><td><code>neighbourSkip</code></td><td>1</td><td>segments this close in order along one path are not tested (no mark at every joint)</td></tr>
+<tr><td><code>endMargin</code></td><td>0</td><td>fraction of each segment end where a crossing does not count</td></tr>
+<tr><td><code>countEnds</code></td><td>false</td><td>count segments that only touch at an end</td></tr>
+<tr><td><code>mergeDistance</code></td><td>0.5 px</td><td>crossings closer than this become one</td></tr>
+<tr><td><code>mode</code></td><td>"both"</td><td>"self", "between" or both</td></tr>
+<tr><td><code>closed</code></td><td>false</td><td>a path's last point joins its first (true, or one per path)</td></tr>
+<tr><td><code>maxCount</code></td><td>2000</td><td>stop after this many, with a note</td></tr>
+<tr><td><code>timeLimit</code></td><td>1000 ms</td><td>stop after this long, with a note, keeping what was found</td></tr>
+</table>
+
+<h2>What it returns</h2>
+<p><code>{ points, notes }</code>. Each point is <code>{ x, y, a, b }</code>; <code>a</code> and <code>b</code> name the two
+segments (path, segment number, and how far along, 0 to 1), so a disc on a crossing can find it again. <code>notes</code>
+says when a limit cut the search short.</p>
+
+<h2>Where it is used</h2>
+<ul>
+<li><b>Parametrics</b>, Show intersections: the old rule is kept (segments up to 2 apart not tested, 1% at each segment
+end not counted), and an object or script may pass <code>thing.intersections</code> to change any setting. Any note is kept
+in <code>thing.intersectionNotes</code>.</li>
+<li><b>Figures</b>, crossing marks (points mode): each arm against each other arm, ends that touch counted, named in
+order along the arm as before.</li>
+<li>Gallery scripts that carry their own copy of the old search (harmonograph, roseRhodena and others) are unchanged:
+they are Barry's playpen.</li>
+</ul>
+
+</body>
+</html>

@@ -174,5 +174,23 @@
 <p><strong>T1, T10, K1, K2, K3, T9.</strong> Read the files named on the checklist line; note anything unclear with Add item.</p>
 <h2>13. Decisions still yours</h2>
 <p><strong>Q1 to Q6.</strong> Not checks: answer them when you are ready (tell me in chat).</p>
+<hr>
+<h2>14. Added 6 November: stepping in Figures, intersections, time limit</h2>
+<p><img src="/docs/images/check/16-figures-stepping.png" alt="Stepping in Figures" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>N1.</strong> Figures &gt; Categories &gt; Create Figure. Press <strong>Parabola</strong>, then choose <strong>Rose</strong> in Curve.... Caption menu <strong>v</strong> &gt; <strong>Step through the drawing</strong>. <em>See:</em> (as in the picture) in the left column: <code>|&lt;  &lt;  &gt;  &gt;|</code>, a slider, a checkbox <strong>Active layer only</strong>, and the readout "Line N of N (layer 2): ...".</p>
+<p><strong>N2.</strong> Press <code>|&lt;</code>. <em>See:</em> only line 1, red, of layer 1 (the parabola, drawn first because it is the bottom layer); "(layer 1)" in the readout. Drag the slider to the right: the parabola fills in, then the rose (layer 2) starts.</p>
+<p><strong>N3.</strong> Tick <strong>Active layer only</strong>. <em>See:</em> the parabola is drawn in full; only the rose (the active layer) is stepped; the count drops to the rose's lines.</p>
+<p><strong>N4.</strong> Press <strong>Done stepping</strong>: everything is drawn and the controls go. Start again, click another tab and back: stepping has ended.</p>
+<p><strong>N5.</strong> Draw &gt; Parametrics (or the Parametrics layer in a figure): tick <strong>Show intersections</strong>. <em>See:</em> red dots where the curve crosses itself, in the same places as before 6 November.</p>
+<p><strong>N6.</strong> With Show intersections on, move the sliders that add points or loops to their highest. <em>See:</em> the drawing and its dots appear within about a second; the page does not freeze.</p>
+<p><strong>N7.</strong> Figures: two crossing lines, or a rose over a polygon; tick <strong>Points Mode</strong>. <em>See:</em> purple rings with a cross at the crossings, as in section 8 (T11).</p>
+<p><strong>N8.</strong> Terminal: <code>npm run test:intersections</code>. <em>See:</em> "20,000 points: ... crossings in ... ms" (tens of milliseconds) and "11 intersection tests passed."</p>
+<p><strong>N9.</strong> Draw &gt; Rose: Points 400, Stitch <strong>All pairs</strong>. <em>See:</em> a dense drawing in well under 2 seconds; no red bar.</p>
+<p><img src="/docs/images/check/17-time-limit-message.png" alt="The time-limit message" style="max-width:100%;border:1px solid #999"></p>
+<p><strong>N10.</strong> Press F12 for the console and paste, then press Enter:</p>
+<p><code>(async () =&gt; { const s = await import("/draw/drawState.js"); const u = await import("/draw/drawUtilities.js"); s.startClock("my endless test"); try { for (;;) u.drawLine({x:0,y:0},{x:Math.random()*500,y:300}); } catch (e) { console.log(e.message); } finally { s.stopClock(); } })()</code></p>
+<p><em>See:</em> within about 2 seconds the console prints "Drawing stopped: my endless test ran longer than 2 s ...", and the page still responds. (In normal use the same message appears in the red bar, as in the picture, which was made with a very short limit.)</p>
+<p><strong>N11.</strong> Run a handful of patterns and gallery scripts you know, including slow ones. <em>See:</em> each draws as before; no "Drawing stopped" message.</p>
+<p><strong>N12.</strong> Help &gt; Design &gt; Subsystems: read <strong>Intersections: a fast, tunable search</strong>, <strong>The time limit on drawings</strong>, and the section "In Figures" of <strong>Stepping through a drawing</strong>.</p>
 </body>
 </html>

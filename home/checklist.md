@@ -187,3 +187,18 @@ you saw, and tell me.
 - [ ] Q4 Templates beyond guide layers, draggable alignment marks, the simplified-curve overlay, the settings page: each needs your spec
 - [ ] Q5 Merge claude/tier-a into claude1 when satisfied (tell me; I fast-forward)
 - [ ] Q6 Delete the leftover branches on GitHub: claude/hopeful-dirac-iirr6d, claude/codespaces (after the merge), and the three old V1 branches
+
+## 14. Added 6 November: stepping in Figures, intersections, time limit
+- [ ] N1 Figures: a figure with two layers, caption menu v > Step through the drawing: the stepping controls in the left column, the readout names the layer (guide)
+- [ ] N2 Stepping in Figures: |< shows only line 1 of the bottom layer; > and the slider step through the bottom layer, then the next
+- [ ] N3 Stepping in Figures: tick Active layer only: only the active layer is stepped, the other layers are drawn in full
+- [ ] N4 Stepping in Figures: Done stepping draws everything; a tab switch ends stepping
+- [ ] N5 Parametrics: tick Show intersections: the red marks appear where they did before, and quickly even with many points
+- [ ] N6 Parametrics with the most points it allows and Show intersections: draws in about a second or less, no freeze
+- [ ] N7 Figures, Points Mode: crossing marks (purple ring with a cross) appear where lines and curves cross, as before
+- [ ] N8 npm run test:intersections: 11 tests passed, including "20,000 points: ... crossings in ... ms"
+- [ ] N9 Time limit: Draw > Rose, Points 400, Stitch All pairs: draws (well under 2 s), no message
+- [ ] N10 Time limit: F12 console, run the line in the guide (a deliberately endless drawing): within about 2 s the red bar says "Drawing stopped ... ran longer than 2 s"; the page still works
+- [ ] N11 Time limit: patterns and gallery scripts you know run as before, none stopped
+- [ ] N12 Read Help > Design > Subsystems: Intersections, The time limit on drawings, and the Figures part of Stepping through a drawing
+

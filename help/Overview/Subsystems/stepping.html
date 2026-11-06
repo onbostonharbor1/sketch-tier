@@ -30,9 +30,14 @@ stepping shows the first k lines of the changed drawing.</p>
 readout "Line k of N: (x, y) to (x, y), colour", and <b>Done stepping</b>. A tab switch removes the controls; the next
 <code>drawLine</code> sees they are gone and stops stepping.</p>
 
+<h2>In Figures (6 November 2026)</h2>
+<p>The figure's caption menu has <b>Step through the drawing</b> too. The whole figure is stepped in drawing order (bottom
+layer first); the readout names the layer of the red line. Tick <b>Active layer only</b> to step just the active layer, the
+others drawn in full. The figure redraw calls <code>beginStepPass</code>, <code>stepLayer(i)</code> before each layer, and
+<code>endStepPass</code>; <code>drawLine</code> counts only while <code>stepLayer</code> says so.</p>
+
 <h2>Not yet</h2>
-<p>Figures and scripts: the same <code>drawLine</code> hook serves them; they need their own controls. Stepping in Figures
-is on the list before the next tier.</p>
+<p>Scripts (Patterns, Gallery): the same hook would serve them; they need their own controls.</p>
 
 </body>
 </html>

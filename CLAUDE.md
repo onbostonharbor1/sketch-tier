@@ -92,6 +92,10 @@ path), say so and let him decide.
   beside it, to become a draw function. Hints, not copies; the header of each says what was guessed.
 - Curve library and shape palette: points in `draw/curves.js`, objects made by `makeRingObject` (`draw/ringObject.js`),
   one small file each in `drawRegistry/` (categories curves and shapes); Figures caption has Rectangle, Polygon, Ellipse and Curve...
+- Intersections: `findIntersections` (`draw/intersections.js`), a fast tunable grid search, used by Parametrics and the
+  Figures crossing marks. Time limit: `startClock`/`stopClock`/`checkClock` (`draw/drawState.js`); `drawLine` and the
+  canvas's lineTo, arc, stroke and fill check it; the Draw redraw, each figure layer and the script runner start it.
+  Stepping (`ui/draw/drawStep.js`) works in Draw and Figures.
 - Lists (since 2026-11-04): every category list and the Home list come from the folders (`node/libraryIndex.mjs`,
   requests `listLibrary` and `listHomeItems`, read by `ui/manifest.js` and `ui/home/homeManifest.js`). manifest.json
   files are only notes (titles, statuses, order): a file with no entry still appears; an entry with no file is ignored.
@@ -112,6 +116,7 @@ path), say so and let him decide.
 - `npm run test:history` tests Script history (VS Code's saved versions of a script; `ui/scriptHistory.js`).
 - `npm run test:shapers` tests `draw/shapers.js` (point-array operations) and `draw/connectors.js` (ways of stitching) in Node.
   Both are pure: arrays in, arrays or [a, b] pairs out, no drawing; draw pairs with `drawPairs` (`draw/drawUtilities.js`).
+- `npm run test:intersections` tests the intersection search (Node).
 - `npm run test:controls` tests controls declared by name alone (`ui/controls/builders/conventions.js`).
 - `npm run dictionary` writes `docs/FUNCTIONS.md`, the alphabetical function dictionary, from the comments; run it
   after adding or renaming functions.

@@ -423,3 +423,53 @@ palette.
 ## 13. Decisions still yours
 
 **Q1 to Q6.** Not checks: answer them when you are ready (tell me in chat).
+
+---
+
+## 14. Added 6 November: stepping in Figures, intersections, time limit
+
+![Stepping in Figures](/docs/images/check/16-figures-stepping.png)
+
+**N1.** Figures > Categories > Create Figure. Press **Parabola**, then choose **Rose** in Curve.... Caption menu **v** >
+**Step through the drawing**. *See:* (as in the picture) in the left column: `|<  <  >  >|`, a slider, a checkbox
+**Active layer only**, and the readout "Line N of N (layer 2): ...".
+
+**N2.** Press `|<`. *See:* only line 1, red, of layer 1 (the parabola, drawn first because it is the bottom layer);
+"(layer 1)" in the readout. Drag the slider to the right: the parabola fills in, then the rose (layer 2) starts.
+
+**N3.** Tick **Active layer only**. *See:* the parabola is drawn in full; only the rose (the active layer) is stepped; the
+count drops to the rose's lines.
+
+**N4.** Press **Done stepping**: everything is drawn and the controls go. Start again, click another tab and back:
+stepping has ended.
+
+**N5.** Draw > Parametrics (or the Parametrics layer in a figure): tick **Show intersections**. *See:* red dots where the
+curve crosses itself, in the same places as before 6 November.
+
+**N6.** With Show intersections on, move the sliders that add points or loops to their highest. *See:* the drawing and its
+dots appear within about a second; the page does not freeze.
+
+**N7.** Figures: two crossing lines, or a rose over a polygon; tick **Points Mode**. *See:* purple rings with a cross at the
+crossings, as in section 8 (T11).
+
+**N8.** Terminal: `npm run test:intersections`. *See:* "20,000 points: ... crossings in ... ms" (tens of milliseconds) and
+"11 intersection tests passed."
+
+**N9.** Draw > Rose: Points 400, Stitch **All pairs**. *See:* a dense drawing in well under 2 seconds; no red bar.
+
+![The time-limit message](/docs/images/check/17-time-limit-message.png)
+
+**N10.** Press F12 for the console and paste, then press Enter:
+
+`(async () => { const s = await import("/draw/drawState.js"); const u = await import("/draw/drawUtilities.js"); s.startClock("my endless test"); try { for (;;) u.drawLine({x:0,y:0},{x:Math.random()*500,y:300}); } catch (e) { console.log(e.message); } finally { s.stopClock(); } })()`
+
+*See:* within about 2 seconds the console prints "Drawing stopped: my endless test ran longer than 2 s ...", and the page
+still responds. (In normal use the same message appears in the red bar, as in the picture, which was made with a very short
+limit.)
+
+**N11.** Run a handful of patterns and gallery scripts you know, including slow ones. *See:* each draws as before; no
+"Drawing stopped" message.
+
+**N12.** Help > Design > Subsystems: read **Intersections: a fast, tunable search**, **The time limit on drawings**, and the
+section "In Figures" of **Stepping through a drawing**.
+

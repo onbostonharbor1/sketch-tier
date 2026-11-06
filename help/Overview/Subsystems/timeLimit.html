@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The time limit on drawings</title>
+  <link rel="stylesheet" href="/help/help_treatise.css" />
+</head>
+<body>
+
+<h1>The time limit on drawings</h1>
+
+<p class="note">Written 6 November 2026. Code: <code>startClock</code>, <code>stopClock</code> and <code>checkClock</code> in
+<code>draw/drawState.js</code>; called from <code>drawLine</code>, <code>drawActiveTab</code>, the figure redraw and the script
+runner. Test: <code>npm run test:errors</code>, section 11.</p>
+
+<p>A drawing that runs longer than <code>drawState.timeLimit</code> (2000 ms) is stopped with a message in the red bar,
+and what it drew so far stays on the canvas, instead of the page freezing.</p>
+
+<h2>Why it works from inside</h2>
+<p>A JavaScript timer cannot interrupt code that is running: a timer only fires when the page is idle, and a drawing stuck in
+a long loop never lets it be idle. So the check is made by the drawing itself. Every drawing call, <code>drawLine</code>
+and the canvas's own <code>lineTo</code>, <code>arc</code>, <code>stroke</code> and <code>fill</code> (wrapped once, so scripts
+that draw on the canvas directly are covered), calls <code>checkClock()</code>. It reads the clock every 256 calls and
+throws once the deadline has passed. The error is caught where errors are caught already (the Draw redraw, each figure layer,
+the script runner) and shown in the red bar.</p>
+
+<h2>Where the clock runs</h2>
+<ul>
+<li>The Draw tab's redraw: "Draw object &lt;name&gt;".</li>
+<li>Each figure layer, separately: "Figure "&lt;name&gt;", layer n".</li>
+<li>A script's <code>runPattern()</code>: "Script &lt;title&gt;".</li>
+</ul>
+
+<h2>Limits</h2>
+<p>A loop that never draws (pure calculation) is not stopped. Animated scripts that keep drawing later, after
+<code>runPattern()</code> has returned, are not timed. To allow a slow drawing more time, raise
+<code>drawState.timeLimit</code> (in milliseconds). The regression test runs every object and script; none comes near the
+limit.</p>
+
+</body>
+</html>
