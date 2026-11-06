@@ -122,8 +122,9 @@ path), say so and let him decide.
   after adding or renaming functions.
 - Home > Checklist shows `home/checklist.md` (things for Barry to check). Add a line there for every hand check a phase
   needs, with its details in that phase's `docs/CHECKLIST_*.md`.
-- Home > Help: `help/Reflections` (Barry's topics, made with New reflection) and `help/BuildDocs` (made by
-  `npm run help:builddocs` from docs/; do not edit by hand).
+- Home > Help: `help/Reflections` (Barry's topics, made with New reflection), `help/BuildDocs` (made by
+  `npm run help:builddocs` from docs/; do not edit by hand) and `help/Tutorials` (22 tutorials; revise one when the code it
+  names changes). `npm run help:pdf -- <file>` prints the Overview and Tutorials as one PDF (app must be running; not committed).
 - `npm run test:ideabook` tests the Ideabook Run script button and runs every hint script.
 - `npm run lint:globals` must report zero errors. Eleven warnings in gallery scripts are known and are Barry's.
 - Tests that edit manifests change repo files (`gallery/Ideabook/3D/manifest.json`, `home/manifest.json`);

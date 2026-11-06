@@ -473,3 +473,19 @@ limit.)
 **N12.** Help > Design > Subsystems: read **Intersections: a fast, tunable search**, **The time limit on drawings**, and the
 section "In Figures" of **Stepping through a drawing**.
 
+---
+
+## 15. Added 6 November: tutorials and the help PDF
+
+**U1.** Home > Help. *See:* a fourth group, **Tutorials (22)**, listed 01 The big picture to 22 Working practices.
+
+**U2.** Open any tutorial. *See:* a short introduction and a list of its sections, then each section with four parts: **Read**
+(files and functions), **What happens**, **Watch it** (a breakpoint or a console line) and **Try** (an exercise).
+
+**U3.** Do one tutorial's Watch it and Try steps for real. If a function it names is not where it says, or something behaves
+differently, Add item on the checklist saying which section.
+
+**U4.** With sketchpad.bat running, in a terminal: `npm run help:pdf -- C:\Users\barry\Desktop\Sketchpad-Help.pdf`.
+*See:* "Wrote ... (61 pages of help in 4 parts)". The PDF has a cover, a contents list with links, and four parts: Design:
+Tabs, Design: Subsystems, Design: Design Notes, Tutorials; about 180 printed pages with page numbers.
+

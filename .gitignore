@@ -33,3 +33,7 @@ __pycache__/
 # Regression test: this run's pictures and report (the approved copies are committed)
 /tests/regression/latest/
 /tests/regression/report.html
+
+# Help PDF (npm run help:pdf); not kept in the repository
+Sketchpad-Help.pdf
+help/_pdfSource.html

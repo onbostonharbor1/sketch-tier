@@ -33,6 +33,7 @@
     "test:shapers": "node --no-warnings tests/shapersConnectors.mjs",
     "dictionary": "node tests/functionDictionary.mjs",
     "help:builddocs": "node node/copyBuildDocs.mjs",
+    "help:pdf": "node node/makeHelpPdf.mjs",
     "test:controls": "node --no-warnings tests/controlConventions.mjs",
     "test:intersections": "node --no-warnings tests/intersections.mjs",
     "build:static": "node scripts/buildStatic.mjs",

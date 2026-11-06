@@ -202,3 +202,9 @@ you saw, and tell me.
 - [ ] N11 Time limit: patterns and gallery scripts you know run as before, none stopped
 - [ ] N12 Read Help > Design > Subsystems: Intersections, The time limit on drawings, and the Figures part of Stepping through a drawing
 
+## 15. Added 6 November: tutorials and the help PDF
+- [ ] U1 Home > Help shows a fourth group, Tutorials (22), in order 01 to 22 (guide)
+- [ ] U2 Open a tutorial: each section has Read, What happens, Watch it and Try
+- [ ] U3 Pick one tutorial and do its Watch it and Try steps; note anything that does not match the code (Add item)
+- [ ] U4 npm run help:pdf -- C:\Users\barry\Desktop\Sketchpad-Help.pdf (with sketchpad.bat running) makes the PDF; open it: cover, contents, four parts
+
